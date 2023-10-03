@@ -32,16 +32,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Restore dependencies
-        run: dotnet restore ./Webapp.sln
+      - name: Build Negocio
+        run: dotnet build ./Negocio.sln
 
-      - name: Build with dotnet
-        run: dotnet build --no-restore ./Webapp.sln
+      - name: Test Negocio
+        run: dotnet test --no-build --verbosity normal ./Negocio.sln
 
-      - name: Test
+      - name: Build IoT Gateway
+        run: dotnet build ./IoTGateway.sln
+
+      - name: Test IoT Gateway
+        run: dotnet test --no-build --verbosity normal ./IoTGateway.sln
+
+      - name: Public IoT Gateway
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp  ./IoTGateway.sln
+
+      - name: Build Webapp
+        run: dotnet build ./Webapp.sln
+
+      - name: Test Webapp
         run: dotnet test --no-build --verbosity normal ./Webapp.sln
 
-      - name: dotnet publish
+      - name: Public Webapp
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp  ./Webapp.sln
 
       - name: Upload artifact for deployment job
