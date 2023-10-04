@@ -20,9 +20,9 @@ namespace Negocio.Helpers
             switch (Ambiente)
             {
                 case "Development":
-                    return "https://dev-seniorconnect.azurewebsites.net/";
+                    return "https://dev-seniorconnect.azurewebsites.net";
                 case "Production":
-                    return "https://seniorconnect.azurewebsites.net/";
+                    return "https://seniorconnect.azurewebsites.net";
                 default:
                     return "https://localhost:7238";
             }
@@ -33,8 +33,9 @@ namespace Negocio.Helpers
             switch (Ambiente)
             {
                 case "Development":
+                    return "https://dev-iot-seniorconnect.azurewebsites.net";
                 case "Production":
-                    throw new NotImplementedException();
+                    return "https://iot-seniorconnect.azurewebsites.net";
                 default:
                     return "https://localhost:5001";
             }
