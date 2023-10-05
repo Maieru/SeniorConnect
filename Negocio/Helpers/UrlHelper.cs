@@ -8,9 +8,9 @@ namespace Negocio.Helpers
 {
     public static class UrlHelper
     {
-        private static string Ambiente { get; set; }
+        private static string? Ambiente { get; set; }
 
-        public static void SetAmbiente(string ambiente)
+        public static void SetAmbiente(string? ambiente)
         {
             Ambiente = ambiente;
         }
