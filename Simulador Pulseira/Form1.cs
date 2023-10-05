@@ -1,5 +1,6 @@
 using Negocio.TOs.IotMessage;
 using Newtonsoft.Json;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Simulador_Pulseira
 {
@@ -14,13 +15,16 @@ namespace Simulador_Pulseira
 
         public bool statusSimulacao = false;
 
-        private void btnStatus_Click(object sender, EventArgs e)
+        private async void btnStatus_Click(object sender, EventArgs e)
         {
             AlteraBotao();
+            do
+            {
+                string json = CriaJson(GerenciaDados());
+                txtVizualisaJson.Text = json;
 
-            string json = CriaJson(GerenciaDados());
-
-            txtVizualisaJson.Text = json;
+                await Task.Delay(5000);
+            } while (statusSimulacao);
         }
 
         public void AlteraBotao()
@@ -41,14 +45,30 @@ namespace Simulador_Pulseira
 
         public StatusPulseiraTO GerenciaDados()
         {
+            dados.BatimentoCardiaco = GeraBatimentos();
 
-            dados.DeviceId= 1;
-            dados.BatimentoCardiaco = 10;
-            dados.QuedaDetectada = false;
-            dados.BotaoEmergenciaPressionada = false;
+            dados.BotaoEmergenciaPressionada = ccbEmergencia.Checked;
+            dados.QuedaDetectada = ccbQueda.Checked;
 
             return dados;
         }
+
+        public int GeraBatimentos()
+        {
+            Random random= new Random();
+            if (ccbDescanco.Checked)
+            {
+                return random.Next(30, 50);
+            }
+
+            if(ccbExercicio.Checked)
+            {
+                return random.Next(80, 120);
+            }
+
+            return random.Next(50, 80);
+        }
+
 
         public string CriaJson(StatusPulseiraTO dados)
         {
