@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Negocio.Context;
+using Negocio.Database;
 using Negocio.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,10 @@ var vaultHelper = new VaultHelper(Environment.GetEnvironmentVariable("KEY_VAULT_
 builder.Services.AddSingleton(new IotDriver(await vaultHelper.GetMongoDbConnectionString() ?? ""));
 
 UrlHelper.SetAmbiente(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+
+// TODO: Mudar para banco de dados de verdade
+var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
+builder.Services.AddSingleton(new ApplicationContext(contextOptions.Options));
 
 var app = builder.Build();
 

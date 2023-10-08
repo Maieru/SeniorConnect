@@ -4,6 +4,9 @@ namespace Negocio.TOs.IotMessage
 {
     public class EnviarPulseiraTO : IotMessageTO
     {
-        public List<LembreteModel> Alertas { get; set; } 
+        public List<AlertaTO> Alertas { get; set; }
+
+        public EnviarPulseiraTO() { }
+        public EnviarPulseiraTO(int? deviceId, string? deviceKey) : base(deviceId, deviceKey) { }
     }
 }

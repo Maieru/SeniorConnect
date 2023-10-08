@@ -12,10 +12,8 @@ namespace Negocio.TOs.IotMessage
 
         public IotMessageTO(int? deviceId, string? deviceKey)
         {
-
             this.DeviceId = deviceId;
             this.DeviceKey = deviceKey;
-
         }
 
         public IotMessageTO() { }
