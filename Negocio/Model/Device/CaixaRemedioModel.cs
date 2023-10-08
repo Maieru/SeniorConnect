@@ -10,5 +10,9 @@ namespace Negocio.Model.Device
     {
         public string Descricao { get; set; }
         public int QuantidadeContainers { get; set; }
+
+        public CaixaRemedioModel() { }
+
+        public CaixaRemedioModel(int deviceId, string deviceKey) : base(deviceId, deviceKey) { }
     }
 }

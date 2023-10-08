@@ -9,5 +9,9 @@ namespace Negocio.Model.Device
     public class PulseiraModel : IoTDeviceModel
     {
         public string Descricao { get; set; }
+
+        public PulseiraModel() { }
+
+        public PulseiraModel(int deviceId, string deviceKey) : base(deviceId, deviceKey) { }
     }
 }
