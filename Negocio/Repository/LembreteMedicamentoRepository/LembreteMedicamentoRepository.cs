@@ -45,6 +45,7 @@ namespace Negocio.Repository.LembreteMedicamentoRepository
                     MedicamentoId = 3,
                     Id = 3
                 },
+                null,
                 null
             };
         }
