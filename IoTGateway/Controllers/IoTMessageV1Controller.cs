@@ -26,47 +26,47 @@ namespace IoTGateway.Controllers
         }
 
         [HttpPost("AtualizaDadosPulseira")]
-        [Produces(typeof(ApiResponseTO))]
-        [ProducesResponseType(typeof(ApiResponseTO), 200)]
-        [ProducesResponseType(typeof(ApiResponseTO), 404)]
+        [Produces(typeof(ApiResponseTO<StatusPulseiraModel>))]
+        [ProducesResponseType(typeof(ApiResponseTO<StatusPulseiraModel>), 200)]
+        [ProducesResponseType(typeof(ApiResponseTO<object>), 404)]
         public async Task<IActionResult> AtualizaDadosPulseira([FromBody] StatusPulseiraTO pulseiraMessage)
         {
             if (!await ValidaDispositivo(pulseiraMessage))
-                return NotFound(ApiResponseTO.CreateFalha("Não foi possivel localizada o dispositivo"));
+                return NotFound(ApiResponseTO<object>.CreateFalha("Não foi possivel localizar o dispositivo"));
 
             var pulseiraDatabase = IotDriver.GetIoTMessagePulseiraCollection();
 
             var statusPulseiraModel = new StatusPulseiraModel(pulseiraMessage);
             await pulseiraDatabase.InsertOneAsync(statusPulseiraModel);
 
-            return Ok(ApiResponseTO.CreateSucesso(statusPulseiraModel));
+            return Ok(ApiResponseTO<StatusPulseiraModel>.CreateSucesso(statusPulseiraModel));
         }
 
         [HttpPost("AtualizaDadosCaixaRemedio")]
-        [Produces(typeof(ApiResponseTO))]
-        [ProducesResponseType(typeof(ApiResponseTO), 200)]
-        [ProducesResponseType(typeof(ApiResponseTO), 404)]
+        [Produces(typeof(ApiResponseTO<StatusCaixaRemedioModel>))]
+        [ProducesResponseType(typeof(ApiResponseTO<StatusCaixaRemedioModel>), 200)]
+        [ProducesResponseType(typeof(ApiResponseTO<object>), 404)]
         public async Task<IActionResult> AtualizaDadosCaixaRemedio([FromBody] StatusCaixaRemedioTO caixaRemedioMessage)
         {
             if (!await ValidaDispositivo(caixaRemedioMessage))
-                return NotFound(ApiResponseTO.CreateFalha("Não foi possivel localizada o dispositivo"));
+                return NotFound(ApiResponseTO<object>.CreateFalha("Não foi possivel localizar o dispositivo"));
 
             var caixaRemedioDatabase = IotDriver.GetIoTMessageCaixaCollection();
 
             var caixaRemedioModel = new StatusCaixaRemedioModel(caixaRemedioMessage);
             await caixaRemedioDatabase.InsertOneAsync(caixaRemedioModel);
 
-            return Ok(ApiResponseTO.CreateSucesso(caixaRemedioModel));
+            return Ok(ApiResponseTO<StatusCaixaRemedioModel>.CreateSucesso(caixaRemedioModel));
         }
 
         [HttpGet("GetDadosCaixaRemedio")]
-        [Produces(typeof(ApiResponseTO))]
-        [ProducesResponseType(typeof(ApiResponseTO), 200)]
-        [ProducesResponseType(typeof(ApiResponseTO), 404)]
+        [Produces(typeof(ApiResponseTO<EnviarCaixaRemedioTO>))]
+        [ProducesResponseType(typeof(ApiResponseTO<EnviarCaixaRemedioTO>), 200)]
+        [ProducesResponseType(typeof(ApiResponseTO<object>), 404)]
         public async Task<IActionResult> GetDadosCaixaRemedio([FromBody] IotMessageTO deviceInfo)
         {
             if (!await ValidaDispositivo(deviceInfo))
-                return NotFound(ApiResponseTO.CreateFalha("Não foi possivel localizada o dispositivo"));
+                return NotFound(ApiResponseTO<object>.CreateFalha("Não foi possivel localizar o dispositivo"));
 
             var device = await GetDevice(deviceInfo);
 
@@ -76,17 +76,17 @@ namespace IoTGateway.Controllers
             var mensagemCaixaRemedio = new EnviarCaixaRemedioTO(device.DeviceId, device.DeviceKey);
             mensagemCaixaRemedio.Agendamentos = agendamentosDoDispositivo.Select(x => x?.Horario).ToList();
 
-            return Ok(ApiResponseTO.CreateSucesso(mensagemCaixaRemedio));
+            return Ok(ApiResponseTO<EnviarCaixaRemedioTO>.CreateSucesso(mensagemCaixaRemedio));
         }
 
         [HttpGet("GetDadosPulseira")]
-        [Produces(typeof(ApiResponseTO))]
-        [ProducesResponseType(typeof(ApiResponseTO), 200)]
-        [ProducesResponseType(typeof(ApiResponseTO), 404)]
+        [Produces(typeof(ApiResponseTO<EnviarPulseiraTO>))]
+        [ProducesResponseType(typeof(ApiResponseTO<EnviarPulseiraTO>), 200)]    
+        [ProducesResponseType(typeof(ApiResponseTO<object>), 404)]
         public async Task<IActionResult> GetDadosPulseira([FromBody] IotMessageTO deviceInfo)
         {
             if (!await ValidaDispositivo(deviceInfo))
-                return NotFound(ApiResponseTO.CreateFalha("Não foi possivel localizada o dispositivo"));
+                return NotFound(ApiResponseTO<object>.CreateFalha("Não foi possivel localizar o dispositivo"));
 
             var device = await GetDevice(deviceInfo);
 
@@ -96,7 +96,7 @@ namespace IoTGateway.Controllers
             var mensagemPulsiera = new EnviarPulseiraTO(device.DeviceId, device.DeviceKey);
             mensagemPulsiera.Alertas = lembretesDoDispositivo.Select(l => new AlertaTO(l.Horario, l.Descricao)).ToList();
 
-            return Ok(ApiResponseTO.CreateSucesso(mensagemPulsiera));
+            return Ok(ApiResponseTO<EnviarPulseiraTO>.CreateSucesso(mensagemPulsiera));
         }
 
         private async Task<IoTDeviceModel> GetDevice(IotMessageTO iotMessage)

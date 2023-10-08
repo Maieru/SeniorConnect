@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace Negocio.TOs
 {
-    public class ApiResponseTO
+    public class ApiResponseTO<T>
     {
         public bool Sucesso { get; set; }
         public string? Mensagem { get; set; }
-        public object? Dados { get; set; }
+        public T Dados { get; set; }
 
-        private ApiResponseTO (bool sucesso, string? mensagem, object? dados)
+        private ApiResponseTO(bool sucesso, string? mensagem, T dados)
         {
             Sucesso = sucesso;
             Mensagem = mensagem;
             Dados = dados;
         }
 
-        public static ApiResponseTO CreateSucesso(object dados) => new ApiResponseTO(true, null, dados);
-        public static ApiResponseTO CreateFalha(string mensagem) => new ApiResponseTO(true, mensagem, null);
+        public static ApiResponseTO<T> CreateSucesso(T dados) => new ApiResponseTO<T>(true, null, dados);
+        public static ApiResponseTO<T> CreateFalha(string mensagem) => new ApiResponseTO<T>(true, mensagem, default);
     }
 }
