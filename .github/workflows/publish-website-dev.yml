@@ -39,6 +39,12 @@ jobs:
       - name: Test Negocio
         run: dotnet test --no-build --verbosity normal ./Negocio.sln
 
+      - name: Build Simuladores
+        run: dotnet build ./Simuladores.sln
+
+      - name: Test Simuladores
+        run: dotnet test --no-build --verbosity normal ./Simuladores.sln
+
       - name: Build IoT Gateway
         run: dotnet build ./IoTGateway.sln
 
