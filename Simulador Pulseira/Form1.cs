@@ -17,11 +17,16 @@ namespace Simulador_Pulseira
 
         private async void btnStatus_Click(object sender, EventArgs e)
         {
+            txtHora.Font = new Font("DS-Digital", 40, FontStyle.Regular);
+            txtBatimentos.Font = new Font("DS-Digital", 30, FontStyle.Regular);
+
             AlteraBotao();
             do
             {
                 string json = CriaJson(GerenciaDados());
                 txtVizualisaJson.Text = json;
+
+                GerenciaAlertas();
 
                 await Task.Delay(5000);
             } while (statusSimulacao);
@@ -53,26 +58,61 @@ namespace Simulador_Pulseira
             return dados;
         }
 
+        public void GerenciaAlertas()
+        {
+            txtHora.Text = DateTime.Now.ToString("HH:mm");
+            txtBatimentos.Text = dados.BatimentoCardiaco.ToString();
+
+            if (ccbQueda.Checked)
+            {
+                pbQueda.Visible = true;
+            }
+            else
+                pbQueda.Visible = false;
+
+            if (ccbEmergencia.Checked)
+            {
+                pbSosEnable.Visible = true;
+            }
+            else
+                pbSosEnable.Visible = false;
+        }
+
         public int GeraBatimentos()
         {
             Random random= new Random();
             if (ccbDescanco.Checked)
             {
-                return random.Next(30, 50);
+                return random.Next(40, 70);
             }
 
             if(ccbExercicio.Checked)
             {
-                return random.Next(80, 120);
+                return random.Next(100, 130);
             }
 
-            return random.Next(50, 80);
+            return random.Next(70, 90);
         }
 
 
         public string CriaJson(StatusPulseiraTO dados)
         {
             return JsonConvert.SerializeObject(dados, Formatting.Indented);
+        }
+
+        private void txtHora_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ccbQueda_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
