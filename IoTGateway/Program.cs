@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var vaultHelper = new VaultHelper(Environment.GetEnvironmentVariable("KEY_VAULT_NAME"));
+var vaultHelper = new SecretsHelper(Environment.GetEnvironmentVariable("KEY_VAULT_NAME"));
 
 builder.Services.AddSingleton(new IotDriver(await vaultHelper.GetMongoDbConnectionString() ?? ""));
 
