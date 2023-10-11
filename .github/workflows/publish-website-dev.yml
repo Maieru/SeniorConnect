@@ -33,6 +33,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Build Schema
+        run: dotnet build ./Schema.sln
+
       - name: Build Negocio
         run: dotnet build ./Negocio.sln
 
