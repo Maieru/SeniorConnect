@@ -34,7 +34,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Build Schema
-        run: dotnet build ./Schema.sln
+        run: msbuild ./SenioConnectDatabase/SenioConnectDatabase.sqlproj
 
       - name: Build Negocio
         run: dotnet build ./Negocio.sln
