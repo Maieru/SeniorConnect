@@ -33,9 +33,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Build Schema
-        run: msbuild ./SenioConnectDatabase/SenioConnectDatabase.sqlproj
-
       - name: Build Negocio
         run: dotnet build ./Negocio.sln
 
