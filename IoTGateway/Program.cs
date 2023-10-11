@@ -12,11 +12,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var vaultHelper = new SecretsHelper(Environment.GetEnvironmentVariable("KEY_VAULT_NAME"));
+var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+UrlHelper.SetAmbiente(ambiente);
+var vaultHelper = new SecretsHelper(ambiente);
 
 builder.Services.AddSingleton(new IotDriver(await vaultHelper.GetMongoDbConnectionString() ?? ""));
-
-UrlHelper.SetAmbiente(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 
 // TODO: Mudar para banco de dados de verdade
 var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());

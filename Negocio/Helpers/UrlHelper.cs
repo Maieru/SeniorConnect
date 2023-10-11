@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Negocio.Constantes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,9 @@ namespace Negocio.Helpers
         {
             switch (Ambiente)
             {
-                case "Development":
+                case EnvironmentNames.AMBIENTE_DEV:
                     return "https://dev-seniorconnect.azurewebsites.net";
-                case "Production":
+                case EnvironmentNames.AMBIENTE_PRODUCAO:
                     return "https://seniorconnect.azurewebsites.net";
                 default:
                     return "https://localhost:7238";
@@ -32,9 +33,9 @@ namespace Negocio.Helpers
         {
             switch (Ambiente)
             {
-                case "Development":
+                case EnvironmentNames.AMBIENTE_DEV:
                     return "https://dev-iot-seniorconnect.azurewebsites.net";
-                case "Production":
+                case EnvironmentNames.AMBIENTE_PRODUCAO:
                     return "https://iot-seniorconnect.azurewebsites.net";
                 default:
                     return "https://localhost:5001";

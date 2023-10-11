@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal.Util;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Negocio.Constantes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace Negocio.Helpers
 {
     public class SecretsHelper
     {
+        private const string VAULT_NAME_ENVIROMENT = "KEY_VAULT_NAME";
+
         private const string MONGO_DB_CONNECTION_STRING_KEY = "MongoDbDatabase";
         private const string SQL_SERVER_CONNECTION_STRING_KEY = "SqlServerDatabase";
 
-        private readonly string? vaultName;
+        private readonly string? ambiente;
 
         private SecretClient _secretClient;
         private SecretClient SecretClient
@@ -28,14 +31,14 @@ namespace Negocio.Helpers
             }
         }
 
-        public SecretsHelper(string? vaultName)
+        public SecretsHelper(string? ambiente)
         {
-            this.vaultName = vaultName;
+            this.ambiente = ambiente;
         }
 
         public async Task<string?> GetMongoDbConnectionString()
         {
-            if (vaultName == null)
+            if (ambiente == EnvironmentNames.AMBIENTE_LOCAL)
                 return Environment.GetEnvironmentVariable(MONGO_DB_CONNECTION_STRING_KEY);
 
             var secret = await SecretClient.GetSecretAsync(MONGO_DB_CONNECTION_STRING_KEY);
@@ -44,13 +47,17 @@ namespace Negocio.Helpers
 
         public async Task<string?> GetSqlServerConnectionString()
         {
-            if (vaultName == null)
+            if (ambiente == EnvironmentNames.AMBIENTE_LOCAL)
                 return Environment.GetEnvironmentVariable(SQL_SERVER_CONNECTION_STRING_KEY);
 
             var secret = await SecretClient.GetSecretAsync(SQL_SERVER_CONNECTION_STRING_KEY);
             return secret.Value.Value;
         }
 
-        private string MontaUrlVault() => $"https://{vaultName ?? ""}.vault.azure.net";
+        private string MontaUrlVault()
+        {
+            var vaultName = Environment.GetEnvironmentVariable(VAULT_NAME_ENVIROMENT);
+            return $"https://{vaultName ?? ""}.vault.azure.net";
+        }
     }
 }
