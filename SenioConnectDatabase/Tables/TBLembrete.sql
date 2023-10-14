@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[tbLembrete]
+(
+	[Id]			INT				NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	[Horario]		DATETIME		NOT NULL,
+	[Descricao]		VARCHAR(100)	NOT NULL,
+	[AssinaturaId]	INT				NOT NULL FOREIGN KEY REFERENCES dbo.tbAssinatura(Id),
+)
