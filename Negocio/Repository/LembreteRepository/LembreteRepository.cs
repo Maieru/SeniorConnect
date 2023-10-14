@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Negocio.Repository.LembreteRepository
 {
-    public class LembreteRepository : BaseRepository, ILembreteRepository
+    public class LembreteRepository : BaseEntityRepository, ILembreteRepository
     {
         public LembreteRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Negocio.Model;
 using Negocio.Model.Device;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,8 @@ namespace Negocio.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
         }
+
+        public DbSet<AssinaturaModel> Assinaturas { get; set; }
+        public DbSet<PlanoModel> Planos { get; set; }
     }
 }

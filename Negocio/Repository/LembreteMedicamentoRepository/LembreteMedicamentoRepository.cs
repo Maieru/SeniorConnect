@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Negocio.Repository.LembreteMedicamentoRepository
 {
-    public class LembreteMedicamentoRepository : BaseRepository, ILembreteMedicamentoRepository
+    public class LembreteMedicamentoRepository : BaseEntityRepository, ILembreteMedicamentoRepository
     {
         public LembreteMedicamentoRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 

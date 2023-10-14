@@ -1,7 +1,6 @@
 ﻿CREATE TABLE [dbo].[tbPlano]
 (
 	[Id]		INT			 NOT NULL	PRIMARY KEY	 IDENTITY (1, 1),
-	[DESCRICAO] VARCHAR(100) NOT NULL,
-	[VALOR]		FLOAT		 NOT NULL,
-
+	[Descricao] VARCHAR(100) NOT NULL,
+	[Valor]		FLOAT		 NOT NULL,
 )

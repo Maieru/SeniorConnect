@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Negocio.Repository.DeviceRepository
 {
-    public class DeviceRepository : BaseRepository, IDeviceRepository
+    public class DeviceRepository : BaseEntityRepository, IDeviceRepository
     {
         public DeviceRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 
