@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Negocio.Repository.PlanoRepository
+namespace Negocio.Repository.Plano
 {
     public class PlanoRepository : BaseEntityRepository, IPlanoRepository
     {

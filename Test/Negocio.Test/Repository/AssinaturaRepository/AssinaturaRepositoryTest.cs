@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Negocio.Test.Repository.AssinaturaRepository
 {
-    public class AssinaturaRepositoryTest : BaseEntityTest<Negocio.Repository.AssinaturaRepository.AssinaturaRepository>
+    public class AssinaturaRepositoryTest : BaseEntityTest<Negocio.Repository.Assinatura.AssinaturaRepository>
     {
         [Fact]
         public async Task GetAll_ShouldReturn()

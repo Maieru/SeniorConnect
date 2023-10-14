@@ -1,6 +1,6 @@
 ﻿using Negocio.Model;
 
-namespace Negocio.Repository.PlanoRepository
+namespace Negocio.Repository.Plano
 {
     public interface IPlanoRepository
     {

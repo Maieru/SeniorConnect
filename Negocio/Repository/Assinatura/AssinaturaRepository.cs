@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Negocio.Database;
 using Negocio.Model;
+using Negocio.Repository.Plano;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Negocio.Repository.AssinaturaRepository
+namespace Negocio.Repository.Assinatura
 {
     public class AssinaturaRepository : BaseEntityRepository, IAssinaturaRepository
     {
@@ -54,7 +55,7 @@ namespace Negocio.Repository.AssinaturaRepository
 
         private async Task<bool> VerificaSePlanoExiste(int planoId)
         {
-            var planoRepository = new PlanoRepository.PlanoRepository(_applicationContext);
+            var planoRepository = new PlanoRepository(_applicationContext);
             return await planoRepository.GetById(planoId) != null;
         }
     }

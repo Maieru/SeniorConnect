@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Negocio.Repository.DeviceRepository
+namespace Negocio.Repository.Device
 {
     public class DeviceRepository : BaseEntityRepository, IDeviceRepository
     {

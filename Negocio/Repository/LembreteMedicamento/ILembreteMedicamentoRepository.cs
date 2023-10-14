@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Negocio.Repository.LembreteMedicamentoRepository
+namespace Negocio.Repository.LembreteMedicamento
 {
     public interface ILembreteMedicamentoRepository
     {

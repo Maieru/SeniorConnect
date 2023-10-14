@@ -1,6 +1,5 @@
 ﻿using Negocio.Database;
 using Negocio.Model;
-using Negocio.Repository.PlanoRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,7 @@ using Xunit;
 
 namespace Negocio.Test.Repository.PlanoRepository
 {
-    public class PlanoRepositoryTest : BaseEntityTest<Negocio.Repository.PlanoRepository.PlanoRepository>
+    public class PlanoRepositoryTest : BaseEntityTest<Negocio.Repository.Plano.PlanoRepository>
     {
         [Fact]
         public async Task GetAll_ShouldReturn()

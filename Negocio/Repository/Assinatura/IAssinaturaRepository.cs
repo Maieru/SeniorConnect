@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Negocio.Repository.AssinaturaRepository
+namespace Negocio.Repository.Assinatura
 {
     public interface IAssinaturaRepository
     {
