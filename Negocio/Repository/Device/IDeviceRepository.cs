@@ -1,4 +1,5 @@
-﻿using Negocio.Model.Device;
+﻿using Negocio.Model;
+using Negocio.Model.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,11 @@ namespace Negocio.Repository.Device
 {
     public interface IDeviceRepository
     {
-        public Task<IoTDeviceModel> GetByIdentification(int deviceId, string deviceKey); 
+        Task<IoTDeviceModel> GetByIdentification(int deviceId, string deviceKey);
+        Task<IEnumerable<IoTDeviceModel>> GetAll();
+        Task<IoTDeviceModel> GetByAssinaturaId(int assinaturaId);
+        Task<int> Insert(IoTDeviceModel assinatura);
+        Task<int> Update(IoTDeviceModel assinatura);
+        Task<int> Delete(int id);
     }
 }

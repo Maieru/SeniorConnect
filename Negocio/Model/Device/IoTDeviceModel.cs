@@ -1,18 +1,30 @@
 ﻿using Negocio.Enum;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Negocio.Model.Device
 {
+    [Table("tbIotDevice")]
     public abstract class IoTDeviceModel
     {
+        [Column("Id")]
         public int DeviceId { get; set; }
+
+        [Column("IdentificationKey")]
         public string? DeviceKey { get; set; }
+
+        [Column("Tipo")]
         public EnumDeviceType DeviceType { get; set; }
+
+        [Column("AssinaturaId")]
         public int AssinaturaId { get; set; }
+
+        [Column("Descricao")]
+        public string Descricao { get; set; }
 
         public IoTDeviceModel() { }
 

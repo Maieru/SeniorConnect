@@ -1,4 +1,5 @@
-﻿using Negocio.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using Negocio.Database;
 using Negocio.Model.Device;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,31 @@ namespace Negocio.Repository.Device
     {
         public DeviceRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 
-        public async Task<IoTDeviceModel> GetByIdentification(int deviceId, string deviceKey)
+        public Task<int> Delete(int id)
         {
-            // TODO: Precisa Implementar
-            return new CaixaRemedioModel(deviceId, deviceKey);
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IoTDeviceModel>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IoTDeviceModel> GetByAssinaturaId(int assinaturaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IoTDeviceModel> GetByIdentification(int deviceId, string deviceKey) => await _applicationContext.IoTDevices.FirstOrDefaultAsync(d => d.DeviceId == deviceId && d.DeviceKey == deviceKey);         
+
+        public Task<int> Insert(IoTDeviceModel assinatura)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> Update(IoTDeviceModel assinatura)
+        {
+            throw new NotImplementedException();
         }
     }
 }
