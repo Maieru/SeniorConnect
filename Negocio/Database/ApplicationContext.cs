@@ -19,5 +19,9 @@ namespace Negocio.Database
 
         public DbSet<AssinaturaModel> Assinaturas { get; set; }
         public DbSet<PlanoModel> Planos { get; set; }
+        public DbSet<LembreteModel> Lembretes { get; set; }
+        public DbSet<LembreteMedicamentoModel> LembreteMedicamentos { get; set; }
+        public DbSet<MedicamentoModel> Medicamentos { get; set; }
+        public DbSet<UsuarioModel> Usuarios { get; set; }
     }
 }
