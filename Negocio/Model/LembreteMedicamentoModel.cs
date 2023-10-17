@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace Negocio.Model
 {
-    [Table ("tbLembreteMedicamento")]]
+    [Table("tbLembreteMedicamento")]
     public class LembreteMedicamentoModel
     {
         [Key]
-        [Column ("Id")]
+        [Column("Id")]
         public int Id { get; set; }
 
-        [Column ("MedicamentoId")]
+        [Column("MedicamentoId")]
         [ForeignKey("MedicamentoModel")]
         public int MedicamentoId { get; set; }
 
-        [Column ("Horario")]
+        [Column("Horario")]
         public DateTime Horario { get; set; }
-        
-        [Column ("Descricao")]
+
+        [Column("Descricao")]
         public string Descricao { get; set; }
     }
 }

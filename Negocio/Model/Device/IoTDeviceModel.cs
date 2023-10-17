@@ -1,6 +1,7 @@
 ﻿using Negocio.Enum;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Negocio.Model.Device
     public abstract class IoTDeviceModel
     {
         [Column("Id")]
+        [Key]
         public int DeviceId { get; set; }
 
         [Column("IdentificationKey")]

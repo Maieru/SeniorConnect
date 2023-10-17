@@ -1,4 +1,7 @@
-﻿using Negocio.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Negocio.Database;
+using Negocio.Model;
+using Negocio.Repository.Assinatura;
 using Negocio.Repository.Plano;
 using System;
 using System.Collections.Generic;
@@ -8,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace Negocio.Repository.Medicamento
 {
-    public class MedicamentoRepository : BaseEntityRepository, IAssinaturaRepository
+    public class MedicamentoRepository : BaseEntityRepository, IMedicamentoRepository
     {
         public MedicamentoRepository(ApplicationContext applicationContext) : base(applicationContext)
-        { 
+        {
         }
 
         public async Task<IEnumerable<MedicamentoModel>> GetAll() => await _applicationContext.Medicamentos.ToListAsync();
@@ -31,10 +34,7 @@ namespace Negocio.Repository.Medicamento
 
         public async Task<int> Insert(MedicamentoModel medicamentos)
         {
-            if (!await VerificaSePlanoExiste(medicamentos.MedicamentoId))
-                throw new ArgumentException("Novo medicamento não encontrado");
-
-            await _applicationContext.Assinaturas.AddAsync(medicamentos);
+            await _applicationContext.Medicamentos.AddAsync(medicamentos);
             return await _applicationContext.SaveChangesAsync();
 
         }
@@ -42,11 +42,6 @@ namespace Negocio.Repository.Medicamento
         public async Task<int> Update(MedicamentoModel medicamento)
         {
             throw new NotImplementedException();
-        }
-
-        private async Task<bool> VerificaSePlanoExiste(int planoId)
-        {
-
         }
     }
 

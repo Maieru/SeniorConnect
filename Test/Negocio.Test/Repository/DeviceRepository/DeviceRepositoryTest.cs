@@ -27,7 +27,14 @@ namespace Negocio.Test.Repository.DeviceRepository
             await _applicationContext.SaveChangesAsync();
 
             // act
-            var result = await _repository.GetByIdentification(1, guids[0]);
+            var dispositivo1 = await _repository.GetByIdentification(1, guids[0]);
+            var dispositivo2 = await _repository.GetByIdentification(2, guids[1]);
+
+            // assert
+            Assert.Equal(devices[0], dispositivo1);
+            Assert.Equal(devices[1], dispositivo2);
+            Assert.IsAssignableFrom<PulseiraModel>(dispositivo1);
+            Assert.IsAssignableFrom<CaixaRemedioModel>(dispositivo2);
         }
     }
 }
