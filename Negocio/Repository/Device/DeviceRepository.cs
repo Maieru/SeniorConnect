@@ -23,10 +23,7 @@ namespace Negocio.Repository.Device
             throw new NotImplementedException();
         }
 
-        public Task<IoTDeviceModel> GetByAssinaturaId(int assinaturaId)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<List<IoTDeviceModel>> GetByAssinaturaId(int assinaturaId) => await _applicationContext.IoTDevices.Where(d => d.AssinaturaId == assinaturaId).ToListAsync();
 
         public async Task<IoTDeviceModel> GetByIdentification(int deviceId, string deviceKey) => await _applicationContext.IoTDevices.FirstOrDefaultAsync(d => d.DeviceId == deviceId && d.DeviceKey == deviceKey);         
 

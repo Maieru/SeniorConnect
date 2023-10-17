@@ -12,7 +12,7 @@ namespace Negocio.Repository.Device
     {
         Task<IoTDeviceModel> GetByIdentification(int deviceId, string deviceKey);
         Task<IEnumerable<IoTDeviceModel>> GetAll();
-        Task<IoTDeviceModel> GetByAssinaturaId(int assinaturaId);
+        Task<List<IoTDeviceModel>> GetByAssinaturaId(int assinaturaId);
         Task<int> Insert(IoTDeviceModel assinatura);
         Task<int> Update(IoTDeviceModel assinatura);
         Task<int> Delete(int id);
