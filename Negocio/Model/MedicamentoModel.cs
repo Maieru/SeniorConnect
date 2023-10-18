@@ -20,7 +20,7 @@ namespace Negocio.Model
         public int AssinaturaId { get; set; }
 
         [Column ("Descricao")]
-        public string Descricao { get; set; }
+        public string? Descricao { get; set; }
 
         [Column ("Posicao")]
         public int PosicaoNaCaixaRemedio { get; set; }
