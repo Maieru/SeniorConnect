@@ -20,9 +20,10 @@ namespace Simulador_Caixa_de_Remedios
         private bool _Aberto = false;
         private bool _LEDAceso = false;
 
+        public int NumeroContainer { get; set; }
         private void bt_Abrir_Click(object sender, EventArgs e)
         {
-            Aberto = true;
+            Aberto = !Aberto;
         }
 
         public bool Aberto
@@ -31,8 +32,8 @@ namespace Simulador_Caixa_de_Remedios
 
             set
             {
-                pb_container.Image = Image.FromFile("img\\container aberto.jpg");
                 _Aberto = value;
+                FazControleImagem();
             }
         }
 
@@ -42,9 +43,28 @@ namespace Simulador_Caixa_de_Remedios
 
             set
             {
-                pb_container.Image = Image.FromFile("img\\container led acesso.jpg");
                 _LEDAceso = value;
+                FazControleImagem();
             }
         }
+
+        private void FazControleImagem()
+        {
+            if (Aberto)
+            {
+                pb_container.Image = Image.FromFile("img\\container aberto.jpg");
+                return;
+            }
+
+            if (LEDAceso)
+            {
+                pb_container.Image = Image.FromFile("img\\container led acesso.jpg");
+                return;
+            }
+
+            pb_container.Image = Image.FromFile("img\\container.jpg");
+        }
+
+       
     }
 }

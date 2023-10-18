@@ -37,7 +37,7 @@ namespace Negocio.Helpers
                 case "Production":
                     return "https://iot-seniorconnect.azurewebsites.net";
                 default:
-                    return "https://localhost:5001";
+                    return "http://localhost:5001";
             }
         }
     }

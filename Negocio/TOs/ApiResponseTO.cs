@@ -12,12 +12,14 @@ namespace Negocio.TOs
         public string? Mensagem { get; set; }
         public T Dados { get; set; }
 
-        private ApiResponseTO(bool sucesso, string? mensagem, T dados)
+        public ApiResponseTO(bool sucesso, string? mensagem, T dados)
         {
             Sucesso = sucesso;
             Mensagem = mensagem;
             Dados = dados;
         }
+
+        public ApiResponseTO() { }
 
         public static ApiResponseTO<T> CreateSucesso(T dados) => new ApiResponseTO<T>(true, null, dados);
         public static ApiResponseTO<T> CreateFalha(string mensagem) => new ApiResponseTO<T>(true, mensagem, default);
