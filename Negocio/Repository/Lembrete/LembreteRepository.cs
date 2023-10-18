@@ -1,6 +1,9 @@
-﻿using Negocio.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using Negocio.Database;
 using Negocio.Model;
 using Negocio.Model.Device;
+using Negocio.Repository.Assinatura;
+using Negocio.Repository.Plano;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +30,49 @@ namespace Negocio.Repository.Lembrete
                 new LembreteModel(){ Id = 4, AssinaturaId = 1, Descricao = "Fofocar com as amiguinhas", Horario = DateTime.UtcNow.AddMinutes(random.Next(960)) },
                 new LembreteModel(){ Id = 5, AssinaturaId = 1, Descricao = "Tomar (mais) aqua líquida", Horario = DateTime.UtcNow.AddMinutes(random.Next(960)) },
             };
+        }
+
+        public async Task<IEnumerable<LembreteModel>> GetAll() => await _applicationContext.Lembretes.ToListAsync();
+
+        public async Task<LembreteModel?> GetById(int id) => await _applicationContext.Lembretes.FirstOrDefaultAsync(a => a.Id == id);
+
+        public async Task<int> Delete(int id)
+        {
+            var lembrete = await GetById(id);
+
+            if (lembrete == null)
+                return 0;
+
+            _applicationContext.Lembretes.Remove(lembrete);
+            return await _applicationContext.SaveChangesAsync();
+        }
+
+        public async Task<int> Insert(LembreteModel lembrete)
+        {
+            if (!await VerificaSeAssinaturaExiste(lembrete.AssinaturaId))
+                throw new ArgumentException("Novo plano não encontrado");
+
+            await _applicationContext.Lembretes.AddAsync(lembrete);
+            return await _applicationContext.SaveChangesAsync();
+
+        }
+
+        public async Task<int> Update(LembreteModel lembrete)
+        {
+            if (await GetById(lembrete.Id) == null)
+                return 0;
+
+            if (!await VerificaSeAssinaturaExiste(lembrete.AssinaturaId))
+                throw new ArgumentException("Novo plano não encontrado");
+
+            _applicationContext.Lembretes.Update(lembrete);
+            return await _applicationContext.SaveChangesAsync();
+        }
+
+        private async Task<bool> VerificaSeAssinaturaExiste(int assinaturaid)
+        {
+            var assinaturaRepository = new AssinaturaRepository(_applicationContext);
+            return await assinaturaRepository.GetById(assinaturaid) != null;
         }
     }
 }
