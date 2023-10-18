@@ -10,6 +10,10 @@ namespace Negocio.Repository.Lembrete
 {
     public interface ILembreteRepository
     {
-        Task<List<LembreteModel>> GetLembretesByDevice(IoTDeviceModel device);
+        Task<List<LembreteModel>> GetLembretesByDevice(IoTDeviceModel device);Task<IEnumerable<LembreteModel>> GetAll();
+        Task<LembreteModel> GetById(int id);
+        Task<int> Insert(LembreteModel lembrete);
+        Task<int> Update(LembreteModel lembrete);
+        Task<int> Delete(int id);
     }
 }
