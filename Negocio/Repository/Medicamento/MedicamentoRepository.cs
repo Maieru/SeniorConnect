@@ -32,17 +32,31 @@ namespace Negocio.Repository.Medicamento
             return await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task<int> Insert(MedicamentoModel medicamentos)
+        public async Task<int> Insert(MedicamentoModel medicamento)
         {
-            await _applicationContext.Medicamentos.AddAsync(medicamentos);
-            return await _applicationContext.SaveChangesAsync();
+            if (!await VerificaSeAssinaturaExiste(medicamento.AssinaturaId))
+                throw new ArgumentException("Assinatura não encontrada");
 
+            await _applicationContext.Medicamentos.AddAsync(medicamento);
+            return await _applicationContext.SaveChangesAsync();
         }
 
         public async Task<int> Update(MedicamentoModel medicamento)
         {
-            throw new NotImplementedException();
+            if (await GetById(medicamento.Id) == null)
+                return 0;
+
+            if (!await VerificaSeAssinaturaExiste(medicamento.AssinaturaId))
+                throw new ArgumentException("Assinatura não encontrada");
+
+            _applicationContext.Medicamentos.Update(medicamento);
+            return await _applicationContext.SaveChangesAsync();
+        }
+
+        private async Task<bool> VerificaSeAssinaturaExiste(int assinaturaId)
+        {
+            var assinaturaRepository = new AssinaturaRepository(_applicationContext);
+            return await assinaturaRepository.GetById(assinaturaId) != null;
         }
     }
-
 }
