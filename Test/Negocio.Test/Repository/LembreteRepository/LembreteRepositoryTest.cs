@@ -185,7 +185,7 @@ namespace Negocio.Test.Repository.LembreteRepository
             var lembrete = new LembreteModel { Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 };
             var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
 
-             _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.Assinaturas.Add(assinatura);
             await _applicationContext.SaveChangesAsync();
 
 
