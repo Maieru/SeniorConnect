@@ -4,9 +4,9 @@ using Negocio.Context;
 using Negocio.Database;
 using Negocio.Model.Device;
 using Negocio.Model.IotMessage;
-using Negocio.Repository.DeviceRepository;
-using Negocio.Repository.LembreteMedicamentoRepository;
-using Negocio.Repository.LembreteRepository;
+using Negocio.Repository.Device;
+using Negocio.Repository.LembreteMedicamento;
+using Negocio.Repository.Lembrete;
 using Negocio.TOs;
 using Negocio.TOs.IotMessage;
 

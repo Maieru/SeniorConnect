@@ -8,9 +8,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Negocio.Repository.LembreteMedicamentoRepository
+namespace Negocio.Repository.LembreteMedicamento
 {
-    public class LembreteMedicamentoRepository : BaseRepository, ILembreteMedicamentoRepository
+    public class LembreteMedicamentoRepository : BaseEntityRepository, ILembreteMedicamentoRepository
     {
         public LembreteMedicamentoRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 

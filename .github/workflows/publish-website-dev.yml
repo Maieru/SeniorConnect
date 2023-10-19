@@ -1,0 +1,101 @@
+name: Build and Deploy App in Development
+
+env:
+  AZURE_WEBAPP_PACKAGE_PATH: './Webapp'
+  AZURE_IOT_GATEWAY_PACKAGE_PATH: './IoTGateway'
+  DOTNET_VERSION: '7.0.x'
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ secrets.DOTNET_VERSION }}
+
+      - name: Set up dependency caching for faster builds
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Build Negocio
+        run: dotnet build ./Negocio.sln
+
+      - name: Test Negocio
+        run: dotnet test --no-build --verbosity normal ./Negocio.sln
+
+      - name: Build Simuladores
+        run: dotnet build ./Simuladores.sln
+
+      - name: Test Simuladores
+        run: dotnet test --no-build --verbosity normal ./Simuladores.sln
+
+      - name: Build IoT Gateway
+        run: dotnet build ./IoTGateway.sln
+
+      - name: Test IoT Gateway
+        run: dotnet test --no-build --verbosity normal ./IoTGateway.sln
+
+      - name: Public IoT Gateway
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/SeniorConnect/${{env.AZURE_IOT_GATEWAY_PACKAGE_PATH}}  ./IoTGateway.sln
+
+      - name: Build Webapp
+        run: dotnet build ./Webapp.sln
+
+      - name: Test Webapp
+        run: dotnet test --no-build --verbosity normal ./Webapp.sln
+
+      - name: Public Webapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/SeniorConnect/${{env.AZURE_WEBAPP_PACKAGE_PATH}}  ./Webapp.sln
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/SeniorConnect
+
+  deploy:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Development'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+
+      - name: Deploy Webapp
+        id: deploy-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME_DEV }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_DEV }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Deploy IotGateway
+        id: deploy-iotgateway
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_IOT_GATEWAY_NAME_DEV }}
+          publish-profile: ${{ secrets.AZURE_IOT_GATEWAY_PUBLISH_PROFILE_DEV }}
+          package: ${{ env.AZURE_IOT_GATEWAY_PACKAGE_PATH }}
