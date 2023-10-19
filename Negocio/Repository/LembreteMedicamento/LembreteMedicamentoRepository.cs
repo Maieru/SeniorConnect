@@ -1,6 +1,9 @@
-﻿using Negocio.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using Negocio.Database;
 using Negocio.Model;
 using Negocio.Model.Device;
+using Negocio.Repository.Medicamento;
+using Negocio.Repository.Plano;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +51,49 @@ namespace Negocio.Repository.LembreteMedicamento
                 null,
                 null
             };
+        }
+
+        public async Task<IEnumerable<LembreteMedicamentoModel>> GetAll() => await _applicationContext.LembreteMedicamentos.ToListAsync();
+
+        public async Task<LembreteMedicamentoModel?> GetById(int id) => await _applicationContext.LembreteMedicamentos.FirstOrDefaultAsync(a => a.Id == id);
+
+        public async Task<int> Delete(int id)
+        {
+            var lembreteMedicamento = await GetById(id);
+
+            if (lembreteMedicamento == null)
+                return 0;
+
+            _applicationContext.LembreteMedicamentos.Remove(lembreteMedicamento);
+            return await _applicationContext.SaveChangesAsync();
+        }
+
+        public async Task<int> Insert(LembreteMedicamentoModel lembreteMedicamento)
+        {
+            if (!await VerificaSeMedicamentoExiste(lembreteMedicamento.MedicamentoId))
+                throw new ArgumentException("Novo plano não encontrado");
+
+            await _applicationContext.LembreteMedicamentos.AddAsync(lembreteMedicamento);
+            return await _applicationContext.SaveChangesAsync();
+
+        }
+
+        public async Task<int> Update(LembreteMedicamentoModel lembreteMedicamento)
+        {
+            if (await GetById(lembreteMedicamento.Id) == null)
+                return 0;
+
+            if (!await VerificaSeMedicamentoExiste(lembreteMedicamento.MedicamentoId))
+                throw new ArgumentException("Novo plano não encontrado");
+
+            _applicationContext.LembreteMedicamentos.Update(lembreteMedicamento);
+            return await _applicationContext.SaveChangesAsync();
+        }
+
+        private async Task<bool> VerificaSeMedicamentoExiste(int medicamentoId)
+        {
+            var MedicamentoRepository = new MedicamentoRepository(_applicationContext);
+            return await MedicamentoRepository.GetById(medicamentoId) != null;        
         }
     }
 }
