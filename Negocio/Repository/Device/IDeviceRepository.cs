@@ -11,10 +11,9 @@ namespace Negocio.Repository.Device
     public interface IDeviceRepository
     {
         Task<IoTDeviceModel> GetByIdentification(int deviceId, string deviceKey);
-        Task<IEnumerable<IoTDeviceModel>> GetAll();
         Task<List<IoTDeviceModel>> GetByAssinaturaId(int assinaturaId);
-        Task<int> Insert(IoTDeviceModel assinatura);
-        Task<int> Update(IoTDeviceModel assinatura);
+        Task<int> Insert(IoTDeviceModel device);
+        Task<int> Update(IoTDeviceModel device);
         Task<int> Delete(int id);
     }
 }
