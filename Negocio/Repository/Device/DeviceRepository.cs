@@ -34,6 +34,9 @@ namespace Negocio.Repository.Device
 
         public async Task<int> Update(IoTDeviceModel device)
         {
+            if (await GetByIdentification(device.DeviceId, device.DeviceKey) == null)
+                return 0;
+
             if (!await VerificaSeAssinaturaExiste(device.AssinaturaId))
                 throw new ArgumentException("Assinatura não encontrado");
 
