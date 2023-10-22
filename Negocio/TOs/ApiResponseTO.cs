@@ -22,6 +22,6 @@ namespace Negocio.TOs
         }
 
         public static ApiResponseTO<T> CreateSucesso(T dados) => new ApiResponseTO<T>(true, null, dados);
-        public static ApiResponseTO<T> CreateFalha(string mensagem) => new ApiResponseTO<T>(true, mensagem, default);
+        public static ApiResponseTO<T> CreateFalha(string mensagem) => new ApiResponseTO<T>(false, mensagem, default);
     }
 }

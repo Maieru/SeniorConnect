@@ -8,6 +8,6 @@ namespace Negocio.Model.IotMessage
 {
     public class EnviarCaixaRemedioModel : IotMessageModel
     {
-        public List<LembreteMedicamentoModel> Agendamentos { get; set; }
+        public List<List<LembreteMedicamentoModel>> Agendamentos { get; set; }
     }
 }
