@@ -29,5 +29,7 @@ namespace Negocio.Database
         public DbSet<MedicamentoModel> Medicamentos { get; set; }
         public DbSet<UsuarioModel> Usuarios { get; set; }
         public DbSet<IoTDeviceModel> IoTDevices { get; set; }
+        public DbSet<LembreteIoTDeviceModel> LembreteIoTDevice { get; set; }
+        public DbSet<MedicamentoIoTDeviceModel> MedicamentoIoTDevice { get; set; }
     }
 }

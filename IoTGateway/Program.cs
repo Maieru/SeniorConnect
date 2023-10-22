@@ -18,8 +18,7 @@ var vaultHelper = new SecretsHelper(ambiente);
 
 builder.Services.AddSingleton(new IotDriver(await vaultHelper.GetMongoDbConnectionString() ?? ""));
 
-// TODO: Mudar para banco de dados de verdade
-var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
+var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseSqlServer(await vaultHelper.GetSqlServerConnectionString() ?? "");
 builder.Services.AddSingleton(new ApplicationContext(contextOptions.Options));
 
 var app = builder.Build();

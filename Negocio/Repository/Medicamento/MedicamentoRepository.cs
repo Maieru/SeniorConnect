@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Negocio.Database;
 using Negocio.Model;
+using Negocio.Model.Device;
 using Negocio.Repository.Assinatura;
 using Negocio.Repository.Plano;
 using System;
@@ -15,6 +16,14 @@ namespace Negocio.Repository.Medicamento
     {
         public MedicamentoRepository(ApplicationContext applicationContext) : base(applicationContext)
         {
+        }
+
+        public async Task<List<MedicamentoModel>> GetByAssinaturaId(int assinaturaId) => await _applicationContext.Medicamentos.Where(l => l.AssinaturaId == assinaturaId).ToListAsync();
+
+        public async Task<List<MedicamentoModel>> GetByDevice(IoTDeviceModel device)
+        {
+            var medicamentos = await _applicationContext.MedicamentoIoTDevice.Where(l => l.IoTDeviceId == device.DeviceId).Select(l => l.MedicamentoId).ToListAsync();
+            return await _applicationContext.Medicamentos.Where(l => medicamentos.Contains(l.Id)).ToListAsync();
         }
 
         public async Task<IEnumerable<MedicamentoModel>> GetAll() => await _applicationContext.Medicamentos.ToListAsync();

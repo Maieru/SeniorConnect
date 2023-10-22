@@ -3,6 +3,7 @@ using Negocio.Database;
 using Negocio.Model;
 using Negocio.Model.Device;
 using Negocio.Repository.Assinatura;
+using Negocio.Repository.Medicamento;
 using Negocio.Repository.Plano;
 using System;
 using System.Collections.Generic;
@@ -16,20 +17,12 @@ namespace Negocio.Repository.Lembrete
     {
         public LembreteRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 
-        public async Task<List<LembreteModel>> GetLembretesByDevice(IoTDeviceModel device)
-        {
-            // TODO: Implementar
-            // ATENÇÃO: LEMBRAR QUE O CAMPO DE "POSICAO NA CAIXA DE REMÉDIO" EXISTE E AFETA A ORDEM NA QUAL OS AGENDAMENTOS SÃO ENVIADOS
-            var random = new Random();
+        public async Task<List<LembreteModel>> GetByAssinaturaId(int assinaturaId) => await _applicationContext.Lembretes.Where(l => l.AssinaturaId == assinaturaId).ToListAsync();
 
-            return new List<LembreteModel>
-            {
-                new LembreteModel(){ Id = 1, AssinaturaId = 1, Descricao = "Tomar aqua líquida", Horario = DateTime.UtcNow.AddHours(random.Next(12)) },
-                new LembreteModel(){ Id = 2, AssinaturaId = 1, Descricao = "Comer aquele prato saboroso de comida", Horario = DateTime.UtcNow.AddMinutes(random.Next(960)) },
-                new LembreteModel(){ Id = 3, AssinaturaId = 1, Descricao = "Fazer os 20km diário de esteira", Horario = DateTime.UtcNow.AddMinutes(random.Next(960)) },
-                new LembreteModel(){ Id = 4, AssinaturaId = 1, Descricao = "Fofocar com as amiguinhas", Horario = DateTime.UtcNow.AddMinutes(random.Next(960)) },
-                new LembreteModel(){ Id = 5, AssinaturaId = 1, Descricao = "Tomar (mais) aqua líquida", Horario = DateTime.UtcNow.AddMinutes(random.Next(960)) },
-            };
+        public async Task<List<LembreteModel>> GetByDevice(IoTDeviceModel device)
+        {
+            var lembretesAssociados = await _applicationContext.LembreteIoTDevice.Where(l => l.IoTDeviceId == device.DeviceId).Select(l => l.LembreteId).ToListAsync();
+            return await _applicationContext.Lembretes.Where(l => lembretesAssociados.Contains(l.Id)).ToListAsync();
         }
 
         public async Task<IEnumerable<LembreteModel>> GetAll() => await _applicationContext.Lembretes.ToListAsync();

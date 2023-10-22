@@ -9,6 +9,7 @@ using Negocio.Repository.LembreteMedicamento;
 using Negocio.Repository.Lembrete;
 using Negocio.TOs;
 using Negocio.TOs.IotMessage;
+using Negocio.Enum;
 
 namespace IoTGateway.Controllers
 {
@@ -31,8 +32,13 @@ namespace IoTGateway.Controllers
         [ProducesResponseType(typeof(ApiResponseTO<object>), 404)]
         public async Task<IActionResult> AtualizaDadosPulseira([FromBody] StatusPulseiraTO pulseiraMessage)
         {
-            if (!await ValidaDispositivo(pulseiraMessage))
+            var dispositivo = await GetDevice(pulseiraMessage);
+            
+            if (dispositivo == null)
                 return NotFound(ApiResponseTO<object>.CreateFalha("Não foi possivel localizar o dispositivo"));
+
+            if (dispositivo.DeviceType != EnumDeviceType.Pulseira)
+                return NotFound(ApiResponseTO<object>.CreateFalha("O dispositivo informado não era uma pulsiera"));
 
             var pulseiraDatabase = IotDriver.GetIoTMessagePulseiraCollection();
 
@@ -48,8 +54,13 @@ namespace IoTGateway.Controllers
         [ProducesResponseType(typeof(ApiResponseTO<object>), 404)]
         public async Task<IActionResult> AtualizaDadosCaixaRemedio([FromBody] StatusCaixaRemedioTO caixaRemedioMessage)
         {
-            if (!await ValidaDispositivo(caixaRemedioMessage))
+            var dispositivo = await GetDevice(caixaRemedioMessage);
+
+            if (dispositivo == null)
                 return NotFound(ApiResponseTO<object>.CreateFalha("Não foi possivel localizar o dispositivo"));
+
+            if (dispositivo.DeviceType != EnumDeviceType.CaixaRemedio)
+                return NotFound(ApiResponseTO<object>.CreateFalha("O dispositivo informado não era uma caixa de remédio"));
 
             var caixaRemedioDatabase = IotDriver.GetIoTMessageCaixaCollection();
 
@@ -65,16 +76,27 @@ namespace IoTGateway.Controllers
         [ProducesResponseType(typeof(ApiResponseTO<object>), 404)]
         public async Task<IActionResult> GetDadosCaixaRemedio([FromBody] IotMessageTO deviceInfo)
         {
-            if (!await ValidaDispositivo(deviceInfo))
+            var dispositivo = await GetDevice(deviceInfo);
+
+            if (dispositivo == null)
                 return NotFound(ApiResponseTO<object>.CreateFalha("Não foi possivel localizar o dispositivo"));
 
-            var device = await GetDevice(deviceInfo);
+            if (dispositivo.DeviceType != EnumDeviceType.CaixaRemedio || dispositivo is not CaixaRemedioModel)
+                return NotFound(ApiResponseTO<object>.CreateFalha("O dispositivo informado não era uma caixa de remédio"));
 
             var lembreteMedicamentoRepository = new LembreteMedicamentoRepository(ApplicationContext);
-            var agendamentosDoDispositivo = await lembreteMedicamentoRepository.GetLembretesMedicamentoByDevice(device);
+            var agendamentosDoDispositivo = await lembreteMedicamentoRepository.GetByDevice(dispositivo as CaixaRemedioModel);
 
-            var mensagemCaixaRemedio = new EnviarCaixaRemedioTO(device.DeviceId, device.DeviceKey);
-            mensagemCaixaRemedio.Agendamentos = agendamentosDoDispositivo.Select(x => x?.Horario).ToList();
+            var mensagemCaixaRemedio = new EnviarCaixaRemedioTO(dispositivo.DeviceId, dispositivo.DeviceKey);
+
+            mensagemCaixaRemedio.Agendamentos = new List<List<DateTime>>();
+            foreach (var agendamentos in agendamentosDoDispositivo)
+            {
+                if (agendamentos == null)
+                    mensagemCaixaRemedio.Agendamentos.Add(null);
+                else
+                    mensagemCaixaRemedio.Agendamentos.Add(agendamentos.Select(a => a.Horario).ToList());
+            }
 
             return Ok(ApiResponseTO<EnviarCaixaRemedioTO>.CreateSucesso(mensagemCaixaRemedio));
         }
@@ -85,15 +107,18 @@ namespace IoTGateway.Controllers
         [ProducesResponseType(typeof(ApiResponseTO<object>), 404)]
         public async Task<IActionResult> GetDadosPulseira([FromBody] IotMessageTO deviceInfo)
         {
-            if (!await ValidaDispositivo(deviceInfo))
+            var dispositivo = await GetDevice(deviceInfo);
+
+            if (dispositivo == null)
                 return NotFound(ApiResponseTO<object>.CreateFalha("Não foi possivel localizar o dispositivo"));
 
-            var device = await GetDevice(deviceInfo);
+            if (dispositivo.DeviceType != EnumDeviceType.Pulseira)
+                return NotFound(ApiResponseTO<object>.CreateFalha("O dispositivo informado não era uma pulseira"));
 
             var lembreteRepository = new LembreteRepository(ApplicationContext);
-            var lembretesDoDispositivo = await lembreteRepository.GetLembretesByDevice(device);
+            var lembretesDoDispositivo = await lembreteRepository.GetByDevice(dispositivo);
 
-            var mensagemPulsiera = new EnviarPulseiraTO(device.DeviceId, device.DeviceKey);
+            var mensagemPulsiera = new EnviarPulseiraTO(dispositivo.DeviceId, dispositivo.DeviceKey);
             mensagemPulsiera.Alertas = lembretesDoDispositivo.Select(l => new AlertaTO(l.Horario, l.Descricao)).ToList();
 
             return Ok(ApiResponseTO<EnviarPulseiraTO>.CreateSucesso(mensagemPulsiera));
@@ -103,12 +128,6 @@ namespace IoTGateway.Controllers
         {
             var deviceRepository = new DeviceRepository(ApplicationContext);
             return await deviceRepository.GetByIdentification(iotMessage.DeviceId.Value, iotMessage.DeviceKey);
-        }
-
-        private async Task<bool> ValidaDispositivo(IotMessageTO iotMessage)
-        {
-            // TODO: Colocar validação do device
-            return true;
-        }
+        }                 
     }
 }

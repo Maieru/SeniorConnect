@@ -11,6 +11,6 @@ namespace Negocio.TOs.IotMessage
         public EnviarCaixaRemedioTO() { }
         public EnviarCaixaRemedioTO(int? deviceId, string? deviceKey) : base(deviceId, deviceKey) { }
 
-        public List<DateTime?> Agendamentos { get; set; }
+        public List<List<DateTime>> Agendamentos { get; set; }
     }
 }

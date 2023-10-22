@@ -1,4 +1,6 @@
-﻿using Negocio.Model;
+﻿using Negocio.Enum;
+using Negocio.Model;
+using Negocio.Model.Device;
 using Xunit;
 
 namespace Negocio.Test.Repository.LembreteRepository
@@ -10,11 +12,11 @@ namespace Negocio.Test.Repository.LembreteRepository
         {
             // arrange
             var lembretes = new List<LembreteModel>
-        {
-            new LembreteModel{ Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
-            new LembreteModel{ Id = 2, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
-            new LembreteModel{ Id = 3, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 }
-        };
+            {
+                new LembreteModel{ Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 2, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 3, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 }
+            };
             _applicationContext.Lembretes.AddRange(lembretes);
             await _applicationContext.SaveChangesAsync();
 
@@ -205,6 +207,134 @@ namespace Negocio.Test.Repository.LembreteRepository
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(lembrete));
             Assert.True(_applicationContext.Lembretes.Count() == 0);
+        }
+
+        [Fact]
+        public async Task GetByAssinaturaId_ShouldReturn()
+        {
+            // arrange
+            var lembretes = new List<LembreteModel>
+            {
+                new LembreteModel{ Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 2, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 3, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 2 },
+                new LembreteModel{ Id = 4, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 3 }
+            };
+            _applicationContext.Lembretes.AddRange(lembretes);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.GetByAssinaturaId(1);
+
+            // assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
+            Assert.Equal(lembretes[0], result[0]);
+            Assert.Equal(lembretes[1], result[1]);
+        }
+
+        [Fact]
+        public async Task GetByAssinaturaId_ShouldNotReturn()
+        {
+            // arrange
+            var lembretes = new List<LembreteModel>
+            {
+                new LembreteModel{ Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 2, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 3, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 2 },
+                new LembreteModel{ Id = 4, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 3 }
+            };
+            _applicationContext.Lembretes.AddRange(lembretes);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.GetByAssinaturaId(4);
+
+            // assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task GetByDevice_ShouldReturn()
+        {
+            // arrange
+            var lembretes = new List<LembreteModel>
+            {
+                new LembreteModel{ Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 2, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 3, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 4, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 }
+            };
+
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira },
+            };
+
+            var associacoesDeviceLembrete = new List<LembreteIoTDeviceModel>
+            {
+                new LembreteIoTDeviceModel { Id = 1, LembreteId = 1, IoTDeviceId = 1 },
+                new LembreteIoTDeviceModel { Id = 2, LembreteId = 4, IoTDeviceId = 1 },
+                new LembreteIoTDeviceModel { Id = 3, LembreteId = 1, IoTDeviceId = 2 },
+            };
+
+            _applicationContext.Lembretes.AddRange(lembretes);
+            _applicationContext.IoTDevices.AddRange(devices);
+            _applicationContext.LembreteIoTDevice.AddRange(associacoesDeviceLembrete);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var lembretesDevice1 = await _repository.GetByDevice(devices[0]);
+            var lembretesDevice2 = await _repository.GetByDevice(devices[1]);
+
+            // assert
+            Assert.NotNull(lembretesDevice1);
+            Assert.Equal(2, lembretesDevice1.Count());
+            Assert.Equal(lembretes[0], lembretesDevice1[0]);
+            Assert.Equal(lembretes[3], lembretesDevice1[1]);
+
+            Assert.NotNull(lembretesDevice2);
+            Assert.Single(lembretesDevice2);
+            Assert.Equal(lembretes[0], lembretesDevice2[0]);
+        }
+
+        [Fact]
+        public async Task GetByDevice_ShouldNotReturn()
+        {
+            // arrange
+            var lembretes = new List<LembreteModel>
+            {
+                new LembreteModel{ Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 2, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 3, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 },
+                new LembreteModel{ Id = 4, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 }
+            };
+
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira },
+            };
+
+            var associacoesDeviceLembrete = new List<LembreteIoTDeviceModel>
+            {
+                new LembreteIoTDeviceModel { Id = 1, LembreteId = 1, IoTDeviceId = 1 },
+                new LembreteIoTDeviceModel { Id = 2, LembreteId = 4, IoTDeviceId = 1 },
+            };
+
+            _applicationContext.Lembretes.AddRange(lembretes);
+            _applicationContext.IoTDevices.AddRange(devices);
+            _applicationContext.LembreteIoTDevice.AddRange(associacoesDeviceLembrete);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var lembretesDevice = await _repository.GetByDevice(devices[1]);
+
+            // assert
+            Assert.NotNull(lembretesDevice);
+            Assert.Empty(lembretesDevice);
         }
     }
 }

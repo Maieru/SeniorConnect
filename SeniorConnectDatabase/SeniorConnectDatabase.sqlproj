@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>SenioConnectDatabase</Name>
+    <Name>SeniorConnectDatabase</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{75353967-a193-4670-bdea-e201cd07dc54}</ProjectGuid>
@@ -67,8 +67,11 @@
     <Build Include="Tables\tbLembrete.sql" />
     <Build Include="Tables\tbMedicamento.sql" />
     <Build Include="Tables\tbLembreteMedicamento.sql" />
+    <Build Include="Tables\tbLembreteIoTDevice.sql" />
+    <Build Include="Tables\tbMedicamentoIoTDevice.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SeniorConnectDatabaseFaculdade.publish.xml" />
+    <None Include="SeniorConnectDatabaseJoao.publish.xml" />
   </ItemGroup>
 </Project>

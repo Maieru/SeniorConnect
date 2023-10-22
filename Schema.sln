@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SenioConnectDatabase", "SeniorConnectDatabase\SenioConnectDatabase.sqlproj", "{75353967-A193-4670-BDEA-E201CD07DC54}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SeniorConnectDatabase", "SeniorConnectDatabase\SeniorConnectDatabase.sqlproj", "{75353967-A193-4670-BDEA-E201CD07DC54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

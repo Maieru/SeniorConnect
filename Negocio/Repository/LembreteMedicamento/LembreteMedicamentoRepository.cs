@@ -17,45 +17,31 @@ namespace Negocio.Repository.LembreteMedicamento
     {
         public LembreteMedicamentoRepository(ApplicationContext applicationContext) : base(applicationContext) { }
 
-        public async Task<List<LembreteMedicamentoModel>> GetLembretesMedicamentoByDevice(IoTDeviceModel device)
+        public async Task<List<List<LembreteMedicamentoModel>>> GetByDevice(CaixaRemedioModel device)
         {
-            // TODO: Implementar
-            // ATENÇÃO: LEMBRAR QUE O CAMPO DE "POSICAO NA CAIXA DE REMÉDIO" EXISTE E AFETA A ORDEM NA QUAL OS AGENDAMENTOS SÃO ENVIADOS
-            var random = new Random();
+            var medicamentoRepository = new MedicamentoRepository(_applicationContext);
+            var medicamentosDoDevice = await medicamentoRepository.GetByDevice(device);
 
-            return new List<LembreteMedicamentoModel>
+            var retorno = new List<List<LembreteMedicamentoModel>>();
+
+            for (var i = 1; i <= device.QuantidadeContainers; i++)
             {
-                null,
-                null,
-                new LembreteMedicamentoModel
-                {
-                    Descricao = "Dipirona",
-                    Horario = DateTime.UtcNow.AddHours(random.Next(12)),
-                    MedicamentoId = 1,
-                    Id = 1
-                },
-                new LembreteMedicamentoModel
-                {
-                    Descricao = "Rivotril",
-                    Horario = DateTime.UtcNow.AddHours(random.Next(24)).AddMinutes(random.Next(50)),
-                    MedicamentoId = 2,
-                    Id = 2
-                },
-                new LembreteMedicamentoModel
-                {
-                    Descricao = "Benegripe",
-                    Horario = DateTime.UtcNow.AddHours(random.Next(24)).AddMinutes(random.Next(50)),
-                    MedicamentoId = 3,
-                    Id = 3
-                },
-                null,
-                null
-            };
+                var medicamentoNoContainer = medicamentosDoDevice.FirstOrDefault(m => m.PosicaoNaCaixaRemedio == i);
+
+                if (medicamentoNoContainer == null)
+                    retorno.Add(null);
+                else
+                    retorno.Add(await GetByMedicamentoId(medicamentoNoContainer.Id));
+            }
+
+            return retorno;
         }
 
         public async Task<IEnumerable<LembreteMedicamentoModel>> GetAll() => await _applicationContext.LembreteMedicamentos.ToListAsync();
 
         public async Task<LembreteMedicamentoModel?> GetById(int id) => await _applicationContext.LembreteMedicamentos.FirstOrDefaultAsync(a => a.Id == id);
+
+        public async Task<List<LembreteMedicamentoModel>> GetByMedicamentoId(int id) => await _applicationContext.LembreteMedicamentos.Where(a => a.MedicamentoId == id).ToListAsync();
 
         public async Task<int> Delete(int id)
         {
@@ -93,7 +79,7 @@ namespace Negocio.Repository.LembreteMedicamento
         private async Task<bool> VerificaSeMedicamentoExiste(int medicamentoId)
         {
             var MedicamentoRepository = new MedicamentoRepository(_applicationContext);
-            return await MedicamentoRepository.GetById(medicamentoId) != null;        
+            return await MedicamentoRepository.GetById(medicamentoId) != null;
         }
     }
 }

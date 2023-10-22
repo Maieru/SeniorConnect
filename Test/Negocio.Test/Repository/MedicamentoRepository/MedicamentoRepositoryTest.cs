@@ -1,4 +1,6 @@
-﻿using Negocio.Model;
+﻿using Negocio.Enum;
+using Negocio.Model;
+using Negocio.Model.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -210,6 +212,131 @@ namespace Negocio.Test.Repository.MedicamentoRepository
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(medicamento));
             Assert.True(_applicationContext.Medicamentos.Count() == 0);
+        }
+
+        [Fact]
+        public async Task GetByAssinaturaId_ShouldReturn()
+        {
+            // arrange
+            var medicamentos = new List<MedicamentoModel>
+            {
+                new MedicamentoModel{ Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1},
+                new MedicamentoModel{ Id = 2, AssinaturaId = 2, Descricao = "2", PosicaoNaCaixaRemedio = 2},
+                new MedicamentoModel{ Id = 3, AssinaturaId = 3, Descricao = "3", PosicaoNaCaixaRemedio = 3}
+            };
+
+            _applicationContext.Medicamentos.AddRange(medicamentos);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.GetByAssinaturaId(1);
+
+            // assert
+            Assert.NotNull(result);
+            Assert.Single(result);
+            Assert.Equal(medicamentos[0], result[0]);
+        }
+
+        [Fact]
+        public async Task GetByAssinaturaId_ShouldNotReturn()
+        {
+            // arrange
+            var medicamentos = new List<MedicamentoModel>
+            {
+                new MedicamentoModel{ Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1},
+                new MedicamentoModel{ Id = 2, AssinaturaId = 2, Descricao = "2", PosicaoNaCaixaRemedio = 2},
+                new MedicamentoModel{ Id = 3, AssinaturaId = 3, Descricao = "3", PosicaoNaCaixaRemedio = 3}
+            };
+
+            _applicationContext.Medicamentos.AddRange(medicamentos);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.GetByAssinaturaId(4);
+
+            // assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task GetByDevice_ShouldReturn()
+        {
+            // arrange
+            var medicamentos = new List<MedicamentoModel>
+            {
+                new MedicamentoModel{ Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1},
+                new MedicamentoModel{ Id = 2, AssinaturaId = 2, Descricao = "2", PosicaoNaCaixaRemedio = 2},
+                new MedicamentoModel{ Id = 3, AssinaturaId = 3, Descricao = "3", PosicaoNaCaixaRemedio = 3}
+            };
+
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira },
+            };
+
+            var associacoesMedicamentoDevice = new List<MedicamentoIoTDeviceModel>
+            {
+                new MedicamentoIoTDeviceModel { Id = 1, MedicamentoId = 1, IoTDeviceId = 1 },
+                new MedicamentoIoTDeviceModel { Id = 2, MedicamentoId = 3, IoTDeviceId = 1 },
+                new MedicamentoIoTDeviceModel { Id = 3, MedicamentoId = 1, IoTDeviceId = 2 },
+            };
+
+            _applicationContext.Medicamentos.AddRange(medicamentos);
+            _applicationContext.IoTDevices.AddRange(devices);
+            _applicationContext.MedicamentoIoTDevice.AddRange(associacoesMedicamentoDevice);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var medicamentosDevice1 = await _repository.GetByDevice(devices[0]);
+            var medicamentosDevice2 = await _repository.GetByDevice(devices[1]);
+
+            // assert
+            Assert.NotNull(medicamentosDevice1);
+            Assert.Equal(2, medicamentosDevice1.Count());
+            Assert.Equal(medicamentos[0], medicamentosDevice1[0]);
+            Assert.Equal(medicamentos[2], medicamentosDevice1[1]);
+
+            Assert.NotNull(medicamentosDevice2);
+            Assert.Single(medicamentosDevice2);
+            Assert.Equal(medicamentos[0], medicamentosDevice2[0]);
+        }
+
+        [Fact]
+        public async Task GetByDevice_ShouldNotReturn()
+        {
+            // arrange
+            var medicamentos = new List<MedicamentoModel>
+            {
+                new MedicamentoModel{ Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1},
+                new MedicamentoModel{ Id = 2, AssinaturaId = 2, Descricao = "2", PosicaoNaCaixaRemedio = 2},
+                new MedicamentoModel{ Id = 3, AssinaturaId = 3, Descricao = "3", PosicaoNaCaixaRemedio = 3}
+            };
+
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira },
+            };
+
+            var associacoesMedicamentoDevice = new List<MedicamentoIoTDeviceModel>
+            {
+                new MedicamentoIoTDeviceModel { Id = 1, MedicamentoId = 1, IoTDeviceId = 1 },
+                new MedicamentoIoTDeviceModel { Id = 2, MedicamentoId = 3, IoTDeviceId = 1 },
+            };
+
+            _applicationContext.Medicamentos.AddRange(medicamentos);
+            _applicationContext.IoTDevices.AddRange(devices);
+            _applicationContext.MedicamentoIoTDevice.AddRange(associacoesMedicamentoDevice);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var medicamentosDevice = await _repository.GetByDevice(devices[1]);
+
+            // assert
+            Assert.NotNull(medicamentosDevice);
+            Assert.Empty(medicamentosDevice);
         }
     }
 }

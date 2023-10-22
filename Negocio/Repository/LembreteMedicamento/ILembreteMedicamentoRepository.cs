@@ -10,10 +10,10 @@ namespace Negocio.Repository.LembreteMedicamento
 {
     public interface ILembreteMedicamentoRepository
     {
-        Task<List<LembreteMedicamentoModel>> GetLembretesMedicamentoByDevice(IoTDeviceModel device);
-
+        Task<List<List<LembreteMedicamentoModel>>> GetByDevice(CaixaRemedioModel device);
         Task<IEnumerable<LembreteMedicamentoModel>> GetAll();
         Task<LembreteMedicamentoModel> GetById(int id);
+        Task<List<LembreteMedicamentoModel>> GetByMedicamentoId(int id);
         Task<int> Insert(LembreteMedicamentoModel lembreteMedicamento);
         Task<int> Update(LembreteMedicamentoModel lembreteMedicamento);
         Task<int> Delete(int id);
