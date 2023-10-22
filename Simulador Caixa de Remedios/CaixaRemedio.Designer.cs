@@ -28,246 +28,241 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CaixaRemedio));
-            this.cContainerRemedio1 = new Simulador_Caixa_de_Remedios.CContainerRemedio();
-            this.cContainerRemedio2 = new Simulador_Caixa_de_Remedios.CContainerRemedio();
-            this.cContainerRemedio3 = new Simulador_Caixa_de_Remedios.CContainerRemedio();
-            this.cContainerRemedio4 = new Simulador_Caixa_de_Remedios.CContainerRemedio();
-            this.cContainerRemedio5 = new Simulador_Caixa_de_Remedios.CContainerRemedio();
-            this.cContainerRemedio6 = new Simulador_Caixa_de_Remedios.CContainerRemedio();
-            this.cContainerRemedio7 = new Simulador_Caixa_de_Remedios.CContainerRemedio();
-            this.lb_horaAtual = new System.Windows.Forms.Label();
-            this.timer_Relogio = new System.Windows.Forms.Timer(this.components);
-            this.pb_relogio = new System.Windows.Forms.PictureBox();
-            this.timer_ContagemRegressiva = new System.Windows.Forms.Timer(this.components);
-            this.lb_Temporizador = new System.Windows.Forms.Label();
-            this.rtxt_DeviceKey = new System.Windows.Forms.RichTextBox();
-            this.timer_Agendamento = new System.Windows.Forms.Timer(this.components);
-            this.rtxt_StatusAbertura = new System.Windows.Forms.RichTextBox();
-            this.gp_DadosEnviados = new System.Windows.Forms.GroupBox();
-            this.lb_StatusAbertura = new System.Windows.Forms.Label();
-            this.rtxt_DeviceId = new System.Windows.Forms.RichTextBox();
-            this.lb_DeviceKey = new System.Windows.Forms.Label();
-            this.lb_DeviceId = new System.Windows.Forms.Label();
-            this.timer_EnviaDados = new System.Windows.Forms.Timer(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.pb_relogio)).BeginInit();
-            this.gp_DadosEnviados.SuspendLayout();
-            this.SuspendLayout();
+            cContainerRemedio1 = new CContainerRemedio();
+            cContainerRemedio2 = new CContainerRemedio();
+            cContainerRemedio3 = new CContainerRemedio();
+            cContainerRemedio4 = new CContainerRemedio();
+            cContainerRemedio5 = new CContainerRemedio();
+            cContainerRemedio6 = new CContainerRemedio();
+            cContainerRemedio7 = new CContainerRemedio();
+            lb_horaAtual = new Label();
+            timer_Relogio = new System.Windows.Forms.Timer(components);
+            pb_relogio = new PictureBox();
+            timer_ContagemRegressiva = new System.Windows.Forms.Timer(components);
+            lb_Temporizador = new Label();
+            rtxt_DeviceKey = new RichTextBox();
+            timer_Agendamento = new System.Windows.Forms.Timer(components);
+            gp_DadosEnviados = new GroupBox();
+            rtxt_DeviceId = new RichTextBox();
+            lb_DeviceKey = new Label();
+            lb_DeviceId = new Label();
+            timer_FazSolicitacaoHttp = new System.Windows.Forms.Timer(components);
+            ((System.ComponentModel.ISupportInitialize)pb_relogio).BeginInit();
+            gp_DadosEnviados.SuspendLayout();
+            SuspendLayout();
             // 
             // cContainerRemedio1
             // 
-            this.cContainerRemedio1.Aberto = false;
-            this.cContainerRemedio1.LEDAceso = false;
-            this.cContainerRemedio1.Location = new System.Drawing.Point(49, 134);
-            this.cContainerRemedio1.Name = "cContainerRemedio1";
-            this.cContainerRemedio1.Size = new System.Drawing.Size(76, 150);
-            this.cContainerRemedio1.TabIndex = 0;
+            cContainerRemedio1.Aberto = false;
+            cContainerRemedio1.LEDAceso = false;
+            cContainerRemedio1.Location = new Point(49, 134);
+            cContainerRemedio1.Name = "cContainerRemedio1";
+            cContainerRemedio1.NumeroContainer = 0;
+            cContainerRemedio1.Size = new Size(76, 150);
+            cContainerRemedio1.TabIndex = 0;
+            cContainerRemedio1.OnEstadoAlterado += cContainerRemedio1_OnEstadoAlterado;
             // 
             // cContainerRemedio2
             // 
-            this.cContainerRemedio2.Aberto = false;
-            this.cContainerRemedio2.LEDAceso = false;
-            this.cContainerRemedio2.Location = new System.Drawing.Point(125, 134);
-            this.cContainerRemedio2.Name = "cContainerRemedio2";
-            this.cContainerRemedio2.Size = new System.Drawing.Size(76, 150);
-            this.cContainerRemedio2.TabIndex = 1;
+            cContainerRemedio2.Aberto = false;
+            cContainerRemedio2.LEDAceso = false;
+            cContainerRemedio2.Location = new Point(125, 134);
+            cContainerRemedio2.Name = "cContainerRemedio2";
+            cContainerRemedio2.NumeroContainer = 1;
+            cContainerRemedio2.Size = new Size(76, 150);
+            cContainerRemedio2.TabIndex = 1;
+            cContainerRemedio2.OnEstadoAlterado += cContainerRemedio1_OnEstadoAlterado;
             // 
             // cContainerRemedio3
             // 
-            this.cContainerRemedio3.Aberto = false;
-            this.cContainerRemedio3.LEDAceso = false;
-            this.cContainerRemedio3.Location = new System.Drawing.Point(201, 134);
-            this.cContainerRemedio3.Name = "cContainerRemedio3";
-            this.cContainerRemedio3.Size = new System.Drawing.Size(76, 150);
-            this.cContainerRemedio3.TabIndex = 2;
+            cContainerRemedio3.Aberto = false;
+            cContainerRemedio3.LEDAceso = false;
+            cContainerRemedio3.Location = new Point(201, 134);
+            cContainerRemedio3.Name = "cContainerRemedio3";
+            cContainerRemedio3.NumeroContainer = 2;
+            cContainerRemedio3.Size = new Size(76, 150);
+            cContainerRemedio3.TabIndex = 2;
+            cContainerRemedio3.OnEstadoAlterado += cContainerRemedio1_OnEstadoAlterado;
             // 
             // cContainerRemedio4
             // 
-            this.cContainerRemedio4.Aberto = false;
-            this.cContainerRemedio4.LEDAceso = false;
-            this.cContainerRemedio4.Location = new System.Drawing.Point(277, 134);
-            this.cContainerRemedio4.Name = "cContainerRemedio4";
-            this.cContainerRemedio4.Size = new System.Drawing.Size(76, 150);
-            this.cContainerRemedio4.TabIndex = 3;
+            cContainerRemedio4.Aberto = false;
+            cContainerRemedio4.LEDAceso = false;
+            cContainerRemedio4.Location = new Point(277, 134);
+            cContainerRemedio4.Name = "cContainerRemedio4";
+            cContainerRemedio4.NumeroContainer = 3;
+            cContainerRemedio4.Size = new Size(76, 150);
+            cContainerRemedio4.TabIndex = 3;
+            cContainerRemedio4.OnEstadoAlterado += cContainerRemedio1_OnEstadoAlterado;
             // 
             // cContainerRemedio5
             // 
-            this.cContainerRemedio5.Aberto = false;
-            this.cContainerRemedio5.LEDAceso = false;
-            this.cContainerRemedio5.Location = new System.Drawing.Point(353, 134);
-            this.cContainerRemedio5.Name = "cContainerRemedio5";
-            this.cContainerRemedio5.Size = new System.Drawing.Size(76, 150);
-            this.cContainerRemedio5.TabIndex = 4;
+            cContainerRemedio5.Aberto = false;
+            cContainerRemedio5.LEDAceso = false;
+            cContainerRemedio5.Location = new Point(353, 134);
+            cContainerRemedio5.Name = "cContainerRemedio5";
+            cContainerRemedio5.NumeroContainer = 4;
+            cContainerRemedio5.Size = new Size(76, 150);
+            cContainerRemedio5.TabIndex = 4;
+            cContainerRemedio5.OnEstadoAlterado += cContainerRemedio1_OnEstadoAlterado;
             // 
             // cContainerRemedio6
             // 
-            this.cContainerRemedio6.Aberto = false;
-            this.cContainerRemedio6.LEDAceso = false;
-            this.cContainerRemedio6.Location = new System.Drawing.Point(429, 134);
-            this.cContainerRemedio6.Name = "cContainerRemedio6";
-            this.cContainerRemedio6.Size = new System.Drawing.Size(76, 150);
-            this.cContainerRemedio6.TabIndex = 5;
+            cContainerRemedio6.Aberto = false;
+            cContainerRemedio6.LEDAceso = false;
+            cContainerRemedio6.Location = new Point(429, 134);
+            cContainerRemedio6.Name = "cContainerRemedio6";
+            cContainerRemedio6.NumeroContainer = 5;
+            cContainerRemedio6.Size = new Size(76, 150);
+            cContainerRemedio6.TabIndex = 5;
+            cContainerRemedio6.OnEstadoAlterado += cContainerRemedio1_OnEstadoAlterado;
             // 
             // cContainerRemedio7
             // 
-            this.cContainerRemedio7.Aberto = false;
-            this.cContainerRemedio7.LEDAceso = false;
-            this.cContainerRemedio7.Location = new System.Drawing.Point(505, 134);
-            this.cContainerRemedio7.Name = "cContainerRemedio7";
-            this.cContainerRemedio7.Size = new System.Drawing.Size(76, 150);
-            this.cContainerRemedio7.TabIndex = 6;
+            cContainerRemedio7.Aberto = false;
+            cContainerRemedio7.LEDAceso = false;
+            cContainerRemedio7.Location = new Point(505, 134);
+            cContainerRemedio7.Name = "cContainerRemedio7";
+            cContainerRemedio7.NumeroContainer = 6;
+            cContainerRemedio7.Size = new Size(76, 150);
+            cContainerRemedio7.TabIndex = 6;
+            cContainerRemedio7.OnEstadoAlterado += cContainerRemedio1_OnEstadoAlterado;
             // 
             // lb_horaAtual
             // 
-            this.lb_horaAtual.AutoSize = true;
-            this.lb_horaAtual.BackColor = System.Drawing.SystemColors.GrayText;
-            this.lb_horaAtual.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            this.lb_horaAtual.ForeColor = System.Drawing.Color.LightSeaGreen;
-            this.lb_horaAtual.Location = new System.Drawing.Point(708, 19);
-            this.lb_horaAtual.Name = "lb_horaAtual";
-            this.lb_horaAtual.Size = new System.Drawing.Size(0, 15);
-            this.lb_horaAtual.TabIndex = 8;
+            lb_horaAtual.AutoSize = true;
+            lb_horaAtual.BackColor = SystemColors.GrayText;
+            lb_horaAtual.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            lb_horaAtual.ForeColor = Color.LightSeaGreen;
+            lb_horaAtual.Location = new Point(708, 19);
+            lb_horaAtual.Name = "lb_horaAtual";
+            lb_horaAtual.Size = new Size(0, 15);
+            lb_horaAtual.TabIndex = 8;
             // 
             // timer_Relogio
             // 
-            this.timer_Relogio.Interval = 10000;
+            timer_Relogio.Enabled = true;
+            timer_Relogio.Tick += timer_Relogio_Tick;
             // 
             // pb_relogio
             // 
-            this.pb_relogio.Image = global::Simulador_Caixa_de_Remedios.Properties.Resources.relogio;
-            this.pb_relogio.Location = new System.Drawing.Point(680, -2);
-            this.pb_relogio.Name = "pb_relogio";
-            this.pb_relogio.Size = new System.Drawing.Size(100, 50);
-            this.pb_relogio.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pb_relogio.TabIndex = 7;
-            this.pb_relogio.TabStop = false;
+            pb_relogio.Image = Properties.Resources.relogio;
+            pb_relogio.Location = new Point(680, -2);
+            pb_relogio.Name = "pb_relogio";
+            pb_relogio.Size = new Size(100, 50);
+            pb_relogio.SizeMode = PictureBoxSizeMode.StretchImage;
+            pb_relogio.TabIndex = 7;
+            pb_relogio.TabStop = false;
             // 
             // timer_ContagemRegressiva
             // 
-            this.timer_ContagemRegressiva.Interval = 1000;
+            timer_ContagemRegressiva.Enabled = true;
+            timer_ContagemRegressiva.Interval = 1000;
+            timer_ContagemRegressiva.Tick += timer_ContagemRegressiva_Tick;
             // 
             // lb_Temporizador
             // 
-            this.lb_Temporizador.AutoSize = true;
-            this.lb_Temporizador.BackColor = System.Drawing.Color.Transparent;
-            this.lb_Temporizador.Font = new System.Drawing.Font("Yu Gothic UI", 25.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lb_Temporizador.ForeColor = System.Drawing.Color.Black;
-            this.lb_Temporizador.Location = new System.Drawing.Point(231, 52);
-            this.lb_Temporizador.Name = "lb_Temporizador";
-            this.lb_Temporizador.Size = new System.Drawing.Size(58, 46);
-            this.lb_Temporizador.TabIndex = 9;
-            this.lb_Temporizador.Text = "59";
+            lb_Temporizador.AutoSize = true;
+            lb_Temporizador.BackColor = Color.Transparent;
+            lb_Temporizador.Font = new Font("Yu Gothic UI", 25.25F, FontStyle.Bold, GraphicsUnit.Point);
+            lb_Temporizador.ForeColor = Color.Black;
+            lb_Temporizador.Location = new Point(231, 52);
+            lb_Temporizador.Name = "lb_Temporizador";
+            lb_Temporizador.Size = new Size(58, 46);
+            lb_Temporizador.TabIndex = 9;
+            lb_Temporizador.Text = "59";
             // 
             // rtxt_DeviceKey
             // 
-            this.rtxt_DeviceKey.BackColor = System.Drawing.Color.MistyRose;
-            this.rtxt_DeviceKey.ForeColor = System.Drawing.Color.Black;
-            this.rtxt_DeviceKey.Location = new System.Drawing.Point(6, 96);
-            this.rtxt_DeviceKey.Name = "rtxt_DeviceKey";
-            this.rtxt_DeviceKey.Size = new System.Drawing.Size(173, 41);
-            this.rtxt_DeviceKey.TabIndex = 11;
-            this.rtxt_DeviceKey.Text = "";
+            rtxt_DeviceKey.BackColor = Color.MistyRose;
+            rtxt_DeviceKey.ForeColor = Color.Black;
+            rtxt_DeviceKey.Location = new Point(6, 96);
+            rtxt_DeviceKey.Name = "rtxt_DeviceKey";
+            rtxt_DeviceKey.Size = new Size(173, 41);
+            rtxt_DeviceKey.TabIndex = 11;
+            rtxt_DeviceKey.Text = "";
             // 
             // timer_Agendamento
             // 
-            this.timer_Agendamento.Interval = 1000;
-            // 
-            // rtxt_StatusAbertura
-            // 
-            this.rtxt_StatusAbertura.BackColor = System.Drawing.Color.MistyRose;
-            this.rtxt_StatusAbertura.ForeColor = System.Drawing.Color.Black;
-            this.rtxt_StatusAbertura.Location = new System.Drawing.Point(6, 174);
-            this.rtxt_StatusAbertura.Name = "rtxt_StatusAbertura";
-            this.rtxt_StatusAbertura.Size = new System.Drawing.Size(173, 56);
-            this.rtxt_StatusAbertura.TabIndex = 12;
-            this.rtxt_StatusAbertura.Text = "";
+            timer_Agendamento.Enabled = true;
+            timer_Agendamento.Tick += timer_Agendamento_Tick;
             // 
             // gp_DadosEnviados
             // 
-            this.gp_DadosEnviados.BackColor = System.Drawing.Color.Khaki;
-            this.gp_DadosEnviados.Controls.Add(this.lb_StatusAbertura);
-            this.gp_DadosEnviados.Controls.Add(this.rtxt_DeviceId);
-            this.gp_DadosEnviados.Controls.Add(this.lb_DeviceKey);
-            this.gp_DadosEnviados.Controls.Add(this.lb_DeviceId);
-            this.gp_DadosEnviados.Controls.Add(this.rtxt_DeviceKey);
-            this.gp_DadosEnviados.Controls.Add(this.rtxt_StatusAbertura);
-            this.gp_DadosEnviados.Location = new System.Drawing.Point(627, 72);
-            this.gp_DadosEnviados.Name = "gp_DadosEnviados";
-            this.gp_DadosEnviados.Size = new System.Drawing.Size(200, 248);
-            this.gp_DadosEnviados.TabIndex = 13;
-            this.gp_DadosEnviados.TabStop = false;
-            this.gp_DadosEnviados.Text = "Dados Enviados";
-            // 
-            // lb_StatusAbertura
-            // 
-            this.lb_StatusAbertura.AutoSize = true;
-            this.lb_StatusAbertura.Location = new System.Drawing.Point(6, 156);
-            this.lb_StatusAbertura.Name = "lb_StatusAbertura";
-            this.lb_StatusAbertura.Size = new System.Drawing.Size(91, 15);
-            this.lb_StatusAbertura.TabIndex = 17;
-            this.lb_StatusAbertura.Text = "Status Abertura:";
+            gp_DadosEnviados.BackColor = Color.Khaki;
+            gp_DadosEnviados.Controls.Add(rtxt_DeviceId);
+            gp_DadosEnviados.Controls.Add(lb_DeviceKey);
+            gp_DadosEnviados.Controls.Add(lb_DeviceId);
+            gp_DadosEnviados.Controls.Add(rtxt_DeviceKey);
+            gp_DadosEnviados.Location = new Point(627, 72);
+            gp_DadosEnviados.Name = "gp_DadosEnviados";
+            gp_DadosEnviados.Size = new Size(200, 152);
+            gp_DadosEnviados.TabIndex = 13;
+            gp_DadosEnviados.TabStop = false;
+            gp_DadosEnviados.Text = "Dados Enviados";
             // 
             // rtxt_DeviceId
             // 
-            this.rtxt_DeviceId.BackColor = System.Drawing.Color.MistyRose;
-            this.rtxt_DeviceId.ForeColor = System.Drawing.Color.Black;
-            this.rtxt_DeviceId.Location = new System.Drawing.Point(6, 37);
-            this.rtxt_DeviceId.Name = "rtxt_DeviceId";
-            this.rtxt_DeviceId.Size = new System.Drawing.Size(67, 28);
-            this.rtxt_DeviceId.TabIndex = 16;
-            this.rtxt_DeviceId.Text = "";
+            rtxt_DeviceId.BackColor = Color.MistyRose;
+            rtxt_DeviceId.ForeColor = Color.Black;
+            rtxt_DeviceId.Location = new Point(6, 37);
+            rtxt_DeviceId.Name = "rtxt_DeviceId";
+            rtxt_DeviceId.Size = new Size(67, 28);
+            rtxt_DeviceId.TabIndex = 16;
+            rtxt_DeviceId.Text = "";
             // 
             // lb_DeviceKey
             // 
-            this.lb_DeviceKey.AutoSize = true;
-            this.lb_DeviceKey.Location = new System.Drawing.Point(6, 78);
-            this.lb_DeviceKey.Name = "lb_DeviceKey";
-            this.lb_DeviceKey.Size = new System.Drawing.Size(67, 15);
-            this.lb_DeviceKey.TabIndex = 15;
-            this.lb_DeviceKey.Text = "Device Key:";
+            lb_DeviceKey.AutoSize = true;
+            lb_DeviceKey.Location = new Point(6, 78);
+            lb_DeviceKey.Name = "lb_DeviceKey";
+            lb_DeviceKey.Size = new Size(67, 15);
+            lb_DeviceKey.TabIndex = 15;
+            lb_DeviceKey.Text = "Device Key:";
             // 
             // lb_DeviceId
             // 
-            this.lb_DeviceId.AutoSize = true;
-            this.lb_DeviceId.Location = new System.Drawing.Point(6, 19);
-            this.lb_DeviceId.Name = "lb_DeviceId";
-            this.lb_DeviceId.Size = new System.Drawing.Size(58, 15);
-            this.lb_DeviceId.TabIndex = 14;
-            this.lb_DeviceId.Text = "Device Id:";
+            lb_DeviceId.AutoSize = true;
+            lb_DeviceId.Location = new Point(6, 19);
+            lb_DeviceId.Name = "lb_DeviceId";
+            lb_DeviceId.Size = new Size(58, 15);
+            lb_DeviceId.TabIndex = 14;
+            lb_DeviceId.Text = "Device Id:";
             // 
-            // timer_EnviaDados
+            // timer_FazSolicitacaoHttp
             // 
-            this.timer_EnviaDados.Interval = 1000;
-            this.timer_EnviaDados.Tick += new System.EventHandler(this.timer_EnviaDados_Tick);
+            timer_FazSolicitacaoHttp.Enabled = true;
+            timer_FazSolicitacaoHttp.Interval = 10000;
+            timer_FazSolicitacaoHttp.Tick += timer_FazSolicitacaoHttp_Tick;
             // 
             // CaixaRemedio
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Simulador_Caixa_de_Remedios.Properties.Resources.background_color_forms1;
-            this.ClientSize = new System.Drawing.Size(869, 362);
-            this.Controls.Add(this.gp_DadosEnviados);
-            this.Controls.Add(this.lb_Temporizador);
-            this.Controls.Add(this.lb_horaAtual);
-            this.Controls.Add(this.cContainerRemedio7);
-            this.Controls.Add(this.cContainerRemedio6);
-            this.Controls.Add(this.cContainerRemedio5);
-            this.Controls.Add(this.cContainerRemedio4);
-            this.Controls.Add(this.cContainerRemedio3);
-            this.Controls.Add(this.cContainerRemedio2);
-            this.Controls.Add(this.cContainerRemedio1);
-            this.Controls.Add(this.pb_relogio);
-            this.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "CaixaRemedio";
-            this.Text = "Simulador Caixa de Remédio";
-            ((System.ComponentModel.ISupportInitialize)(this.pb_relogio)).EndInit();
-            this.gp_DadosEnviados.ResumeLayout(false);
-            this.gp_DadosEnviados.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackgroundImage = Properties.Resources.background_color_forms1;
+            ClientSize = new Size(869, 362);
+            Controls.Add(gp_DadosEnviados);
+            Controls.Add(lb_Temporizador);
+            Controls.Add(lb_horaAtual);
+            Controls.Add(cContainerRemedio7);
+            Controls.Add(cContainerRemedio6);
+            Controls.Add(cContainerRemedio5);
+            Controls.Add(cContainerRemedio4);
+            Controls.Add(cContainerRemedio3);
+            Controls.Add(cContainerRemedio2);
+            Controls.Add(cContainerRemedio1);
+            Controls.Add(pb_relogio);
+            Font = new Font("Yu Gothic UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Name = "CaixaRemedio";
+            Text = "Simulador Caixa de Remédio";
+            ((System.ComponentModel.ISupportInitialize)pb_relogio).EndInit();
+            gp_DadosEnviados.ResumeLayout(false);
+            gp_DadosEnviados.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -286,12 +281,10 @@
         private Label lb_Temporizador;
         private RichTextBox rtxt_DeviceKey;
         private System.Windows.Forms.Timer timer_Agendamento;
-        private RichTextBox rtxt_StatusAbertura;
         private GroupBox gp_DadosEnviados;
         private RichTextBox rtxt_DeviceId;
         private Label lb_DeviceKey;
         private Label lb_DeviceId;
-        private Label lb_StatusAbertura;
-        private System.Windows.Forms.Timer timer_EnviaDados;
+        private System.Windows.Forms.Timer timer_FazSolicitacaoHttp;
     }
 }

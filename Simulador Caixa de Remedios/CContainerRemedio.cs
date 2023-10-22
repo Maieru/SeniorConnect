@@ -16,6 +16,7 @@ namespace Simulador_Caixa_de_Remedios
         {
             InitializeComponent();
         }
+        public event EventHandler OnEstadoAlterado;
 
         private bool _Aberto = false;
         private bool _LEDAceso = false;
@@ -24,6 +25,7 @@ namespace Simulador_Caixa_de_Remedios
         private void bt_Abrir_Click(object sender, EventArgs e)
         {
             Aberto = !Aberto;
+            OnEstadoAlterado?.Invoke(this, EventArgs.Empty);
         }
 
         public bool Aberto
@@ -65,6 +67,6 @@ namespace Simulador_Caixa_de_Remedios
             pb_container.Image = Properties.Resources.container;
         }
 
-       
+
     }
 }
