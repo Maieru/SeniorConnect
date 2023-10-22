@@ -52,17 +52,17 @@ namespace Simulador_Caixa_de_Remedios
         {
             if (Aberto)
             {
-                pb_container.Image = Image.FromFile("img\\container aberto.jpg");
+                pb_container.Image = Properties.Resources.container_aberto;
                 return;
             }
 
             if (LEDAceso)
             {
-                pb_container.Image = Image.FromFile("img\\container led acesso.jpg");
+                pb_container.Image = Properties.Resources.container_led_acesso;
                 return;
             }
 
-            pb_container.Image = Image.FromFile("img\\container.jpg");
+            pb_container.Image = Properties.Resources.container;
         }
 
        

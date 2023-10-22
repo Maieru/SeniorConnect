@@ -40,7 +40,7 @@ namespace Simulador_Caixa_de_Remedios
         private void FazSolicitacaoHttp()
         {
             // Precisa ser feito ANTES de executar o método GetWebsiteUrl()
-            UrlHelper.SetAmbiente("Local");
+            UrlHelper.SetAmbiente("Development");
 
             // Opções de ambiente: 
             // Production
@@ -130,12 +130,12 @@ namespace Simulador_Caixa_de_Remedios
         /// <param name="e"></param>
         private void timer_Agendamento_Tick(object sender, EventArgs e)
         {
-            if (DadosRecebidos.Agendamentos.Any(a => a.GetValueOrDefault().CompareTo(DateTime.Now) > 1 && a.GetValueOrDefault().CompareTo(DateTime.Now.AddMinutes(1)) < 1))
-            {
-                cContainerRemedio1.LEDAceso = true;
-                lb_Temporizador.Visible = true;
-                timer_ContagemRegressiva.Start();
-            }
+            //if (DadosRecebidos.Agendamentos.Any(a => a.Compare(DateTime.Now) > 1 && a.GetValueOrDefault().CompareTo(DateTime.Now.AddMinutes(1)) < 1))
+            //{
+            //    cContainerRemedio1.LEDAceso = true;
+            //    lb_Temporizador.Visible = true;
+            //    timer_ContagemRegressiva.Start();
+            //}
         }
 
         /// <summary>
