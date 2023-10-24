@@ -14,6 +14,7 @@ namespace Simulador_Caixa_de_Remedios
         private int segundosRestantes;
         private EnviarCaixaRemedioTO DadosRecebidos { get; set; }
         private TimeOnly HoraAtual { get; set; }
+        private List<int> ContainersPendentes { get; set; } = new List<int>();
         #endregion
 
         public CaixaRemedio()
@@ -132,6 +133,12 @@ namespace Simulador_Caixa_de_Remedios
             {
                 timer_ContagemRegressiva.Stop();
                 lb_Temporizador.Visible = false;
+
+                if (ContainersPendentes.Any())
+                {
+                    MessageBox.Show("Medicação não consumida", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ContainersPendentes.Clear();
+                }
             }
         }
 
@@ -163,6 +170,7 @@ namespace Simulador_Caixa_de_Remedios
                             containerRemedio.LEDAceso = true;
                             lb_Temporizador.Visible = true;
                             timer_ContagemRegressiva.Start();
+                            ContainersPendentes.Add(containerRemedio.NumeroContainer);
                         }
                     }
                 }
@@ -188,6 +196,9 @@ namespace Simulador_Caixa_de_Remedios
         private void cContainerRemedio1_OnEstadoAlterado(object sender, EventArgs e)
         {
             EnviaDadosHttp();
+
+            if (sender is CContainerRemedio container && container.Aberto && ContainersPendentes.Contains(container.NumeroContainer))
+                ContainersPendentes.Remove(container.NumeroContainer);
         }
 
         private void timer_FazSolicitacaoHttp_Tick(object sender, EventArgs e)
