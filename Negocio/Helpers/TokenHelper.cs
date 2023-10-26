@@ -1,4 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver.Linq;
+using Negocio.Model;
 using Negocio.TOs.Configuration;
 using System;
 using System.Collections.Generic;
@@ -19,33 +21,27 @@ namespace Negocio.Helpers
             JwtConfigurationOptions = jwtConfigurationOptions;
         }
 
-        public string CreateAccessToken(string username)
+        public string CreateAccessToken(UsuarioModel usuario)
         {
-            //var keyBytes = Encoding.UTF8.GetBytes(JwtConfigurationOptions.SigningKey);
-            //var symmetricKey = new SymmetricSecurityKey(keyBytes);
+            var keyBytes = Encoding.UTF8.GetBytes(JwtConfigurationOptions.SigningKey);
+            var symmetricKey = new SymmetricSecurityKey(keyBytes);
 
-            //var signingCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256); 
+            var signingCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256); 
 
-            //var claims = new List<Claim>()
-            // {
-            //     new Claim("sub", username),
-            //     new Claim("name", username),
-            //     new Claim("aud", jwtOptions.Audience)
-            // };
+            var claims = new List<Claim>()
+             {
+                 new Claim("subject", usuario.Usuario),
+                 new Claim("assinatura", usuario.AssinaturaId.ToString())                 
+             };
 
-            //var roleClaims = permissions.Select(x => new Claim("role", x));
-            //claims.AddRange(roleClaims);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddSeconds(JwtConfigurationOptions.ExpirationSeconds),
+                signingCredentials: signingCredentials);
 
-            //var token = new JwtSecurityToken(
-            //    issuer: jwtOptions.Issuer,
-            //    audience: jwtOptions.Audience,
-            //    claims: claims,
-            //    expires: DateTime.Now.Add(expiration),
-            //    signingCredentials: signingCredentials);
-
-            //var rawToken = new JwtSecurityTokenHandler().WriteToken(token);
-            //return rawToken;
-            return string.Empty;
+            var rawToken = new JwtSecurityTokenHandler().WriteToken(token);
+            
+            return rawToken;
         }
     }
 }

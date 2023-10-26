@@ -9,6 +9,7 @@ namespace Negocio.Repository.Usuario
 {
     public interface IUsuarioRepository
     {
+        Task<UsuarioModel> GetByUserAndPassword(string usuario, string password);
         Task<IEnumerable<UsuarioModel>> GetAll();
         Task<UsuarioModel> GetById(int id);
         Task<int> Insert(UsuarioModel usuario);

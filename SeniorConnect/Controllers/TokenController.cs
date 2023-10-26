@@ -1,15 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Negocio.Database;
+using Negocio.Helpers;
+using Negocio.Repository.Usuario;
+using Negocio.TOs;
+using Negocio.TOs.Configuration;
 
 namespace SeniorConnect.Controllers
 {
     [ApiController]
     [Route("Token/v1")]
-    public class TokenController : Controller
+    public class TokenController : BaseController
     {
-        [HttpGet("CreateToken")]
-        public async Task CreateToken(string username, string password)
-        {
+        public JwtConfigurationOptions JwtConfigurationOptions { get; set; }
 
+        public TokenController(ApplicationContext applicationContext, JwtConfigurationOptions jwtConfigurationOptions) : base(applicationContext)
+        {
+            JwtConfigurationOptions = jwtConfigurationOptions;
+        }
+
+        [HttpGet("CreateToken")]
+        public async Task<IActionResult> CreateToken(string username, string password)
+        {
+            var usuarioRepository = new UsuarioRepository(ApplicationContext);
+
+            var usuarioModel = await usuarioRepository.GetByUserAndPassword(username, password);
+
+            if (usuarioModel == null)
+                return NotFound(ApiResponseTO<object>.CreateFalha("O usuário informado não existe ou a senha não está correta."));
+
+            var tokenService = new TokenHelper(JwtConfigurationOptions);
+
+            return Ok(ApiResponseTO<TokenTO>.CreateSucesso(new TokenTO()
+            {
+                Token = tokenService.CreateAccessToken(usuarioModel),
+                Type = "bearer",
+                Expiration = JwtConfigurationOptions.ExpirationSeconds
+            }));
         }
     }
 }

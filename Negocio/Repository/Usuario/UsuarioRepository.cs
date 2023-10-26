@@ -58,5 +58,10 @@ namespace Negocio.Repository.Usuario
             var assinaturaRepository = new AssinaturaRepository(_applicationContext);
             return await assinaturaRepository.GetById(assinaturaId) != null;
         }
+
+        public async Task<UsuarioModel> GetByUserAndPassword(string usuario, string password)
+        {
+            return new UsuarioModel() { Id = 1, Usuario = usuario, AssinaturaId = 1, Senha = password };
+        }
     }
 }
