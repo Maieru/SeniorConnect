@@ -1,5 +1,8 @@
+using Negocio.Helpers;
+using Negocio.TOs;
 using Negocio.TOs.IotMessage;
 using Newtonsoft.Json;
+using System.Text;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Simulador_Pulseira
@@ -23,12 +26,18 @@ namespace Simulador_Pulseira
             AlteraBotao();
             do
             {
-                string json = CriaJson(GerenciaDados());
-                txtVizualisaJson.Text = json;
-
+                if (txtId.Text != null && txtKey != null)
+                {
+                    string json = CriaJson(GerenciaDados());
+                    txtVizualisaJson.Text = json;
+                }
                 GerenciaAlertas();
+                FazSolicitacaoHttp();
 
-                await Task.Delay(5000);
+                if (txtId.Text != null && txtKey != null)
+                    FazSolicitacaoHttp();
+
+                await Task.Delay(30000);
             } while (statusSimulacao);
         }
 
@@ -50,8 +59,9 @@ namespace Simulador_Pulseira
 
         public StatusPulseiraTO GerenciaDados()
         {
+            dados.DeviceId = Convert.ToInt32(txtId.Text);
+            dados.DeviceKey = txtKey.Text;
             dados.BatimentoCardiaco = GeraBatimentos();
-
             dados.BotaoEmergenciaPressionada = ccbEmergencia.Checked;
             dados.QuedaDetectada = ccbQueda.Checked;
 
@@ -100,19 +110,57 @@ namespace Simulador_Pulseira
             return JsonConvert.SerializeObject(dados, Formatting.Indented);
         }
 
-        private void txtHora_TextChanged(object sender, EventArgs e)
+        public void FazSolicitacaoHttp()
         {
+            // Precisa ser feito ANTES de executar o método GetWebsiteUrl()
+            UrlHelper.SetAmbiente("Development");
 
+            // Opções de ambiente: 
+            // Production
+            // Development
+            // Local
+
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(UrlHelper.GetIoTGatewayUrl());
+                var request = new HttpRequestMessage(HttpMethod.Post, $"/IotMessage/v1/AtualizaDadosPulseira");
+
+                var conteudoRequisicao = new StringContent(JsonConvert.SerializeObject(dados), Encoding.UTF8, "application/json");
+                request.Content = conteudoRequisicao;
+
+                var resposta = httpClient.Send(request);
+                var respostaString = resposta.Content.ReadAsStringAsync().Result;
+            }
         }
 
-        private void ccbQueda_CheckedChanged(object sender, EventArgs e)
+        public void RequsitaAlertasHttp()
         {
+            // Precisa ser feito ANTES de executar o método GetWebsiteUrl()
+            UrlHelper.SetAmbiente("Development");
 
+            // Opções de ambiente: 
+            // Production
+            // Development
+            // Local
+
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(UrlHelper.GetIoTGatewayUrl());
+                var request = new HttpRequestMessage(HttpMethod.Get, $"/IotMessage/v1/GetDadosPulseira");
+
+                var objetoASerEnviado = new StatusPulseiraTO(Convert.ToInt32(txtId.Text), txtKey.Text);
+                var conteudoRequisicao = new StringContent(JsonConvert.SerializeObject(objetoASerEnviado), Encoding.UTF8, "application/json");
+                request.Content = conteudoRequisicao;
+
+                var resposta = httpClient.Send(request);
+                var respostaString = resposta.Content.ReadAsStringAsync().Result;
+
+                var respostaObjeto = JsonConvert.DeserializeObject<ApiResponseTO<EnviarPulseiraTO>>(respostaString);
+
+                if (respostaObjeto != null && respostaObjeto.Sucesso)
+                    txtAlertas.Text = JsonConvert.SerializeObject(respostaObjeto.Dados);
+            }
         }
 
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

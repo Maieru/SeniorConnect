@@ -33,7 +33,7 @@
             this.btnStatus = new System.Windows.Forms.Button();
             this.gpbVizualisaJson = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.txtHeartRate = new System.Windows.Forms.TextBox();
+            this.txtAlertas = new System.Windows.Forms.TextBox();
             this.txtVizualisaJson = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.gp1 = new System.Windows.Forms.GroupBox();
@@ -48,6 +48,10 @@
             this.pbSosEnable = new System.Windows.Forms.PictureBox();
             this.txtHora = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtId = new System.Windows.Forms.TextBox();
+            this.txtKey = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.gpbVizualisaJson.SuspendLayout();
             this.gp1.SuspendLayout();
             this.pb2.SuspendLayout();
@@ -82,7 +86,7 @@
             // gpbVizualisaJson
             // 
             this.gpbVizualisaJson.Controls.Add(this.label3);
-            this.gpbVizualisaJson.Controls.Add(this.txtHeartRate);
+            this.gpbVizualisaJson.Controls.Add(this.txtAlertas);
             this.gpbVizualisaJson.Controls.Add(this.txtVizualisaJson);
             this.gpbVizualisaJson.Controls.Add(this.label2);
             this.gpbVizualisaJson.Location = new System.Drawing.Point(153, -2);
@@ -99,22 +103,19 @@
             this.label3.Location = new System.Drawing.Point(8, 191);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(147, 15);
+            this.label3.Size = new System.Drawing.Size(83, 15);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Informações de Heart Rate";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
+            this.label3.Text = "Json de alertas";
             // 
-            // txtHeartRate
+            // txtAlertas
             // 
-            this.txtHeartRate.Location = new System.Drawing.Point(8, 214);
-            this.txtHeartRate.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.txtHeartRate.Multiline = true;
-            this.txtHeartRate.Name = "txtHeartRate";
-            this.txtHeartRate.ReadOnly = true;
-            this.txtHeartRate.Size = new System.Drawing.Size(251, 111);
-            this.txtHeartRate.TabIndex = 2;
-            this.txtHeartRate.Text = "HeartRate em descanso: 40-70\r\nHeartRate normal: 71-100\r\nHeartRate em exercício: 1" +
-    "01-130\r\n";
+            this.txtAlertas.Location = new System.Drawing.Point(8, 214);
+            this.txtAlertas.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.txtAlertas.Multiline = true;
+            this.txtAlertas.Name = "txtAlertas";
+            this.txtAlertas.ReadOnly = true;
+            this.txtAlertas.Size = new System.Drawing.Size(251, 111);
+            this.txtAlertas.TabIndex = 2;
             // 
             // txtVizualisaJson
             // 
@@ -140,11 +141,11 @@
             // 
             this.gp1.Controls.Add(this.ccbQueda);
             this.gp1.Controls.Add(this.ccbEmergencia);
-            this.gp1.Location = new System.Drawing.Point(10, 107);
+            this.gp1.Location = new System.Drawing.Point(10, 168);
             this.gp1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gp1.Name = "gp1";
             this.gp1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.gp1.Size = new System.Drawing.Size(135, 108);
+            this.gp1.Size = new System.Drawing.Size(135, 80);
             this.gp1.TabIndex = 3;
             this.gp1.TabStop = false;
             this.gp1.Text = "Simulações";
@@ -159,7 +160,6 @@
             this.ccbQueda.TabIndex = 1;
             this.ccbQueda.Text = "Possivel Queda";
             this.ccbQueda.UseVisualStyleBackColor = true;
-            this.ccbQueda.CheckedChanged += new System.EventHandler(this.ccbQueda_CheckedChanged);
             // 
             // ccbEmergencia
             // 
@@ -176,11 +176,11 @@
             // 
             this.pb2.Controls.Add(this.ccbExercicio);
             this.pb2.Controls.Add(this.ccbDescanco);
-            this.pb2.Location = new System.Drawing.Point(12, 221);
+            this.pb2.Location = new System.Drawing.Point(10, 254);
             this.pb2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pb2.Name = "pb2";
             this.pb2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.pb2.Size = new System.Drawing.Size(135, 108);
+            this.pb2.Size = new System.Drawing.Size(135, 75);
             this.pb2.TabIndex = 2;
             this.pb2.TabStop = false;
             this.pb2.Text = "Heart Rate";
@@ -275,7 +275,6 @@
             this.txtHora.Size = new System.Drawing.Size(166, 74);
             this.txtHora.TabIndex = 6;
             this.txtHora.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtHora.TextChanged += new System.EventHandler(this.txtHora_TextChanged);
             // 
             // pictureBox1
             // 
@@ -288,12 +287,48 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(16, 97);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(17, 15);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Id";
+            // 
+            // txtId
+            // 
+            this.txtId.Location = new System.Drawing.Point(44, 89);
+            this.txtId.Name = "txtId";
+            this.txtId.Size = new System.Drawing.Size(100, 23);
+            this.txtId.TabIndex = 7;
+            // 
+            // txtKey
+            // 
+            this.txtKey.Location = new System.Drawing.Point(44, 123);
+            this.txtKey.Name = "txtKey";
+            this.txtKey.Size = new System.Drawing.Size(100, 23);
+            this.txtKey.TabIndex = 9;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 126);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(26, 15);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Key";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SeaShell;
             this.ClientSize = new System.Drawing.Size(732, 341);
+            this.Controls.Add(this.txtKey);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtId);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.gp3);
             this.Controls.Add(this.pb2);
             this.Controls.Add(this.gp1);
@@ -340,6 +375,10 @@
         private PictureBox pbQueda;
         private TextBox txtBatimentos;
         private Label label3;
-        private TextBox txtHeartRate;
+        private TextBox txtAlertas;
+        private Label label4;
+        private TextBox txtId;
+        private TextBox txtKey;
+        private Label label5;
     }
 }
