@@ -1,9 +1,40 @@
-﻿@attribute [AllowAnonymous]
-@layout EmptyLayout;
-@page "/Usuario/Login";
+﻿@page "/usuario/login/{returnUrl}"
 
-<h3>Página de Login :)</h3>
+@using System.Security.Claims
+@using SeniorConnect.Data;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@layout EmptyLayout;
+
+<h1>Login</h1>
+
+<form @onsubmit="HandleSubmit">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Login</button>
+</form>
 
 @code {
+    [Parameter]
+    public string? ReturnUrl { get; set; }
 
+    private async Task HandleSubmit()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo(ReturnUrl);
+            return;
+        }
+
+        await (AuthenticationStateProvider as UsuarioAuthenticationStateProvider).SetAuthenticationStateAsync(new Negocio.Model.UsuarioModel());
+        NavigationManager.NavigateTo(ReturnUrl);
+    }
+}
 }

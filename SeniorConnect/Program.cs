@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Negocio.Database;
@@ -15,6 +16,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<JwtConfigurationOptions>(jwtOptions);
+builder.Services.AddScoped<AuthenticationStateProvider, UsuarioAuthenticationStateProvider>();
 
 
 var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseInMemoryDatabase("seniorConnect");

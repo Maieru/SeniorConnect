@@ -13,7 +13,7 @@
             if (string.IsNullOrEmpty(returnUrl))
                 NavigationManager.NavigateTo("/usuario/login", true);
             else
-                NavigationManager.NavigateTo("/usuario/login?returnUrl=" + returnUrl, true);
+                NavigationManager.NavigateTo($"/usuario/login/{returnUrl}", true);
         }
     }
 }
