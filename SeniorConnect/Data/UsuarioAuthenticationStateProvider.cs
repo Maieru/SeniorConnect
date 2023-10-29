@@ -8,6 +8,7 @@ namespace SeniorConnect.Data
     public class UsuarioAuthenticationStateProvider : AuthenticationStateProvider
     {
         private ProtectedSessionStorage ProtectedSessionStorage { get; }
+        private readonly AuthenticationState AnonymousUser = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
         public UsuarioAuthenticationStateProvider(ProtectedSessionStorage protectedSessionStorage)
         {
@@ -21,7 +22,7 @@ namespace SeniorConnect.Data
                 var userSession = await ProtectedSessionStorage.GetAsync<UsuarioModel>("user");
                  
                 if (!userSession.Success || userSession.Value == null || string.IsNullOrEmpty(userSession.Value.Usuario))
-                    return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+                    return await Task.FromResult(AnonymousUser);
 
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, userSession.Value.Usuario)
@@ -31,7 +32,7 @@ namespace SeniorConnect.Data
             }
             catch (Exception)
             {
-                return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+                return await Task.FromResult(AnonymousUser);
             }
         }
 
@@ -40,7 +41,7 @@ namespace SeniorConnect.Data
             if (usuario == null)
             {
                 await ProtectedSessionStorage.DeleteAsync("user");
-                NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()))));
+                NotifyAuthenticationStateChanged(Task.FromResult(AnonymousUser));
                 return;
             }
 
