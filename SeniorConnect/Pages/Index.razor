@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Negocio.Helpers; 
+@inject ProtectedSessionStorage ProtectedSessionStorage;
 
 <PageTitle>Index</PageTitle>
 
@@ -6,4 +9,26 @@
 
 Welcome to Senior Connect :)
 
-<SurveyPrompt Title="How is Blazor working for you?" />    
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        var httpclient = new HttpClient();
+        var bearerToken = "";
+        var bearerTokenStorage = await ProtectedSessionStorage.GetAsync<string>("jwt-token");
+
+        if (bearerTokenStorage.Success && bearerTokenStorage.Value != null)
+            bearerToken = bearerTokenStorage.Value;
+
+        httpclient.BaseAddress = new Uri(UrlHelper.GetWebsiteUrl());
+        httpclient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bearerToken);
+
+        var response = httpclient.GetAsync("Token/v1/Teste").Result;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Deu ruim");
+        }
+    }
+}

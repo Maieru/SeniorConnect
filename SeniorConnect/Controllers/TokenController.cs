@@ -39,5 +39,11 @@ namespace SeniorConnect.Controllers
                 Expiration = JwtConfigurationOptions.ExpirationSeconds
             }));
         }
+
+        [HttpGet("Teste")]
+        public async Task<bool> TesteAutorizacao()
+        {
+            return true;
+        }
     }
 }
