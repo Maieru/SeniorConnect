@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeniorConnect", "SeniorConn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Negocio", "Negocio\Negocio.csproj", "{122C5EEF-5AD8-4F8D-9C44-ADF3D66C5C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webapp.Test", "Test\Webapp.Test\Webapp.Test.csproj", "{4C008F1F-A59C-4D83-BE48-0209F9C14B0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Webapp.Test", "Test\Webapp.Test\Webapp.Test.csproj", "{4C008F1F-A59C-4D83-BE48-0209F9C14B0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -36,6 +36,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         };
     });
 
+builder.Services.AddAuthentication().AddCookie();
+
 builder.Services.AddAuthorization();
 builder.WebHost.UseStaticWebAssets();
 
