@@ -29,13 +29,15 @@ namespace Negocio.Helpers
             var signingCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256); 
 
             var claims = new List<Claim>()
-             {
-                 new Claim("subject", usuario.Usuario),
-                 new Claim("assinatura", usuario.AssinaturaId.ToString())                 
-             };
+            {
+                new Claim("subject", usuario.Usuario),
+                new Claim("assinatura", usuario.AssinaturaId.ToString())                 
+            };
 
             var token = new JwtSecurityToken(
                 claims: claims,
+                issuer: JwtConfigurationOptions.Issuer,
+                audience: JwtConfigurationOptions.Audience,
                 expires: DateTime.Now.AddSeconds(JwtConfigurationOptions.ExpirationSeconds),
                 signingCredentials: signingCredentials);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Negocio.Database;
 using Negocio.Helpers;
 using Negocio.Repository.Usuario;
@@ -19,6 +20,7 @@ namespace SeniorConnect.Controllers
         }
 
         [HttpGet("CreateToken")]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateToken(string username, string password)
         {
             var usuarioRepository = new UsuarioRepository(ApplicationContext);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Negocio.Database;
+using Negocio.Helpers;
 using Negocio.TOs.Configuration;
 using SeniorConnect.Data;
 using System.Text;
@@ -12,6 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 var jwtOptions = builder.Configuration.GetSection("JwtOptions").Get<JwtConfigurationOptions>();
 
 // Add services to the container.
+
+var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+UrlHelper.SetAmbiente(ambiente);
+var vaultHelper = new SecretsHelper(ambiente);
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
@@ -45,7 +51,7 @@ builder.WebHost.UseStaticWebAssets();
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if (ambiente != "Local")
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
@@ -57,6 +63,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
