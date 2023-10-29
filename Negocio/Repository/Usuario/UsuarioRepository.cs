@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Negocio.Database;
+using Negocio.Helpers;
 using Negocio.Model;
 using Negocio.Repository.Assinatura;
 using Negocio.Repository.Medicamento;
@@ -61,7 +62,8 @@ namespace Negocio.Repository.Usuario
 
         public async Task<UsuarioModel> GetByUserAndPassword(string usuario, string password)
         {
-            return new UsuarioModel() { Id = 1, Usuario = usuario, AssinaturaId = 1, Senha = password };
+            var senhaEncriptografada = await EncryptionHelper.Encriptografa(password);
+            return await _applicationContext.Usuarios.FirstOrDefaultAsync(u => u.Usuario == usuario && u.Senha == senhaEncriptografada);
         }
     }
 }

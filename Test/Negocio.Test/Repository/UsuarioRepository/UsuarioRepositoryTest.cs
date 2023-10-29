@@ -1,4 +1,5 @@
-﻿using Negocio.Model;
+﻿using Negocio.Helpers;
+using Negocio.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -210,6 +211,47 @@ namespace Negocio.Test.Repository.UsuarioRepository
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(usuario));
             Assert.True(_applicationContext.Usuarios.Count() == 0);
+        }
+
+        [Fact]        
+        public async Task GetByUserAndPassword_ShouldReturn()
+        {
+            // arrange
+            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Encriptografa("123"), AssinaturaId = 1 };
+            _applicationContext.Usuarios.Add(usuario);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Encriptografa("123"));
+
+            // assert
+            Assert.NotNull(result);
+            Assert.Equal(usuario, result);
+        }
+
+        [Fact]
+        public async Task GetByUserAndPassword_ShouldNotReturn()
+        {
+            // act
+            var result = await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Encriptografa("123"));
+
+            // assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetByUserAndPassword_ShouldReturnNothing()
+        {
+            // arrange
+            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Encriptografa("234"), AssinaturaId = 1 };
+            _applicationContext.Usuarios.Add(usuario);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Encriptografa("123"));
+
+            // assert
+            Assert.Null(result);
         }
     }
 }
