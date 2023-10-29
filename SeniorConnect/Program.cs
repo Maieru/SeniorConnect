@@ -16,6 +16,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<JwtConfigurationOptions>(jwtOptions);
 
+
 var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseInMemoryDatabase("seniorConnect");
 builder.Services.AddSingleton<ApplicationContext>(new ApplicationContext(contextOptions.Options));
 
@@ -36,6 +37,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     });
 
 builder.Services.AddAuthorization();
+builder.WebHost.UseStaticWebAssets();
 
 var app = builder.Build();
 
