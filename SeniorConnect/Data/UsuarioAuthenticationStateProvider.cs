@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Amazon.Runtime.Internal.Transform;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Negocio.Helpers;
 using Negocio.Model;
@@ -11,24 +12,27 @@ namespace SeniorConnect.Data
     public class UsuarioAuthenticationStateProvider : AuthenticationStateProvider
     {
         private ProtectedSessionStorage ProtectedSessionStorage { get; }
+        private ApiCallHelper ApiCallHelper { get; }
+
         private readonly AuthenticationState AnonymousUser = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
-        public UsuarioAuthenticationStateProvider(ProtectedSessionStorage protectedSessionStorage)
+        public UsuarioAuthenticationStateProvider(ProtectedSessionStorage protectedSessionStorage, ApiCallHelper apiCallHelper)
         {
             ProtectedSessionStorage = protectedSessionStorage;
+            ApiCallHelper = apiCallHelper;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             try
             {
-                var userSession = await ProtectedSessionStorage.GetAsync<UsuarioModel>("user");
-                 
-                if (!userSession.Success || userSession.Value == null || string.IsNullOrEmpty(userSession.Value.Usuario))
+                var userInSession = await SessionHelper.GetUserFromSession(ProtectedSessionStorage);
+
+                if (userInSession == null || string.IsNullOrEmpty(userInSession.Usuario))
                     return await Task.FromResult(AnonymousUser);
 
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, userSession.Value.Usuario)
+                    new Claim(ClaimTypes.Name, userInSession.Usuario)
                 }, "CustomAuth"));
 
                 return await Task.FromResult(new AuthenticationState(claimsPrincipal));
@@ -48,21 +52,22 @@ namespace SeniorConnect.Data
                 return;
             }
 
-            await ProtectedSessionStorage.SetAsync("user", usuario);
+            await SessionHelper.SetUserInSession(ProtectedSessionStorage, usuario);
 
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, usuario.Usuario)
                 }, "CustomAuth")))));
 
-            var httpClient = new HttpClient();
-            var getTokenResponse = await httpClient.GetAsync($"{UrlHelper.GetWebsiteUrl()}/Token/v1/CreateToken?username={usuario.Usuario}&password={usuario.Senha}");
-
-            if (getTokenResponse != null && getTokenResponse.IsSuccessStatusCode)
+            var responseToken = await ApiCallHelper.Get<TokenTO>("Token/v1/CreateToken", parameters: new Dictionary<string, string>()
             {
-                var respostaString = await getTokenResponse.Content.ReadAsStringAsync();
-                var resposta = JsonConvert.DeserializeObject<ApiResponseTO<TokenTO>>(respostaString);
-                await ProtectedSessionStorage.SetAsync("jwt-token", resposta.Dados.Token);
-            }
+                new KeyValuePair<string, string>("username", usuario.Usuario),
+                new KeyValuePair<string, string>("password", usuario.Senha),
+            });
+
+            if (!responseToken.Sucesso)
+                throw new Exception(responseToken.Mensagem);
+
+            await SessionHelper.SetTokenInSession(ProtectedSessionStorage, responseToken.Dados.Token);
         }
     }
 }

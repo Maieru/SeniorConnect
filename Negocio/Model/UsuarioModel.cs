@@ -16,9 +16,11 @@ namespace Negocio.Model
         public int Id { get; set; }
 
         [Column("Usuario")]
+        [Required(ErrorMessage = "O usuário é obrigatório")]
         public string Usuario { get; set; }
 
         [Column("Senha")]
+        [Required(ErrorMessage = "A senha é obrigatória")]
         public string Senha { get; set; }
 
         [Column ("AssinaturaId")]

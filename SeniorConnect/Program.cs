@@ -20,7 +20,7 @@ var vaultHelper = new SecretsHelper(ambiente);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<ApiCallHelper>();
 builder.Services.AddSingleton<JwtConfigurationOptions>(jwtOptions);
 builder.Services.AddScoped<AuthenticationStateProvider, UsuarioAuthenticationStateProvider>();
 
