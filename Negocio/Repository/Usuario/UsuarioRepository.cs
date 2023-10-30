@@ -27,6 +27,11 @@ namespace Negocio.Repository.Usuario
             if (!await VerificaSeAssinaturaExiste(usuario.AssinaturaId))
                 throw new ArgumentException("Assinatura não encontrada");
 
+            if (string.IsNullOrEmpty(usuario.SenhaPlain))
+                throw new ArgumentException("A senha não pode ser vazia.");
+
+            usuario.Senha = await EncryptionHelper.Criptografa(usuario.SenhaPlain);
+            usuario.SenhaPlain = null;
             await _applicationContext.Usuarios.AddAsync(usuario);
             return await _applicationContext.SaveChangesAsync();
         }
@@ -60,10 +65,17 @@ namespace Negocio.Repository.Usuario
             return await assinaturaRepository.GetById(assinaturaId) != null;
         }
 
-        public async Task<UsuarioModel> GetByUserAndPassword(string usuario, string password)
+        public async Task<UsuarioModel> GetByUserAndPassword(string usuario, string senhaPlain)
         {
-            var senhaEncriptografada = await EncryptionHelper.Encriptografa(password);
-            return await _applicationContext.Usuarios.FirstOrDefaultAsync(u => u.Usuario == usuario && u.Senha == senhaEncriptografada);
+            var usuarioModel = await _applicationContext.Usuarios.FirstOrDefaultAsync(u => u.Usuario == usuario);
+
+            if (usuarioModel == null)
+                throw new ArgumentException("O usuário informado não existe");
+
+            if (!EncryptionHelper.VerificaSenha(senhaPlain, usuarioModel.Senha))
+                throw new ArgumentException("A senha informada não corresponde ao usuário");
+
+            return usuarioModel;
         }
     }
 }

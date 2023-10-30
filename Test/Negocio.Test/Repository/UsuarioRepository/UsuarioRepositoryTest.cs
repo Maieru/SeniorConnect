@@ -11,6 +11,12 @@ namespace Negocio.Test.Repository.UsuarioRepository
 {
     public class UsuarioRepositoryTest : BaseEntityTest<Negocio.Repository.Usuario.UsuarioRepository>
     {
+        public UsuarioRepositoryTest()
+        {
+            Environment.SetEnvironmentVariable("EncryptionWorkFactor", "4");
+            Environment.SetEnvironmentVariable("EncryptionSalt", "Teste");
+        }
+
         [Fact]
         public async Task GetAll_ShouldReturn()
         {
@@ -188,41 +194,56 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task Insert_ShouldInsert()
         {
             // arrange
-            var ususario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", SenhaPlain = "123", AssinaturaId = 1 };
             var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1 };
+            var senhaEncriptografada = await EncryptionHelper.Criptografa("123");
 
             _applicationContext.Assinaturas.Add(assinatura);
             await _applicationContext.SaveChangesAsync();
 
-
             // act
-            var result = await _repository.Insert(ususario);
+            var result = await _repository.Insert(usuario);
 
             Assert.True(result == 1);
             Assert.True(_applicationContext.Usuarios.Count() == 1);
             Assert.True(_applicationContext.Usuarios.FirstOrDefault()?.Id == 1);
+            Assert.True(EncryptionHelper.VerificaSenha("123", _applicationContext.Usuarios.FirstOrDefault()?.Senha));
+            Assert.Null(usuario.SenhaPlain);            
         }
 
         [Fact]
-        public async Task Insert_ShouldNotInsert()
+        public async Task Insert_ShouldNotInsert_Assinatura()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", SenhaPlain = "123", AssinaturaId = 1 };
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(usuario));
-            Assert.True(_applicationContext.Usuarios.Count() == 0);
+            Assert.True(!_applicationContext.Usuarios.Any());
         }
 
-        [Fact]        
+        [Fact]
+        public async Task Insert_ShouldNotInsert_Senha()
+        {
+            // arrange
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            _applicationContext.Assinaturas.Add(assinatura);
+            await _applicationContext.SaveChangesAsync();
+            
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(usuario));
+            Assert.True(!_applicationContext.Usuarios.Any());
+        }
+
+        [Fact]
         public async Task GetByUserAndPassword_ShouldReturn()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Encriptografa("123"), AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Criptografa("123"), AssinaturaId = 1 };
             _applicationContext.Usuarios.Add(usuario);
             await _applicationContext.SaveChangesAsync();
 
             // act
-            var result = await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Encriptografa("123"));
+            var result = await _repository.GetByUserAndPassword("Teste", "123");
 
             // assert
             Assert.NotNull(result);
@@ -233,25 +254,19 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task GetByUserAndPassword_ShouldNotReturn()
         {
             // act
-            var result = await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Encriptografa("123"));
-
-            // assert
-            Assert.Null(result);
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Criptografa("123")));            
         }
 
         [Fact]
         public async Task GetByUserAndPassword_ShouldReturnNothing()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Encriptografa("234"), AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Criptografa("234"), AssinaturaId = 1 };
             _applicationContext.Usuarios.Add(usuario);
             await _applicationContext.SaveChangesAsync();
 
             // act
-            var result = await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Encriptografa("123"));
-
-            // assert
-            Assert.Null(result);
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Criptografa("123")));
         }
     }
 }

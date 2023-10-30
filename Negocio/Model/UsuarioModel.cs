@@ -26,5 +26,8 @@ namespace Negocio.Model
         [Column ("AssinaturaId")]
         [ForeignKey ("AssinaturaModel")]
         public int AssinaturaId { get; set; }
+
+        [NotMapped]
+        public string SenhaPlain { get; set; }
     }
 }
