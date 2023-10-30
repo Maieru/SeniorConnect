@@ -36,7 +36,7 @@
             return;
         }
 
-        var usuario = new UsuarioModel() { Usuario = Username, Senha = Password };
+        var usuario = new UsuarioModel() { Usuario = Username, Senha = Password, Id = 1 };
 
         await (AuthenticationStateProvider as UsuarioAuthenticationStateProvider).SetAuthenticationStateAsync(usuario);
         NavigationManager.NavigateTo(ReturnUrl);

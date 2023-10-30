@@ -26,11 +26,12 @@ namespace Negocio.Helpers
             var keyBytes = Encoding.UTF8.GetBytes(JwtConfigurationOptions.SigningKey);
             var symmetricKey = new SymmetricSecurityKey(keyBytes);
 
-            var signingCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256); 
+            var signingCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>()
             {
-                new Claim("subject", usuario.Usuario),
+                new Claim("subject", usuario.Id.ToString()),
+                new Claim("name", usuario.Usuario),
                 new Claim("assinatura", usuario.AssinaturaId.ToString())                 
             };
 

@@ -32,7 +32,9 @@ namespace SeniorConnect.Data
                     return await Task.FromResult(AnonymousUser);
 
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, userInSession.Usuario)
+                    new Claim("subject", userInSession.Id.ToString()),
+                    new Claim("name", userInSession.Usuario),
+                    new Claim("assinatura", userInSession.AssinaturaId.ToString())
                 }, "CustomAuth"));
 
                 return await Task.FromResult(new AuthenticationState(claimsPrincipal));
@@ -55,7 +57,9 @@ namespace SeniorConnect.Data
             await SessionHelper.SetUserInSession(ProtectedSessionStorage, usuario);
 
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, usuario.Usuario)
+                    new Claim("subject", usuario.Id.ToString()),
+                    new Claim("name", usuario.Usuario),
+                    new Claim("assinatura", usuario.AssinaturaId.ToString())
                 }, "CustomAuth")))));
 
             var responseToken = await ApiCallHelper.Get<TokenTO>("Token/v1/CreateToken", parameters: new Dictionary<string, string>()
