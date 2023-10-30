@@ -13,6 +13,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
     {
         public UsuarioRepositoryTest()
         {
+            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Local");
             Environment.SetEnvironmentVariable("EncryptionWorkFactor", "4");
             Environment.SetEnvironmentVariable("EncryptionSalt", "Teste");
         }
@@ -207,7 +208,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
             Assert.True(result == 1);
             Assert.True(_applicationContext.Usuarios.Count() == 1);
             Assert.True(_applicationContext.Usuarios.FirstOrDefault()?.Id == 1);
-            Assert.True(EncryptionHelper.VerificaSenha("123", _applicationContext.Usuarios.FirstOrDefault()?.Senha));
+            Assert.True(await EncryptionHelper.VerificaSenha("123", _applicationContext.Usuarios.FirstOrDefault()?.Senha));
             Assert.Null(usuario.SenhaPlain);            
         }
 

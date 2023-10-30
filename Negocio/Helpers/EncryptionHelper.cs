@@ -11,8 +11,11 @@ namespace Negocio.Helpers
     {
         public static async Task<string> Criptografa(string texto)
         {
-            var workFactor = Convert.ToInt32(Environment.GetEnvironmentVariable("EncryptionWorkFactor"));
-            var encrptionSalt = Environment.GetEnvironmentVariable("EncryptionSalt");
+            var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var vaultHelper = new SecretsHelper(ambiente);
+
+            _ = int.TryParse(await vaultHelper.GetEncryptiontWorkFactor(), out var workFactor);
+            var encrptionSalt = await vaultHelper.GetEncryptionSalt();
 
             using (var sha512 = SHA512.Create())
             {
@@ -21,9 +24,12 @@ namespace Negocio.Helpers
             }
         }
 
-        public static bool VerificaSenha(string senhaPlain, string senhaEncriptografada)
+        public static async Task<bool> VerificaSenha(string senhaPlain, string senhaEncriptografada)
         {
-            var encrptionSalt = Environment.GetEnvironmentVariable("EncryptionSalt");
+            var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var vaultHelper = new SecretsHelper(ambiente);
+
+            var encrptionSalt = await vaultHelper.GetEncryptionSalt();
 
             using (var sha512 = SHA512.Create())
             {

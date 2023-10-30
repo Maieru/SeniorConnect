@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Negocio.Context;
 using Negocio.Database;
 using Negocio.Helpers;
 using Negocio.TOs.Configuration;
@@ -24,9 +25,9 @@ builder.Services.AddSingleton<ApiCallHelper>();
 builder.Services.AddSingleton<JwtConfigurationOptions>(jwtOptions);
 builder.Services.AddScoped<AuthenticationStateProvider, UsuarioAuthenticationStateProvider>();
 
-
-var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseInMemoryDatabase("seniorConnect");
+var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseSqlServer(await vaultHelper.GetSqlServerConnectionString() ?? "");
 builder.Services.AddSingleton<ApplicationContext>(new ApplicationContext(contextOptions.Options));
+builder.Services.AddSingleton(new IotDriver(await vaultHelper.GetMongoDbConnectionString() ?? ""));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opts =>
     {

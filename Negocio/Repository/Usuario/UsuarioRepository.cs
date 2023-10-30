@@ -72,7 +72,7 @@ namespace Negocio.Repository.Usuario
             if (usuarioModel == null)
                 throw new ArgumentException("O usuário informado não existe");
 
-            if (!EncryptionHelper.VerificaSenha(senhaPlain, usuarioModel.Senha))
+            if (!await EncryptionHelper.VerificaSenha(senhaPlain, usuarioModel.Senha))
                 throw new ArgumentException("A senha informada não corresponde ao usuário");
 
             return usuarioModel;

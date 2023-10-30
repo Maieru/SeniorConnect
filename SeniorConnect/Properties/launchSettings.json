@@ -16,9 +16,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local",
         "MongoDbDatabase": "mongodb://localhost:27017",
+        "SqlServerDatabase": "Server=localhost\\SQLEXPRESS;Database=SeniorConnect;Integrated Security=True; TrustServerCertificate=True;",
         "EncryptionWorkFactor": "12",
         "EncryptionSalt": "6B913FAE-D743-4AE0-BA9D-0F97023C3FC4"
-        
       }
     },
     "https": {
@@ -29,9 +29,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local",
         "MongoDbDatabase": "mongodb://localhost:27017",
+        "SqlServerDatabase": "Server=localhost\\SQLEXPRESS;Database=SeniorConnect;Integrated Security=True; TrustServerCertificate=True;",
         "EncryptionWorkFactor": "12",
         "EncryptionSalt": "6B913FAE-D743-4AE0-BA9D-0F97023C3FC4"
-
       }
     },
     "IIS Express": {
@@ -40,9 +40,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local",
         "MongoDbDatabase": "mongodb://localhost:27017",
+        "SqlServerDatabase": "Server=localhost\\SQLEXPRESS;Database=SeniorConnect;Integrated Security=True; TrustServerCertificate=True;",
         "EncryptionWorkFactor": "12",
         "EncryptionSalt": "6B913FAE-D743-4AE0-BA9D-0F97023C3FC4"
-
       }
     }
   }
