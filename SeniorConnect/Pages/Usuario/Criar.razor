@@ -5,30 +5,30 @@
 <h1>Novo Usuário</h1>
 
 <Loading IsLoading="@processing">
-    <form @onsubmit="CriarUsuario">
+    <EditForm Model="@usuario" OnValidSubmit="CriarUsuario">
+        <DataAnnotationsValidator />
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required @bind="Username">
+        <input @bind="usuario.Usuario">
+        <ValidationMessage For="@(() => usuario.Usuario)" />
         <br />
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required @bind="Password">
+        <input type="password" @bind="usuario.Senha">
         <br />
-
+        <ValidationMessage For="@(() => usuario.Senha)" />
         <button type="submit">Criar Usuário</button>
-    </form>
+    </EditForm>
 </Loading>
 
 
 @code {
-    public string Username { get; set; }
-    public string Password { get; set; }
+    protected UsuarioTO usuario = new UsuarioTO();
+    
+    protected bool processing;
 
-    public bool processing;
-
-    public async Task CriarUsuario()
+    protected async Task CriarUsuario()
     {
-        var usuarioTO = new UsuarioTO() { Usuario = Username, Senha = Password };
         processing = true;
-        var resposta = await ApiCallHelper.Post<UsuarioModel, UsuarioTO>("Usuario/v1/Create", usuarioTO);
+        var resposta = await ApiCallHelper.Post<UsuarioModel, UsuarioTO>("Usuario/v1/Create", usuario);
         processing = false;
 
         if (resposta.Sucesso)
