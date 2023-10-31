@@ -4,25 +4,34 @@
 
 <h1>Novo Usuário</h1>
 
-<form @onsubmit="CriarUsuario">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required @bind="Username">
-    <br />
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required @bind="Password">
-    <br />
+<Loading IsLoading="@processing">
+    <form @onsubmit="CriarUsuario">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required @bind="Username">
+        <br />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required @bind="Password">
+        <br />
 
-    <button type="submit">Criar Usuário</button>
-</form>
+        <button type="submit">Criar Usuário</button>
+    </form>
+</Loading>
+
 
 @code {
     public string Username { get; set; }
     public string Password { get; set; }
 
+    public bool processing;
+
     public async Task CriarUsuario()
     {
         var usuarioTO = new UsuarioTO() { Usuario = Username, Senha = Password };
+        processing = true;
         var resposta = await ApiCallHelper.Post<UsuarioModel, UsuarioTO>("Usuario/v1/Create", usuarioTO);
-        NavigationManager.NavigateTo("usuario/login");
+        processing = false;
+
+        if (resposta.Sucesso)
+            NavigationManager.NavigateTo("usuario/login");
     }
 }
