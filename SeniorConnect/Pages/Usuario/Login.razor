@@ -1,9 +1,8 @@
-﻿@page "/usuario/login/{returnUrl}"
+﻿@page "/usuario/login/{returnUrl?}"
 
 @using System.Security.Claims
 @using SeniorConnect.Data;
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject NavigationManager NavigationManager
 @layout EmptyLayout;
 
 <h1>Login</h1>
@@ -11,11 +10,17 @@
 <form @onsubmit="HandleSubmit">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required @bind="Username">
-
+    <br />
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required @bind="Password">
+    <br />
 
     <button type="submit">Login</button>
+
+    <br />
+    <br />
+
+    <a href="usuario/criarUsuario">Criar usuário</a>
 </form>
 
 @code {

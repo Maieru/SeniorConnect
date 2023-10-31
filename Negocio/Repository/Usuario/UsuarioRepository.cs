@@ -30,6 +30,9 @@ namespace Negocio.Repository.Usuario
             if (string.IsNullOrEmpty(usuario.SenhaPlain))
                 throw new ArgumentException("A senha não pode ser vazia.");
 
+            if (await _applicationContext.Usuarios.AnyAsync(u => u.Usuario == usuario.Usuario))
+                throw new ArgumentException("Esse usuário já existe.");
+
             usuario.Senha = await EncryptionHelper.Criptografa(usuario.SenhaPlain);
             usuario.SenhaPlain = null;
             await _applicationContext.Usuarios.AddAsync(usuario);

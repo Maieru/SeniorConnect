@@ -26,9 +26,9 @@ namespace Negocio.Helpers
             return JsonConvert.DeserializeObject<ApiResponseTO<T>>(responseString);
         }
 
-        public async Task<ApiResponseTO<TOut>> Post<TOut, TData>(string endpoint, TData data, string token = null)
+        public async Task<ApiResponseTO<TOut>> Post<TOut, TData>(string endpoint, TData data, string jwtToken = null)
         {
-            var httpClient = FabricaHttpClient(token);
+            var httpClient = FabricaHttpClient(jwtToken);
 
             var conteudoRequisicao = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(endpoint, conteudoRequisicao);
