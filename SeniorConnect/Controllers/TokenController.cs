@@ -23,21 +23,33 @@ namespace SeniorConnect.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> CreateToken(string username, string password)
         {
-            var usuarioRepository = new UsuarioRepository(ApplicationContext);
-
-            var usuarioModel = await usuarioRepository.GetByUserAndPassword(username, password);
-
-            if (usuarioModel == null)
-                return NotFound(ApiResponseTO<object>.CreateFalha("O usuário informado não existe ou a senha não está correta."));
-
-            var tokenService = new TokenHelper(JwtConfigurationOptions);
-
-            return Ok(ApiResponseTO<TokenTO>.CreateSucesso(new TokenTO()
+            try
             {
-                Token = tokenService.CreateAccessToken(usuarioModel),
-                Type = "bearer",
-                Expiration = JwtConfigurationOptions.ExpirationSeconds
-            }));
+                var usuarioRepository = new UsuarioRepository(ApplicationContext);
+
+                var usuarioModel = await usuarioRepository.GetByUserAndPassword(username, password);
+
+                if (usuarioModel == null)
+                    return NotFound(ApiResponseTO<object>.CreateFalha("O usuário informado não existe ou a senha não está correta."));
+
+                var tokenService = new TokenHelper(JwtConfigurationOptions);
+
+                return Ok(ApiResponseTO<TokenTO>.CreateSucesso(new TokenTO()
+                {
+                    Token = tokenService.CreateAccessToken(usuarioModel),
+                    Type = "bearer",
+                    Expiration = JwtConfigurationOptions.ExpirationSeconds
+                }));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                await LoggerHelper.GeraLogErro(ex);
+                return null;
+            }
         }
     }
 }
