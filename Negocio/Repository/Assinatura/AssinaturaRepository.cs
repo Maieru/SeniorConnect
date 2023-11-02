@@ -43,7 +43,7 @@ namespace Negocio.Repository.Assinatura
 
         public async Task<int> Update(AssinaturaModel assinatura)
         {
-            if (await GetById(assinatura.Id) == null)
+            if (!await _applicationContext.Assinaturas.AnyAsync(a => a.Id == assinatura.Id))
                 return 0;
 
             if (!await VerificaSePlanoExiste(assinatura.PlanoId))

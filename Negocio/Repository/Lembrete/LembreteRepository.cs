@@ -52,7 +52,7 @@ namespace Negocio.Repository.Lembrete
 
         public async Task<int> Update(LembreteModel lembrete)
         {
-            if (await GetById(lembrete.Id) == null)
+            if (!await _applicationContext.Lembretes.AnyAsync(l => l.Id == lembrete.Id))
                 return 0;
 
             if (!await VerificaSeAssinaturaExiste(lembrete.AssinaturaId))

@@ -52,7 +52,7 @@ namespace Negocio.Repository.Medicamento
 
         public async Task<int> Update(MedicamentoModel medicamento)
         {
-            if (await GetById(medicamento.Id) == null)
+            if (!await _applicationContext.Medicamentos.AnyAsync(m => m.Id == medicamento.Id))
                 return 0;
 
             if (!await VerificaSeAssinaturaExiste(medicamento.AssinaturaId))

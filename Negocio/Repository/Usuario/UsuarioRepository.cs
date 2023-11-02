@@ -7,6 +7,7 @@ using Negocio.Repository.Medicamento;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,7 +42,7 @@ namespace Negocio.Repository.Usuario
 
         public async Task<int> Update(UsuarioModel usuario)
         {
-            if (await GetById(usuario.Id) == null)
+            if (!await _applicationContext.Usuarios.AnyAsync(p => p.Id == usuario.Id))
                 return 0;
 
             if (!await VerificaSeAssinaturaExiste(usuario.AssinaturaId))

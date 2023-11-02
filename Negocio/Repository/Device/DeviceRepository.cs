@@ -34,7 +34,7 @@ namespace Negocio.Repository.Device
 
         public async Task<int> Update(IoTDeviceModel device)
         {
-            if (await GetByIdentification(device.DeviceId, device.DeviceKey) == null)
+            if (!await _applicationContext.IoTDevices.AnyAsync(d => d.DeviceId == device.DeviceId && d.DeviceKey == device.DeviceKey))
                 return 0;
 
             if (!await VerificaSeAssinaturaExiste(device.AssinaturaId))

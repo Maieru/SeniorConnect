@@ -66,7 +66,7 @@ namespace Negocio.Repository.LembreteMedicamento
 
         public async Task<int> Update(LembreteMedicamentoModel lembreteMedicamento)
         {
-            if (await GetById(lembreteMedicamento.Id) == null)
+            if (!await _applicationContext.LembreteMedicamentos.AnyAsync(l => l.Id == lembreteMedicamento.Id))
                 return 0;
 
             if (!await VerificaSeMedicamentoExiste(lembreteMedicamento.MedicamentoId))

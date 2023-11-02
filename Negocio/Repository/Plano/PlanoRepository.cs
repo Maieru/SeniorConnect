@@ -39,7 +39,7 @@ namespace Negocio.Repository.Plano
 
         public async Task<int> Update(PlanoModel plano)
         {
-            if (await GetById(plano.Id) == null)
+            if (!await _applicationContext.Planos.AnyAsync(p => p.Id == plano.Id))
                 return 0;
 
             _applicationContext.Planos.Update(plano);
