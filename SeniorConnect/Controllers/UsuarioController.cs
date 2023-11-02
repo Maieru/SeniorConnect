@@ -4,6 +4,7 @@ using Negocio.Database;
 using Negocio.Helpers;
 using Negocio.Model;
 using Negocio.Repository.Assinatura;
+using Negocio.Repository.Plano;
 using Negocio.Repository.Usuario;
 using Negocio.TOs;
 
@@ -29,6 +30,9 @@ namespace SeniorConnect.Controllers
                 var usuarioRepository = new UsuarioRepository(ApplicationContext);
                 var assinatura = new AssinaturaModel() { DataCriacao = DateTime.UtcNow, PlanoId = 1 };
 
+                var planorepository = new PlanoRepository(ApplicationContext);
+                await planorepository.Insert(new PlanoModel() { Valor = 20, Descricao = "teste" });
+
                 await assinaturaRepository.Insert(assinatura);
 
                 var usuarioModel = new UsuarioModel()
@@ -52,6 +56,28 @@ namespace SeniorConnect.Controllers
             {
                 await LoggerHelper.GeraLogErro(ex);
                 await transaction.RollbackAsync();
+                return null;
+            }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> BuscaUsuario(string usuario, string senha)
+        {
+            try
+            {
+                var usuarioRepository = new UsuarioRepository(ApplicationContext);
+                var usuarioModel = await usuarioRepository.GetByUserAndPassword(usuario, senha);
+
+                return Ok(ApiResponseTO<UsuarioModel>.CreateSucesso(usuarioModel));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ApiResponseTO<string>.CreateFalha(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                await LoggerHelper.GeraLogErro(ex);
                 return null;
             }
         }

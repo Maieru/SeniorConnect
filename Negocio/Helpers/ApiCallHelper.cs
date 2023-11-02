@@ -19,9 +19,6 @@ namespace Negocio.Helpers
             var finalUrl = MontaUrlFinal(endpoint, parameters);
             var response = await httpClient.GetAsync(finalUrl);
 
-            if (!response.IsSuccessStatusCode)
-                return ApiResponseTO<T>.CreateFalha($"Não foi possível realizar a requisição ou um erro ocorreu durante a execução da mesma. Status Code: {response.StatusCode}. Message: {await response.Content.ReadAsStringAsync()}");
-
             var responseString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ApiResponseTO<T>>(responseString);
         }
@@ -32,9 +29,6 @@ namespace Negocio.Helpers
 
             var conteudoRequisicao = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(endpoint, conteudoRequisicao);
-
-            if (!response.IsSuccessStatusCode)
-                return ApiResponseTO<TOut>.CreateFalha($"Não foi possível realizar a requisição ou um erro ocorreu durante a execução da mesma. Status Code: {response.StatusCode}. Message: {await response.Content.ReadAsStringAsync()}");
 
             var responseString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ApiResponseTO<TOut>>(responseString);

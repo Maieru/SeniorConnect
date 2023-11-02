@@ -5,34 +5,64 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @layout EmptyLayout;
 
-<h1>Login</h1>
+<div id="wrapper">
+    <div id="loginWindow">
+        <div class="page-header">
+            <p class="left">
+                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+            </p>
+            <h1 style="padding-top: 24px; text-align: center">Fazer Login</h1>
+        </div>
 
-@code {
-    // https://codepen.io/soufiane-khalfaoui-hassani/pen/LYpPWda
-}
+        <EditForm OnValidSubmit="HandleSubmit" Model="usuarioTO">
+            <DataAnnotationsValidator />
+            <div class="input-group">
+                <div class="col-md-3">
+                    <span class="input-group-addon" id="basic-addon1">Usuário</span>
+                </div>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Username" @bind="usuarioTO.Usuario" aria-describedby="basic-addon1">
+                    <ValidationMessage For="@(() => usuarioTO.Usuario)" />
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="col-md-3">
+                    <span class="input-group-addon" id="basic-addon2">Senha</span>
+                </div>
+                <div class="col-md-9">
+                    <input type="password" class="form-control" placeholder="Senha" @bind="usuarioTO.Senha">
+                    <ValidationMessage For="@(() => usuarioTO.Senha)" />
+                </div>
+            </div>
 
-<form @onsubmit="HandleSubmit">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required @bind="Username">
-    <br />
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required @bind="Password">
-    <br />
+            <Loading IsLoading="@processing" Align="center"> 
+                <button class="btn btn-primary" type="submit">Login</button>
+            </Loading>
+        </EditForm>
+        <span style="display: block; margin-top: 16px; text-align: center">Ainda não possui um usuário? <a href="usuario/criarUsuario">Criar usuário</a></span>
+    </div>
+</div>
 
-    <button type="submit">Login</button>
 
-    <br />
-    <br />
-
-    <a href="usuario/criarUsuario">Criar usuário</a>
-</form>
 
 @code {
     [Parameter]
     public string? ReturnUrl { get; set; }
 
-    public string Username { get; set; }
-    public string Password { get; set; }
+    protected UsuarioTO usuarioTO = new UsuarioTO();
+    protected bool processing;
+
+    protected async override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            var jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./Pages/Usuario/Login.razor.js");
+
+            await JsRuntime.InvokeVoidAsync("Login.exibeTelaAnimada");
+        }
+    }
 
     private async Task HandleSubmit()
     {
@@ -45,9 +75,30 @@
             return;
         }
 
-        var usuario = new UsuarioModel() { Usuario = Username, Senha = Password, Id = 1 };
+        try
+        {
+            processing = true;
+            StateHasChanged();
+            var resposta = await ApiCallHelper.Get<UsuarioModel>($"/Usuario/v1?usuario={usuarioTO.Usuario}&senha={usuarioTO.Senha}");
 
-        await (AuthenticationStateProvider as UsuarioAuthenticationStateProvider).SetAuthenticationStateAsync(usuario);
-        NavigationManager.NavigateTo(ReturnUrl);
+            if (resposta.Sucesso)
+            {
+                resposta.Dados.Senha = usuarioTO.Senha;
+                await (AuthenticationStateProvider as UsuarioAuthenticationStateProvider).SetAuthenticationStateAsync(resposta.Dados);
+
+                if (!string.IsNullOrEmpty(ReturnUrl))
+                    NavigationManager.NavigateTo(ReturnUrl);
+                else
+                    NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                await JsRuntime.InvokeVoidAsync($"alert", resposta.Mensagem);
+            }
+        }
+        finally
+        {
+            processing = false;
+        }
     }
 }

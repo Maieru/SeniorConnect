@@ -6,8 +6,10 @@
     }
     else
     {
-        <div class="spinner-border"></div>
-        <span style="display: inline-block; vertical-align: super">@LoadingText</span>
+        <div style="text-align: @Align">
+            <div class="spinner-border"></div>
+            <span style="display: inline-block; vertical-align: super; margin-left: 8px">@LoadingText</span>
+        </div>
     }
 }
 else
@@ -16,6 +18,9 @@ else
 }
 
 @code {
+    [Parameter]
+    public string Align { get; set; }
+
     [Parameter]
     public bool IsLoading { get; set; }
 
