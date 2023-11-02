@@ -3,5 +3,5 @@
 	[Id]			INT				NOT NULL PRIMARY KEY IDENTITY (1, 1),
 	[Horario]		DATETIME		NOT NULL,
 	[Descricao]		VARCHAR(100)	NOT NULL,
-	[MedicamentoId]	INT				NOT NULL FOREIGN KEY REFERENCES dbo.tbMedicamento(Id)
+	[MedicamentoId]	INT				NOT NULL FOREIGN KEY REFERENCES dbo.tbMedicamento(Id) ON DELETE CASCADE
 )
