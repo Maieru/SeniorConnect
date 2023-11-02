@@ -30,9 +30,6 @@ namespace SeniorConnect.Controllers
                 var usuarioRepository = new UsuarioRepository(ApplicationContext);
                 var assinatura = new AssinaturaModel() { DataCriacao = DateTime.UtcNow, PlanoId = 1 };
 
-                var planorepository = new PlanoRepository(ApplicationContext);
-                await planorepository.Insert(new PlanoModel() { Valor = 20, Descricao = "teste" });
-
                 await assinaturaRepository.Insert(assinatura);
 
                 var usuarioModel = new UsuarioModel()
