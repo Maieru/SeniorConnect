@@ -1,0 +1,106 @@
+﻿@inherits AuthorizedComponent
+@page "/lembrete"
+
+<Loading IsLoading="lembretes is null">
+    <h3>Meus Lembretes</h3>
+
+    <div class="row" style="margin-top: 16px">
+        <div class="col-md-6">
+            <a href='/lembrete/criar' class="btn btn-primary" role="button">
+                <i class="fas fa-user-plus"></i>
+                Adicionar Lembrete
+            </a>
+        </div>
+        <div class="input-group col">
+            <input type="text" class="form-control" placeholder="Procurar Lembrete..." @bind="SearchString" @bind:event="oninput" @onkeyup="Filtra" />
+            @if (SearchString.Length > 0)
+            {
+                <div class="input-group-append">
+                    <button class="btn btn-danger" @onclick="ResetaBusca">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <br />
+    
+    <table class="table table-striped align-middle table-bordered">
+        <thead class="table-success">
+            <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Horário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lembrete in lembretesFiltrados)
+            {
+                <tr>
+                    <td>@lembrete.Id</td>
+                    <td>@lembrete.Descricao</td>
+                    <td>@lembrete.Horario</td>
+                    <td>
+                        <a href='/lembrete/editar/@lembrete.Id' class="btn btn-outline-dark" role="button">
+                            Edit
+                        </a>
+                        <button class="btn btn-outline-danger" role="button" @onclick="(() => DeletarLembrete(lembrete.Id))">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</Loading>
+
+@code {
+    protected List<LembreteModel> lembretes;
+    protected List<LembreteModel> lembretesFiltrados = new();
+
+    protected string SearchString { get; set; } = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Para o funcionamento adequado, essa chamada SEMPRE deve estar antes do resto do código nesse método
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+            await CarregaLembretes();
+    }
+
+    protected async Task CarregaLembretes()
+    {
+        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<List<LembreteModel>>($"Lembrete/v1/RecuperaLembretesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
+
+        if (requisicaoLembreteAssinatura.Sucesso)
+        {
+            lembretes = requisicaoLembreteAssinatura.Dados;
+            lembretesFiltrados = lembretes;
+            StateHasChanged();
+        }
+    }
+
+    protected void Filtra()
+    {
+        if (!string.IsNullOrEmpty(SearchString))
+            lembretesFiltrados = lembretes.Where(x => x.Descricao.Contains(SearchString)).ToList();
+        else
+            lembretesFiltrados = lembretes;
+    }
+
+    public void ResetaBusca()
+    {
+        SearchString = string.Empty;
+        Filtra();
+    }
+
+    protected async Task DeletarLembrete(int lembreteId)
+    {
+        var requisicaoDelete = await ApiCallHelper.Delete($"Lembrete/v1/Deletar/{UsuarioLogado.AssinaturaId}", JwtToken);
+        lembretes.RemoveAll(l => l.Id == lembreteId);
+        StateHasChanged();
+    }
+}

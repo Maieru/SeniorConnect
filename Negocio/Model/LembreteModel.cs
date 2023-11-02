@@ -20,9 +20,12 @@ namespace Negocio.Model
         public int AssinaturaId { get; set; }
 
         [Column ("Horario")]
+        [Required(ErrorMessage = "É necessário preencher o horário")]
         public DateTime Horario { get; set; }
 
         [Column ("Descricao")]
+        [Required (ErrorMessage = "É necessário preencher a descrição")]
+        [MaxLength(100, ErrorMessage = "A descrição não pode ter mais do que 100 caracteres")]
         public string Descricao { get; set; }
     }
 }

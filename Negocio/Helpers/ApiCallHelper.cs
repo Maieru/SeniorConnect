@@ -34,6 +34,19 @@ namespace Negocio.Helpers
             return JsonConvert.DeserializeObject<ApiResponseTO<TOut>>(responseString);
         }
 
+        public async Task<ApiResponseTO<string>> Delete(string endpoint, string jwtToken = null)
+        {
+            var httpClient = FabricaHttpClient(jwtToken);
+
+            var response = await httpClient.DeleteAsync(endpoint);
+
+            if (response.IsSuccessStatusCode)
+                return ApiResponseTO<string>.CreateSucesso(null);
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ApiResponseTO<string>>(responseString);
+        }
+
         private HttpClient FabricaHttpClient(string authorizationToken = null)
         {
             var retorno = new HttpClient();
