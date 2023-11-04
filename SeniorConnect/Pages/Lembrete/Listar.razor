@@ -7,7 +7,7 @@
     <div class="row" style="margin-top: 16px">
         <div class="col-md-6">
             <a href='/lembrete/criar' class="btn btn-primary" role="button">
-                <i class="fas fa-user-plus"></i>
+                <i class="oi oi-plus" style="margin-right: 8px"></i>
                 Adicionar Lembrete
             </a>
         </div>
@@ -27,27 +27,25 @@
     <br />
     
     <table class="table table-striped align-middle table-bordered">
-        <thead class="table-success">
+        <thead style="background-color: #4B0082; color: white">
             <tr>
-                <th>Código</th>
-                <th>Descrição</th>
-                <th>Horário</th>
-                <th>Ações</th>
+                <th class="col-md-6">Descrição</th>
+                <th class="col-md-3">Horário</th>
+                <th class="col-md-3">Ações</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var lembrete in lembretesFiltrados)
             {
                 <tr>
-                    <td>@lembrete.Id</td>
                     <td>@lembrete.Descricao</td>
-                    <td>@lembrete.Horario</td>
+                    <td>@lembrete.Horario.ToString("HH:mm")</td>
                     <td>
                         <a href='/lembrete/editar/@lembrete.Id' class="btn btn-outline-dark" role="button">
-                            Edit
+                            Editar
                         </a>
                         <button class="btn btn-outline-danger" role="button" @onclick="(() => DeletarLembrete(lembrete.Id))">
-                            Delete
+                            Deletar
                         </button>
                     </td>
                 </tr>
@@ -99,7 +97,7 @@
 
     protected async Task DeletarLembrete(int lembreteId)
     {
-        var requisicaoDelete = await ApiCallHelper.Delete($"Lembrete/v1/Deletar/{UsuarioLogado.AssinaturaId}", JwtToken);
+        var requisicaoDelete = await ApiCallHelper.Delete($"Lembrete/v1/Deletar/{lembreteId}", JwtToken);
         lembretes.RemoveAll(l => l.Id == lembreteId);
         StateHasChanged();
     }

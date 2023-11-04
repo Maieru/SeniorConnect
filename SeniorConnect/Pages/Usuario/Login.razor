@@ -22,7 +22,7 @@
                     <span class="input-group-addon" id="basic-addon1">Usuário</span>
                 </div>
                 <div class="col-md-9">
-                    <input type="text" class="form-control" placeholder="Username" @bind="usuarioTO.Usuario" aria-describedby="basic-addon1">
+                    <input type="text" class="form-control" placeholder="Username" @bind="usuarioTO.Usuario" aria-describedby="basic-addon1" disabled="@processing">
                     <ValidationMessage For="@(() => usuarioTO.Usuario)" />
                 </div>
             </div>
@@ -31,7 +31,7 @@
                     <span class="input-group-addon" id="basic-addon2">Senha</span>
                 </div>
                 <div class="col-md-9">
-                    <input type="password" class="form-control" placeholder="Senha" @bind="usuarioTO.Senha">
+                    <input type="password" class="form-control" placeholder="Senha" @bind="usuarioTO.Senha" disabled="@processing">
                     <ValidationMessage For="@(() => usuarioTO.Senha)" />
                 </div>
             </div>
