@@ -24,9 +24,9 @@ namespace Negocio.Test.Repository.UsuarioRepository
             // arrange
             var usuarios = new List<UsuarioModel>
             {
-                new UsuarioModel{ Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1},
-                new UsuarioModel{ Id = 2, Usuario = "2", Senha = "456", AssinaturaId = 1},
-                new UsuarioModel{ Id = 3, Usuario = "3", Senha = "789", AssinaturaId = 1}
+                new UsuarioModel{ Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com"},
+                new UsuarioModel{ Id = 2, Usuario = "2", Senha = "456", AssinaturaId = 1, Email = "teste@teste.com"},
+                new UsuarioModel{ Id = 3, Usuario = "3", Senha = "789", AssinaturaId = 1, Email = "teste@teste.com"}
             };
             _applicationContext.Usuarios.AddRange(usuarios);
             await _applicationContext.SaveChangesAsync();
@@ -55,7 +55,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task GetById_ShouldReturn()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             _applicationContext.Usuarios.Add(usuario);
             await _applicationContext.SaveChangesAsync();
 
@@ -81,7 +81,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task GetById_ShouldReturnNothing()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             _applicationContext.Usuarios.Add(usuario);
             await _applicationContext.SaveChangesAsync();
 
@@ -97,7 +97,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task Delete_ShouldDelete()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             _applicationContext.Usuarios.Add(usuario);
             await _applicationContext.SaveChangesAsync();
 
@@ -122,7 +122,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task Delete_ShouldNotDelete()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             _applicationContext.Usuarios.Add(usuario);
             await _applicationContext.SaveChangesAsync();
 
@@ -137,7 +137,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task Update_ShouldUpdate()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1 };
 
             _applicationContext.Usuarios.Add(usuario);
@@ -156,7 +156,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task Update_ShouldUpdateNothing()
         {
             // arrange
-            var usuarioOriginal = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuarioOriginal = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1 };
 
             _applicationContext.Usuarios.Add(usuarioOriginal);
@@ -166,7 +166,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
 
 
             // act
-            var usuarioModificado = new UsuarioModel { Id = 2, Usuario = "2", Senha = "456", AssinaturaId = 1 }; ;
+            var usuarioModificado = new UsuarioModel { Id = 2, Usuario = "2", Senha = "456", AssinaturaId = 1, Email = "teste@teste.com" }; ;
             var result = await _repository.Update(usuarioModificado);
 
             Assert.True(result == 0);
@@ -178,14 +178,14 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task Update_ShouldNotUpdate()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1 };
 
             _applicationContext.Usuarios.Add(usuario);
             _applicationContext.Assinaturas.Add(assinatura);
             await _applicationContext.SaveChangesAsync();
 
-            var usuarioModificado = new UsuarioModel { Id = 2, Usuario = "2", Senha = "456", AssinaturaId = 1 };
+            var usuarioModificado = new UsuarioModel { Id = 2, Usuario = "2", Senha = "456", AssinaturaId = 1, Email = "teste@teste.com" };
 
             Assert.True(_applicationContext.Usuarios.Count() == 1);
             Assert.True(_applicationContext.Usuarios.FirstOrDefault()?.AssinaturaId == 1);
@@ -195,7 +195,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task Insert_ShouldInsert()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", SenhaPlain = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", SenhaPlain = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1 };
             var senhaEncriptografada = await EncryptionHelper.Criptografa("123");
 
@@ -216,7 +216,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task Insert_ShouldNotInsert_Assinatura()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", SenhaPlain = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", SenhaPlain = "123", AssinaturaId = 1, Email = "teste@teste.com" };
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(usuario));
             Assert.True(!_applicationContext.Usuarios.Any());
@@ -227,7 +227,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         {
             // arrange
             var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1 };
-            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com" };
             _applicationContext.Assinaturas.Add(assinatura);
             await _applicationContext.SaveChangesAsync();
             
@@ -239,7 +239,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task GetByUserAndPassword_ShouldReturn()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Criptografa("123"), AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Criptografa("123"), AssinaturaId = 1, Email = "teste@teste.com" };
             _applicationContext.Usuarios.Add(usuario);
             await _applicationContext.SaveChangesAsync();
 
@@ -262,7 +262,7 @@ namespace Negocio.Test.Repository.UsuarioRepository
         public async Task GetByUserAndPassword_ShouldReturnNothing()
         {
             // arrange
-            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Criptografa("234"), AssinaturaId = 1 };
+            var usuario = new UsuarioModel { Id = 1, Usuario = "Teste", Senha = await EncryptionHelper.Criptografa("234"), AssinaturaId = 1, Email = "teste@teste.com" };
             _applicationContext.Usuarios.Add(usuario);
             await _applicationContext.SaveChangesAsync();
 

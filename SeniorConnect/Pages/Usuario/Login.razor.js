@@ -2,7 +2,7 @@
     static exibeTelaAnimada() {
         console.log("estou sendo chamado :)");
 
-        $('#loginWindow').animate({ 'width': '100%' }, 500)
+        $('#loginWindow').animate({ 'width': '100%' }, 400)
             .delay(30)
             .animate({ 'height': '350px' }, 500);
         $('.page-header, .input-group, .btn')

@@ -2,6 +2,7 @@
 
 @using System.Security.Claims
 @using SeniorConnect.Data;
+@using System.ComponentModel.DataAnnotations;
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @layout EmptyLayout;
 
@@ -17,11 +18,11 @@
         <EditForm OnValidSubmit="HandleSubmit" Model="usuarioTO">
             <DataAnnotationsValidator />
             <div class="input-group">
-                <div class="col-md-3">
+                <div class="col-md-3">  
                     <span class="input-group-addon" id="basic-addon1">Usuário</span>
                 </div>
                 <div class="col-md-9">
-                    <input type="text" class="form-control" placeholder="Username" @bind="usuarioTO.Usuario" aria-describedby="basic-addon1">
+                    <input type="text" class="form-control" placeholder="Username" @bind="usuarioTO.Usuario" aria-describedby="basic-addon1" disabled="@processing">
                     <ValidationMessage For="@(() => usuarioTO.Usuario)" />
                 </div>
             </div>
@@ -30,26 +31,36 @@
                     <span class="input-group-addon" id="basic-addon2">Senha</span>
                 </div>
                 <div class="col-md-9">
-                    <input type="password" class="form-control" placeholder="Senha" @bind="usuarioTO.Senha">
+                    <input type="password" class="form-control" placeholder="Senha" @bind="usuarioTO.Senha" disabled="@processing">
                     <ValidationMessage For="@(() => usuarioTO.Senha)" />
                 </div>
             </div>
 
             <Loading IsLoading="@processing" Align="center"> 
                 <button class="btn btn-primary" type="submit">Login</button>
+                <span style="display: block; margin-top: 16px; text-align: center">Ainda não possui um usuário? <a href="usuario/criarUsuario">Criar usuário</a></span>
             </Loading>
         </EditForm>
-        <span style="display: block; margin-top: 16px; text-align: center">Ainda não possui um usuário? <a href="usuario/criarUsuario">Criar usuário</a></span>
     </div>
 </div>
 
 
 
 @code {
+
+    protected class LoginModel
+    {
+        [Required(ErrorMessage = "O usuário é obrigatório")]
+        public string Usuario { get; set; }
+
+        [Required(ErrorMessage = "A senha é obrigatória")]
+        public string Senha { get; set; }
+    }
+
     [Parameter]
     public string? ReturnUrl { get; set; }
 
-    protected UsuarioTO usuarioTO = new UsuarioTO();
+    protected LoginModel usuarioTO = new LoginModel();
     protected bool processing;
 
     protected async override void OnAfterRender(bool firstRender)
@@ -89,7 +100,7 @@
                 if (!string.IsNullOrEmpty(ReturnUrl))
                     NavigationManager.NavigateTo(ReturnUrl);
                 else
-                    NavigationManager.NavigateTo("/");
+                    NavigationManager.NavigateTo("/home");
             }
             else
             {
