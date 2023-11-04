@@ -23,15 +23,8 @@ namespace SeniorConnect.Controllers
         [HttpGet("DatabaseHealth")]
         public async Task<IActionResult> DatabaseHealth()
         {
-            try
-            {
-                var numeroAssinaturas = await ApplicationContext.Assinaturas.CountAsync();
-                return Ok("Ok");
-            }
-            catch
-            {
-                return Ok("Sem acesso ao banco de dados");
-            }
+            _ = await ApplicationContext.Assinaturas.CountAsync();
+            return Ok("Ok");
         }
     }
 }
