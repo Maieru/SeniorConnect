@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Negocio.Database;
 using Negocio.Helpers;
-using Negocio.Model;
+using Negocio.Model.Device;
 using Negocio.Repository.Assinatura;
 using Negocio.Repository.Device;
 using Negocio.Repository.Lembrete;

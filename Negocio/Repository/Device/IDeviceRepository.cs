@@ -1,4 +1,4 @@
-﻿using Negocio.Model;
+﻿using Negocio.Model.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
