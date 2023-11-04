@@ -1,0 +1,107 @@
+﻿/* -----------------------------Cor e a fonte base de todos os textos do site------------------------------*/
+body {
+    margin: 0;
+    color: #333333;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+.logo {
+    position: relative;
+    top: 20px;
+    left: 50px;
+    max-width: 100px;
+    height: auto;
+}
+
+/*---------------------transformar nosso menu em horizontal e ajustar espaçamentos básicos----------------*/
+.menu-opcoes ul li {
+    display: inline;
+    margin-left: 20px;
+}
+
+/*-------------------elementos que precisam ser centralizados nomeio da página----------------------------*/
+.container {
+    margin: 0 auto;
+    width: 940px;
+}
+
+/* ----------------------------- header -------------------------------------------------------*/
+#header {
+    background-color: lightblue !important;
+    position: relative;
+}
+
+.menu-opcoes {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+#main ul {
+    list-style-type: disc;
+    font-size: 16px;
+    color: #666;
+    margin-left: 20px;
+    align-content: center;
+}
+/* ---------------------------------texto---------------------------------------- */
+.container {
+    display: flex;
+}
+
+.text {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.about h2 {
+    font-weight: bold;
+    color: #4B0082;
+    margin-top: 20px;
+}
+
+.about {
+    text-align: left;
+}
+/*---------------------------------imagem------------------------------------------*/
+/* CSS para a imagem */
+.image img {
+   
+    height: auto;
+    float: left; 
+    margin-right: 20px; 
+}
+
+
+.text {
+    width: 50%; /* Define a largura para ocupar a outra metade da página */
+    float: left; 
+}
+
+
+/* ---------------------------------rodapé---------------------------------------- */
+footer {
+    background-color: #4B0082;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+
+.social-icons a {
+    margin: 0 10px;
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+    .social-icons a:hover {
+        transform: scale(1.1);
+    }
+
+.social-icons img {
+    width: 30px;
+    height: 30px;
+}
+
+
