@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Negocio.Model.Device
+namespace Negocio.Model
 {
     [Table("tbIotDevice")]
     public abstract class IoTDeviceModel

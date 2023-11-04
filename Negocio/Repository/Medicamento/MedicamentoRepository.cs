@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Negocio.Database;
 using Negocio.Model;
-using Negocio.Model.Device;
 using Negocio.Repository.Assinatura;
 using Negocio.Repository.Plano;
 using System;
