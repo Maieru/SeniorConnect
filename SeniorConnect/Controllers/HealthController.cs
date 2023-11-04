@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Negocio.Database;
 
@@ -6,6 +7,7 @@ namespace SeniorConnect.Controllers
 {
     [ApiController]
     [Route("Health/v1")]
+    [AllowAnonymous]
     public class HealthController : BaseController
     {
         public HealthController(ApplicationContext applicationContext) : base(applicationContext)
