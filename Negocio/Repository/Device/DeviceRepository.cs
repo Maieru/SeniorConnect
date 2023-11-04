@@ -31,6 +31,7 @@ namespace Negocio.Repository.Device
             await _applicationContext.IoTDevices.AddAsync(device);
             return await _applicationContext.SaveChangesAsync();
         }
+        public async Task<IoTDeviceModel?> GetById(int id) => await _applicationContext.IoTDevices.FirstOrDefaultAsync(a => a.DeviceId == id);
 
         public async Task<int> Update(IoTDeviceModel device)
         {
