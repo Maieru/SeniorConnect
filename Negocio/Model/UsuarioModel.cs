@@ -28,6 +28,10 @@ namespace Negocio.Model
         [ForeignKey ("AssinaturaModel")]
         public int AssinaturaId { get; set; }
 
+        [Column("Email")]
+        [MaxLength(200, ErrorMessage = "O email não pode ultrapassar 200 caracteres")]
+        public string Email { get; set; }
+
         [NotMapped]
         public string SenhaPlain { get; set; }
     }

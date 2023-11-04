@@ -25,7 +25,7 @@ namespace SeniorConnect.Controllers
             var transaction = ApplicationContext.Database.BeginTransaction();
 
             try
-            {    
+            {
                 var assinaturaRepository = new AssinaturaRepository(ApplicationContext);
                 var usuarioRepository = new UsuarioRepository(ApplicationContext);
                 var assinatura = new AssinaturaModel() { DataCriacao = DateTime.UtcNow, PlanoId = 1 };
@@ -36,7 +36,8 @@ namespace SeniorConnect.Controllers
                 {
                     Usuario = usuario.Usuario,
                     SenhaPlain = usuario.Senha,
-                    AssinaturaId = assinatura.Id
+                    AssinaturaId = assinatura.Id,
+                    Email = usuario.Email
                 };
 
                 await usuarioRepository.Insert(usuarioModel);
