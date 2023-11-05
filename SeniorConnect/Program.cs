@@ -26,7 +26,7 @@ builder.Services.AddSingleton<ApiCallHelper>();
 builder.Services.AddSingleton<JwtConfigurationOptions>(jwtOptions);
 builder.Services.AddScoped<AuthenticationStateProvider, UsuarioAuthenticationStateProvider>();
 
-builder.Services.AddDbContext<ApplicationContext>(async options => options.UseSqlServer(await vaultHelper.GetSqlServerConnectionString() ?? ""), ServiceLifetime.Scoped);
+builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(vaultHelper.GetSqlServerConnectionString().Result ?? ""), ServiceLifetime.Scoped);
 builder.Services.AddSingleton(new IotDriver(await vaultHelper.GetMongoDbConnectionString() ?? ""));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opts =>
