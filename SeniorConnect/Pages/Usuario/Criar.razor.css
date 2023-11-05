@@ -1,4 +1,10 @@
-﻿html {
+﻿body {
+    color: #333333;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    background-color: #f9f9f9;
+}
+
+html {
     height: 100%;
     overflow: hidden;
 }
@@ -22,7 +28,7 @@
     padding-left: 3em;
     padding-right: 3em;
     padding-bottom: 2em;
-    border: solid #eee 1px;
+    border: solid #9370DB 1px;
     border-radius: 5px;
     overflow: hidden;
     width: 100%;
@@ -46,4 +52,11 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+    background: linear-gradient(45deg, #800080, #8A2BE2);
+    color: #fff !important;
+    text-decoration: none;
 }
+
+    .btn:hover {
+        background: linear-gradient(45deg, #BA55D3, #800080);
+    }
