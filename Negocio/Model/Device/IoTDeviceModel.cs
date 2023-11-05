@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Negocio.Model.Device
 {
     [Table("tbIotDevice")]
-    public abstract class IoTDeviceModel
+    public class IoTDeviceModel
     {
         [Column("Id")]
         [Key]

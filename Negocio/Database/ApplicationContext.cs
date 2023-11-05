@@ -19,7 +19,8 @@ namespace Negocio.Database
         {
             modelBuilder.Entity<IoTDeviceModel>().HasDiscriminator(c => c.DeviceType)
                 .HasValue<PulseiraModel>(EnumDeviceType.Pulseira)
-                .HasValue<CaixaRemedioModel>(EnumDeviceType.CaixaRemedio);            
+                .HasValue<CaixaRemedioModel>(EnumDeviceType.CaixaRemedio)
+                .HasValue<IoTDeviceModel>(EnumDeviceType.Unknown);
         }
 
         public DbSet<AssinaturaModel> Assinaturas { get; set; }
