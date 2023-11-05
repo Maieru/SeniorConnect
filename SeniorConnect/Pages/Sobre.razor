@@ -1,0 +1,57 @@
+﻿@page "/sobre"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Negocio.Helpers;
+@inject ProtectedSessionStorage ProtectedSessionStorage;
+@layout EmptyLayout;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sobre Nós - SeniorConnect</title>
+</head>
+<body>
+    <header id="header">
+        <img src="logo.png" alt="SeniorConnect - Ligando Corações e Saúde" class="logo">
+        <nav class="menu-opcoes">
+            <ul>
+                <li><a href="/usuario/login/{returnUrl?}">Login</a></li>
+                <li><a href="/usuario/criarUsuario">Cadastre-se</a></li>
+                <li><a href="/sobre">Sobre</a></li>
+            </ul>
+        </nav>
+    </header>
+    <br />
+    <div class="container">
+        <div class="text">
+            <div class="about">
+                <h2>Sobre Nós</h2>
+                <p>Somos a SeniorConnect, uma empresa dedicada a melhorar a qualidade de monitoramento de idosos dependentes de responsáveis. Nossa missão é fornecer soluções inovadoras para promover a segurança, saúde e bem-estar da população idosa.</p>
+
+                <h2>Nossa História</h2>
+                <p>Iniciada em 2023 como projeto de TCC, trabalhamos incansavelmente para desenvolver o aplicativo de bem-estar para idosos mais abrangente e eficaz do mercado. Nossa equipe é composta por profissionais experientes em tecnologia, comprometidos em oferecer o melhor para nossos usuários.</p>
+
+                <h2>Nossos Valores</h2>
+                <p>- Compromisso com a segurança dos idosos</p>
+                <p>- Inovação contínua para atender às necessidades em constante evolução</p>
+                <p>- Atendimento de alta qualidade aos nossos usuários</p>
+            </div>
+        </div>
+        <div class="image">
+            <img src="team.png" alt="Equipe">
+        </div>
+    </div>
+    
+    
+    <br />
+    <footer>
+        <div class="social-icons">
+            <a href="#"><img src="facebook.png" alt="Facebook"></a>
+            <a href="#"><img src="wpp.png" alt="WhatsApp"></a>
+            <a href="#"><img src="instagram.png" alt="Instagram"></a>
+            <a href="#"><img src="linkedln.png" alt="LinkedIn"></a>
+        </div>
+        <br />
+        <p>2023 por SeniorConnect - Ligando Corações e Saúde. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>

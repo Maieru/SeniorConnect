@@ -1,0 +1,113 @@
+﻿@inherits AuthorizedComponent
+@page "/lembrete/criar"
+@page "/lembrete/editar/{Id:int}"
+
+<h1>@Titulo Lembrete</h1>
+
+<hr />
+<EditForm Model="@lembrete" OnValidSubmit="SalvarLembrete">
+    <DataAnnotationsValidator />
+
+    @if (isEdit)
+    {
+        <div class="mb-3">
+            <div class="col-md-4">
+                <label for="Id" class="form-label">Id</label>
+            </div>
+            <div class="col-md-4">
+                <InputNumber class="form-control" @bind-Value="lembrete.Id" readonly="@isEdit" />
+            </div>
+        </div>
+    }
+
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Descrição</label>
+        </div>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="lembrete.Descricao" />
+            <ValidationMessage For="@(() => lembrete.Descricao)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Horário</label>
+        </div>
+        <div class="col-md-4">
+            <InputDate Type="InputDateType.Time" class="form-control" @bind-Value="lembrete.Horario" />
+            <ValidationMessage For="@(() => lembrete.Horario)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    protected bool processing;
+    protected string Titulo = "Criar";
+    protected LembreteModel lembrete = new();
+    protected bool isEdit = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (Id != 0)
+        {
+            Titulo = "Editar";
+            isEdit = true;
+        }
+
+        if (firstRender)
+        {
+            lembrete.AssinaturaId = UsuarioLogado.AssinaturaId;
+            lembrete.Horario = DateTime.UtcNow.Date;
+
+            if (Id != 0)
+            {
+                processing = true;
+                var respostaBusca = await ApiCallHelper.Get<LembreteModel>($"/Lembrete/v1/RecuperaLembrete/{Id}", JwtToken);
+
+                if (respostaBusca.Sucesso)
+                    lembrete = respostaBusca.Dados;
+
+                processing = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    protected async Task SalvarLembrete()
+    {
+        if (isEdit)
+        {
+            var respostaEdit = await ApiCallHelper.Post<LembreteModel, LembreteModel>("/Lembrete/v1/Editar", lembrete, JwtToken);
+
+            if (respostaEdit.Sucesso)
+                NavigationManager.NavigateTo("/lembrete");
+            else
+                await JsRuntime.InvokeVoidAsync("alert", respostaEdit.Mensagem);
+        }
+        else
+        {
+            var respostaCreate = await ApiCallHelper.Post<LembreteModel, LembreteModel>("/Lembrete/v1/Criar", lembrete, JwtToken);
+
+            if (respostaCreate.Sucesso)
+            {
+                Id = respostaCreate.Dados.Id;
+                await OnAfterRenderAsync(true);
+            }
+            else
+                await JsRuntime.InvokeVoidAsync("alert", respostaCreate.Mensagem);
+        }
+    }
+
+    protected void Return() => NavigationManager.NavigateTo("/lembrete");
+}

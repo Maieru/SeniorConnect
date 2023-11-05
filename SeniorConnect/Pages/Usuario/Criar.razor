@@ -1,0 +1,76 @@
+﻿@page "/usuario/criarUsuario"
+@using System.ComponentModel.DataAnnotations;
+@attribute [AllowAnonymous]
+@layout EmptyLayout;
+
+<div id="wrapper">
+    <div id="loginWindow">
+        <div class="page-header">
+            <p class="left">
+                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+            </p>
+            <h1 style="padding-top: 24px; text-align: center ; color: #4B0082">Novo Usuário</h1>
+        </div>
+
+        <EditForm Model="@usuario" OnValidSubmit="CriarUsuario">
+            <DataAnnotationsValidator />
+
+            <div class="input-group">
+                <div class="col-md-3">
+                    <label for="username">Usuário:</label>
+                </div>
+                <div class="col-md-9">
+                    <input @bind="usuario.Usuario" class="form-control" disabled="@processing">
+                    <ValidationMessage For="@(() => usuario.Usuario)" />
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="col-md-3">
+                    <label for="username">Email:</label>
+                </div>
+                <div class="col-md-9">
+                    <input @bind="usuario.Email" class="form-control" disabled="@processing">
+                    <ValidationMessage For="@(() => usuario.Email)" />
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="col-md-3">
+                    <label for="password">Senha:</label>
+                </div>
+                <div class="col-md-9">
+                    <input type="password" @bind="usuario.Senha" class="form-control" disabled="@processing">
+                    <ValidationMessage For="@(() => usuario.Senha)" />
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="col-md-3">
+                    <label for="password">Confirmar Senha:</label>
+                </div>
+                <div class="col-md-9">
+                    <input type="password" @bind="usuario.ConfirmacaoSenha" class="form-control" disabled="@processing">
+                    <ValidationMessage For="@(() => usuario.ConfirmacaoSenha)" />
+                </div>
+            </div>
+            <br />
+            <Loading IsLoading="@processing" Align="center">
+                <button class="btn btn-primary" type="submit">Criar Usuário</button>
+            </Loading>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    protected UsuarioTO usuario = new UsuarioTO();
+
+    protected bool processing;
+
+    protected async Task CriarUsuario()
+    {
+        processing = true;
+        var resposta = await ApiCallHelper.Post<UsuarioModel, UsuarioTO>("Usuario/v1/Create", usuario);
+        processing = false;
+
+        if (resposta.Sucesso)
+            NavigationManager.NavigateTo("usuario/login");
+    }
+}

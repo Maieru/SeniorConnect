@@ -1,0 +1,332 @@
+﻿/* -----------------------------Cor e a fonte base de todos os textos do site------------------------------*/
+body {
+    color: #333333;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#main p {
+    font-size: 16px;
+    color: #333;
+}
+
+#main h2 {
+    font-size: 24px;
+    color: #333;
+}
+
+/*---------------------transformar nosso menu em horizontal e ajustar espaçamentos básicos----------------*/
+.menu-opcoes ul li {
+    display: inline;
+    margin-left: 20px;
+}
+/*-------------------elementos que precisam ser centralizados nomeio da página----------------------------*/
+.container {
+    margin: 0 auto;
+    width: 940px;
+}
+/* ----------------------------- header -------------------------------------------------------*/
+#header {
+    background-color: #4B0082;
+    position: relative;
+    width: 100%;
+}
+
+    #header .menu-opcoes ul li a {
+        color: white;
+        text-decoration: none;
+    }
+
+        #header .menu-opcoes ul li a:hover {
+            color: #BA55D3;
+            text-decoration: underline;
+        }
+
+.menu-opcoes {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.logo {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    max-width: 100px;
+    height: auto;
+    border: 2px solid #4B0082;
+}
+/*---------------------------------texto de entrada----------------------------------------------------*/
+
+.text-container {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+span {
+    text-align: center;
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(1em);
+    animation: appear 1s forwards;
+    color: #4B0082;
+}
+
+@keyframes appear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/*------------------------------------ diferenciais -------------------------------------------------------*/
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: lightblue;
+}
+
+.feature {
+    flex: 0 0 calc(50% - 20px);
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+    margin: 10px;
+    background-color: #f9f9f9;
+}
+
+    .feature h3 {
+        font-size: 20px;
+        color: #4B0082;
+    }
+
+    .feature p {
+        font-size: 18px;
+        color: #4B0082;
+        margin-bottom: 10px;
+    }
+
+i {
+    font-size: 12px;
+}
+
+.feature img {
+    display: block;
+    margin: 0 auto 10px;
+}
+
+#main ul {
+    list-style-type: disc;
+    font-size: 16px;
+    color: #666;
+    margin-left: 20px;
+    align-content: center;
+}
+/*----------------------------------------depoimentos------------------------------------------------*/
+.certification {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4B0082;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.testimonials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #F3D2FA;
+}
+
+.testimonial {
+    width: calc(33.33% - 20px);
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    margin: 10px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+    .testimonial:hover {
+        transform: scale(1.1);
+    }
+
+    .testimonial img {
+        max-width: 100px;
+        border-radius: 50%;
+    }
+
+    .testimonial p {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .testimonial em {
+        font-style: italic;
+        color: #555;
+    }
+/* ------------------------------------- experimente já -----------------------------------*/
+.experience {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+    transform: translateY(1em);
+    animation: appear 1s forwards;
+}
+
+    .experience img {
+        max-width: 250px;
+        margin-left: 350px;
+        transform: translateY(1em);
+        animation: appear 1s forwards;
+    }
+
+    .experience p {
+        font-size: 18px;
+        color: #4B0082;
+        transform: translateY(1em);
+        animation: appear 1s forwards;
+    }
+
+    .experience h2 {
+        font-size: 24px;
+        color: #4B0082;
+        transform: translateY(1em);
+        animation: appear 1s forwards;
+    }
+
+
+.itens {
+    text-align: left;
+}
+/* ---------------------------------noticias---------------------------------------- */
+#main article {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+    #main article h3 {
+        font-size: 20px;
+        color: #333;
+    }
+
+    #main article p {
+        font-size: 16px;
+        color: #666;
+    }
+
+    #main article a {
+        color: #0071c1;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        #main article a:hover {
+            text-decoration: underline;
+        }
+/*---------------------------------novas parcerias----------------------------------------*/
+#instituicoes-saude {
+    background-color: lightblue;
+    color: #4B0082;
+    padding: 20px;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+    #instituicoes-saude h3 {
+        font-weight: bold;
+        display: inline;
+    }
+
+    #instituicoes-saude p {
+        display: inline;
+    }
+
+    #instituicoes-saude a {
+        display: inline-block;
+        background-color: lightblue;
+        color: #4B0082;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
+        #instituicoes-saude a:hover {
+            background-color: #BA55D3;
+        }
+
+#contactButton {
+    background: linear-gradient(45deg, #800080, #8A2BE2);
+    color: #fff !important;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+    #contactButton:hover {
+        background: linear-gradient(45deg, #BA55D3, #800080);
+    }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    position: absolute;
+    background-color: #fff;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+}
+/* ---------------------------------rodapé---------------------------------------- */
+footer {
+    background-color: #4B0082;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.social-icons a {
+    margin: 0 10px;
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+    .social-icons a:hover {
+        transform: scale(1.1);
+    }
+
+.social-icons img {
+    width: 30px;
+    height: 30px;
+}

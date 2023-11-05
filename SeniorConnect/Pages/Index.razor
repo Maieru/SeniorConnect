@@ -1,9 +1,146 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Negocio.Helpers;
+@inject ProtectedSessionStorage ProtectedSessionStorage;
+@layout EmptyLayout;
 
-<h1>Hello, world!</h1>
+<PageTitle>Página Inicial</PageTitle>
 
-Welcome to Senior Connect :)
+<!DOCTYPE html>
+<html>
+<body>
+    <header id="header">
+        <img src="logo.png" alt="SeniorConnect - Ligando Corações e Saúde" class="logo">
+        <nav class="menu-opcoes">
+            <ul>
+                <li><a href="/usuario/login/{returnUrl?}">Login</a></li>
+                <li><a href="/usuario/criarUsuario">Cadastre-se</a></li>
+                <li><a href="/sobre">Sobre</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="main">
+        <div class="text-container">
+            <h1 id="text">
+                <span>Conheça nosso aplicativo de bem-estar para idosos, projetado para tornar a vida mais segura e saudável</span>
+            </h1>
+        </div>
+        <div class="features">
+            <div class="feature">
+                <div class="feature-content">
+                    <img src="alerta icon.png" alt="Alerta Icon">
+                    <h3><b>Alerta para Usuários</b></h3>
+                    <p><i>Cadastrado pelo responsável, para auxiliar o idoso.</i></p>
+                    <p>Ideal para lembretes de atividades específicas em intervalos de tempo (ex.: hidratação, medicação, pagamentos de contas).</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-content">
+                    <img src="batimento.png" alt="Batimento Icon">
+                    <h3><b>Monitoramento de Batimentos Cardíacos e Detecção de Quedas</b></h3>
+                    <p><i>Monitoramento em tempo real.</i></p>
+                    <p>Por meio da pulseira inteligente, é possível monitorar os batimentos cardíacos e a detecção de quedas em tempo real.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-content">
+                    <img src="caixa_medicamento.png" alt="Medicamento Icon">
+                    <h3><b>Caixinha de Remédios Inteligente</b></h3>
+                    <p><i>Personalizada pelo responsável.</i></p>
+                    <p>Organização de medicamentos em caixas coloridas com LEDs para indicar horários de doses. O responsável recebe o alerta da ingestão.</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-content">
+                    <img src="botao_emergencia.png" alt="Emergência Icon">
+                    <h3><b>Botão de Emergência Acionável</b></h3>
+                    <p><i>Especialmente para os idosos.</i></p>
+                    <p>Envia alertas ao responsável quando assistência é necessária.</p>
+                </div>
+            </div>
+        </div>
+        <div class="certification">
+            Experimente agora!
+        </div>
+        <section class="experience">
+            <div>
+                <img src="computer.png" alt="Celular Icon">
+            </div>
+            <div class="itens">
+                <p><b>Por que utilizar o nosso aplicativo?</b></p>
+                <p>- Aplicativo de fácil utilização</p>
+                <p>- Caixinha de remédios e pulseira inteligentes inclusos</p>
+                <p>- Dashboards para análises gerenciais dos dados</p>
+                <p>- Bom atendimento aos usuários</p>
+            </div>
+        </section>
+        <div class="certification">
+            Veja alguns depoimentos dos usuários da plataforma:
+        </div>
+        <section class="testimonials">
+            <div class="testimonial">
+                <img src="pessoa1.png" alt="Joana">
+                <p>"O aplicativo de bem-estar para idosos transformou a vida da minha mãe. Ela se sente mais segura e nós também."</p>
+                <p><em>Joana Camargo Silva, filha e responsável de sua mãe</em></p>
+            </div>
+            <div class="testimonial">
+                <img src="pessoa2.png" alt="Carlos">
+                <p>"Depois da utilização, me sinto muito mais seguro, mesmo que meus pais morem sozinhos."</p>
+                <p><em>Carlos Henrique Santos, filho e usuário</em></p>
+            </div>
+            <div class="testimonial">
+                <img src="pessoa3.png" alt="Isaura">
+                <p>"Agora meu dia a dia está muito mais fácil e me sinto mais conectada com os meus filhos."</p>
+                <p><em>Isaura Moura, mãe de usuário</em></p>
+            </div>
+        </section>
+        <br />
+        <h2>Últimas Notícias</h2>
+        <article>
+            <h3>Novas Funcionalidades Adicionadas ao Aplicativo</h3>
+            <p>Estamos felizes em anunciar as últimas atualizações do nosso aplicativo de bem-estar, incluindo novos recursos para tornar a vida dos idosos ainda mais fácil.</p>
+            <p>A versão mais recente contém correções de erros e melhorias no desempenho</p>
+        </article>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+        <section id="instituicoes-saude">
+            <h3>Você é uma instituição de saúde?</h3>
+            <br />
+            <p>Gostaria de integrar o SeniorConnect na sua empresa?</p>
+            <br />
+            <a href="javascript:void(0);" id="contactButton">Contate-nos</a>
+        </section>
+    </section>
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h3>Dados da Empresa</h3>
+            <p>Telefone: (11) 4546-7890</p>
+            <p>E-mail: faleconosco@seniorconnect.com</p>
+            <p>Endereço: Avenida João Firmino, 243, Jabaquara - SP</p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('contactButton').addEventListener('click', function () {
+            var modal = document.getElementById('contactModal');
+            modal.style.display = 'block';
+        });
+
+        document.getElementById('closeModal').addEventListener('click', function () {
+            var modal = document.getElementById('contactModal');
+            modal.style.display = 'none';
+        });
+    </script>
+    <br />
+    <footer>
+        <div class="social-icons">
+            <a href="#"><img src="facebook.png" alt="Facebook"></a>
+            <a href="#"><img src="wpp.png" alt="WhatsApp"></a>
+            <a href="#"><img src="instagram.png" alt="Instagram"></a>
+            <a href="#"><img src="linkedln.png" alt="LinkedIn"></a>
+        </div>
+        <br />
+        <p>2023 por SeniorConnect - Ligando Corações e Saúde. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeniorConnect", "SeniorConn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Negocio", "Negocio\Negocio.csproj", "{122C5EEF-5AD8-4F8D-9C44-ADF3D66C5C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSuite", "TestSuite\TestSuite.csproj", "{6E24AC32-482C-463C-AC65-D814D9472B23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Webapp.Test", "Test\Webapp.Test\Webapp.Test.csproj", "{4C008F1F-A59C-4D83-BE48-0209F9C14B0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{122C5EEF-5AD8-4F8D-9C44-ADF3D66C5C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{122C5EEF-5AD8-4F8D-9C44-ADF3D66C5C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{122C5EEF-5AD8-4F8D-9C44-ADF3D66C5C4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E24AC32-482C-463C-AC65-D814D9472B23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E24AC32-482C-463C-AC65-D814D9472B23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E24AC32-482C-463C-AC65-D814D9472B23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E24AC32-482C-463C-AC65-D814D9472B23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C008F1F-A59C-4D83-BE48-0209F9C14B0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C008F1F-A59C-4D83-BE48-0209F9C14B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C008F1F-A59C-4D83-BE48-0209F9C14B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C008F1F-A59C-4D83-BE48-0209F9C14B0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

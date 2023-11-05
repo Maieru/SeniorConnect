@@ -1,0 +1,117 @@
+﻿@page "/usuario/login/{returnUrl?}"
+
+@using System.Security.Claims
+@using SeniorConnect.Data;
+@using System.ComponentModel.DataAnnotations;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@layout EmptyLayout;
+
+<div id="wrapper">
+    <div id="loginWindow">
+        <div class="page-header">
+            <p class="left">
+                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+            </p>
+            <h1 style="padding-top: 24px; text-align: center; color: #4B0082">Fazer Login</h1>
+
+        </div>
+
+        <EditForm OnValidSubmit="HandleSubmit" Model="usuarioTO">
+            <DataAnnotationsValidator />
+            <div class="input-group">
+                <div class="col-md-3">
+                    <span class="input-group-addon" id="basic-addon1">Usuário</span>
+                </div>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Username" @bind="usuarioTO.Usuario" aria-describedby="basic-addon1" disabled="@processing">
+                    <ValidationMessage For="@(() => usuarioTO.Usuario)" />
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="col-md-3">
+                    <span class="input-group-addon" id="basic-addon2">Senha</span>
+                </div>
+                <div class="col-md-9">
+                    <input type="password" class="form-control" placeholder="Senha" @bind="usuarioTO.Senha" disabled="@processing">
+                    <ValidationMessage For="@(() => usuarioTO.Senha)" />
+                </div>
+            </div>
+
+            <Loading IsLoading="@processing" Align="center">
+                <button class="btn btn-primary" type="submit">Login</button>
+                <span style="display: block; margin-top: 16px; text-align: center">Ainda não possui um usuário? <a href="usuario/criarUsuario" style="color: #8A2BE2; text-decoration: none;">Criar usuário</a></span>
+
+            </Loading>
+        </EditForm>
+    </div>
+</div>
+
+
+
+@code {
+
+    protected class LoginModel
+    {
+        [Required(ErrorMessage = "O usuário é obrigatório")]
+        public string Usuario { get; set; }
+
+        [Required(ErrorMessage = "A senha é obrigatória")]
+        public string Senha { get; set; }
+    }
+
+    [Parameter]
+    public string? ReturnUrl { get; set; }
+
+    protected LoginModel usuarioTO = new LoginModel();
+    protected bool processing;
+
+    protected async override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            var jsModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./Pages/Usuario/Login.razor.js");
+
+            await JsRuntime.InvokeVoidAsync("Login.exibeTelaAnimada");
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo(ReturnUrl);
+            return;
+        }
+
+        try
+        {
+            processing = true;
+            StateHasChanged();
+            var resposta = await ApiCallHelper.Get<UsuarioModel>($"/Usuario/v1?usuario={usuarioTO.Usuario}&senha={usuarioTO.Senha}");
+
+            if (resposta.Sucesso)
+            {
+                resposta.Dados.Senha = usuarioTO.Senha;
+                await (AuthenticationStateProvider as UsuarioAuthenticationStateProvider).SetAuthenticationStateAsync(resposta.Dados);
+
+                if (!string.IsNullOrEmpty(ReturnUrl))
+                    NavigationManager.NavigateTo(ReturnUrl);
+                else
+                    NavigationManager.NavigateTo("/home");
+            }
+            else
+            {
+                await JsRuntime.InvokeVoidAsync($"alert", resposta.Mensagem);
+            }
+        }
+        finally
+        {
+            processing = false;
+        }
+    }
+}

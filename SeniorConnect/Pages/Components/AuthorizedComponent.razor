@@ -1,0 +1,18 @@
+﻿@inherits ComponentBase
+@attribute [Authorize]
+
+@code {
+    public UsuarioModel UsuarioLogado { get; private set; }
+    public string JwtToken { get; private set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            JwtToken = await SessionHelper.GetTokenFromSession(ProtectedSessionStorage);
+            UsuarioLogado = await SessionHelper.GetUserFromSession(ProtectedSessionStorage);
+        }
+    }
+}
