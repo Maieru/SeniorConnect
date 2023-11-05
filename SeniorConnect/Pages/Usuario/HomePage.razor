@@ -1,0 +1,234 @@
+﻿@page "/home"
+
+@using System.Security.Claims
+@using PSC.Blazor.Components.Chartjs.Util;
+@using SeniorConnect.Data;
+@using System.ComponentModel.DataAnnotations;
+@attribute [AllowAnonymous];
+@using PSC.Blazor.Components.Chartjs.Enums
+@using PSC.Blazor.Components.Chartjs.Models.Common
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+<div style="display: flex; justify-content: space-around; align-items: flex-start;">
+    <div style="text-align: center;">
+        <span style="font-size: 12px;">Qtde Acionamentos</span>
+        <div class="info-block" style="--border-color: rgba(139,0,139); --bg-color: rgba(128,0,128,0.1); width: 140px;">
+            <img src="botao_emergencia.png" alt="Emergência Icon" style="width: 24px; height: 24px;" />
+            <p>3</p>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <span style="font-size: 12px;">Status Pulseira</span>
+        <div class="info-block" style="--border-color: rgba(139,0,139); --bg-color: rgba(100,149,237,0.1); width: 140px;">
+            <img src="pulseira.png" alt="Pulseira Icon" style="width: 24px; height: 24px;" />
+            <p>Ativa</p>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <span style="font-size: 12px;">Status Caixa de Medicamentos</span>
+        <div class="info-block" style="--border-color: rgba(139,0,139); --bg-color: rgba(255,99,71,0.1); width: 140px;">
+            <img src="caixinha.png" alt="Caixinha Icon" style="width: 40px; height: 24px;" />
+            <p>Ativa</p>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+
+<div style="display: flex; justify-content: space-around; align-items: flex-start;">
+    <div style="width: 50%;">
+        <Chart Config="lineChartConfig" @ref="lineChart" style="width: 100%;"></Chart>
+        <button type="button" @onclick="addDado">
+            Teste
+        </button>
+    </div>
+    <div style="width: 50%; margin-left: 10px;">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Lembrete</th>
+                    <th>Horário</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Beber água</td>
+                    <td>09:00</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Caminhar</td>
+                    <td>10:00</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Pagar conta de luz</td>
+                    <td>14:30</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: flex-start; margin-top: 20px;">
+    <div style="width: 50%;">
+        <Chart Config="pieChartConfig" @ref="pieChart"></Chart>
+    </div>
+    <div style="width: 50%; margin-left: 10px;">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Medicamento</th>
+                    <th>Horário</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Losartana</td>
+                    <td>08:00</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Aradois</td>
+                    <td>20:00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br />
+
+<Chart Config="barChartConfig" @ref="barChart" style="width: 100%;"></Chart>
+
+    @code {
+
+    private LineChartConfig lineChartConfig;
+    private PieChartConfig pieChartConfig;
+    private BarChartConfig barChartConfig;
+
+    private Chart lineChart, pieChart, barChart;
+
+    protected void addDado()
+    {
+        var rd = new Random();
+        lineChart.AddData(new List<string?>() { "Janeiro" }, 0, new List<decimal?>() { rd.Next(0, 200) });
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        lineChartConfig = new LineChartConfig()
+            {
+                Options = new Options()
+                {
+                    Plugins = new Plugins()
+                    {
+                        Legend = new Legend()
+                        {
+                            Align = Align.Center,
+                            Display = false,
+                            Position = LegendPosition.Right
+                        }
+                    },
+                    Scales = new Dictionary<string, Axis>()
+    {
+    {
+    Scales.XAxisId, new Axis()
+    {
+    Stacked = true,
+    Ticks = new Ticks()
+    {
+    MaxRotation = 0,
+    MinRotation = 0
+    }
+    }
+    },
+    {
+    Scales.YAxisId, new Axis()
+    {
+    Stacked = true
+    }
+    }
+    }
+                }
+            };
+        lineChartConfig.Data.Labels = new List<string>() { "Batimentos Cardíacos" };
+        lineChartConfig.Data.Datasets.Add(new LineDataset()
+            {
+                Label = "janeiro",
+                Data = new List<decimal?>() { 1 },
+                BackgroundColor = "rgba(60,179,113)",
+                BorderColor = "rgba(102,205,170)",
+                BorderWidth = 1
+            });
+
+        pieChartConfig = new PieChartConfig
+            {
+                Options = new PieOptions
+                {
+                    Responsive = true
+                },
+                Data = new PieData
+                {
+                    Labels = new List<string> { "Roxo", "Lilás", "Verde água", "Verde" },
+                    Datasets = new List<PieDataset>
+    {
+    new PieDataset
+    {
+    BackgroundColor = new List<string> { "rgba(128,0,128)", "rgba(218,112,214)", "rgba(32,178,170)", "rgba(152,251,152)" },
+    Data = new List<decimal?> { 6, 5, 3, 7 }
+    }
+    }
+                }
+            };
+
+        barChartConfig = new BarChartConfig()
+            {
+                Options = new Options()
+                {
+                    Responsive = true,
+                    MaintainAspectRatio = false,
+                    Plugins = new Plugins()
+                    {
+                        Legend = new Legend()
+                        {
+                            Align = Align.Center,
+                            Display = false,
+                            Position = LegendPosition.Right
+                        }
+                    },
+                    Scales = new Dictionary<string, Axis>()
+                        {
+                        {
+                            Scales.XAxisId, new Axis()
+                            {
+                                Stacked = true,
+                                Ticks = new Ticks()
+                                {
+                                    MaxRotation = 0,
+                                    MinRotation = 0
+                                }
+                            }
+                        },
+                        {
+                            Scales.YAxisId, new Axis()
+                            {
+                                Stacked = true,
+                                Title = new AxesTitle()
+                                {
+                                    Display = true,
+                                    Text = "Qtde Quedas"
+                                }
+                            }
+                        }
+                        }
+                }
+            };
+    }
+    }
+
