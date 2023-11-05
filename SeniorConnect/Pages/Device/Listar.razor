@@ -1,7 +1,7 @@
 ﻿@inherits AuthorizedComponent
 @page "/device"
 
-<h3>Meus Diespositivos</h3>
+<h3>Meus Dispositivos</h3>
 
 <div class="row" style="margin-top: 16px">
     <div class="col-md-6">
@@ -45,9 +45,9 @@
                     <a href='/device/editar/@device.DeviceId' class="btn btn-outline-dark" role="button">
                         Edit
                     </a>
-                    <button class="btn btn-outline-danger" role="button" @onclick="(() => DeletarDevice(device.DeviceId))">
+                    @* <button class="btn btn-outline-danger" role="button" @onclick="(() => DeletarDevice(device.DeviceId))">
                         Delete
-                    </button>
+                    </button> *@
                 </td>
             </tr>
         }
@@ -66,10 +66,10 @@
         await base.OnAfterRenderAsync(firstRender);
 
         if (firstRender)
-            await CarregaLembretes();
+            await CarregaDevices();
     }
 
-    protected async Task CarregaLembretes()
+    protected async Task CarregaDevices()
     {
         var requisicaoDeviceAssinatura = await ApiCallHelper.Get<List<IoTDeviceModel>>($"Device/v1/RecuperaDevicesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
 
@@ -97,7 +97,7 @@
 
     protected async Task DeletarDevice(int deviceId)
     {
-        var requisicaoDelete = await ApiCallHelper.Delete($"Device/v1/Deletar/{UsuarioLogado.AssinaturaId}", JwtToken);
+        var requisicaoDelete = await ApiCallHelper.Delete($"Device/v1/Deletar/{deviceId}", JwtToken);
         devices.RemoveAll(l => l.DeviceId == deviceId);
         StateHasChanged();
     }

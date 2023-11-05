@@ -8,6 +8,7 @@ namespace Negocio.Enum
 {
     public enum EnumDeviceType
     {
+        Unknown = -1,
         Pulseira = 0,
         CaixaRemedio = 1,
     }
