@@ -1,12 +1,12 @@
 ﻿@inherits AuthorizedComponent
-@page "/lembretemedicamento"
+@page "/lembretemedicamento/{CodigoRemedio:int}"
 
 <Loading IsLoading="lembreteMedicamento is null">
     <h3>Lembretes do Medicamento</h3>
 
     <div class="row" style="margin-top: 16px">
         <div class="col-md-6">
-            <a href='/lembreteMedicamento/criar' class="btn btn-primary" role="button">
+            <a href='/lembreteMedicamento/criar/@CodigoRemedio' class="btn btn-primary" role="button">
                 <i class="oi oi-plus" style="margin-right: 8px"></i>
                 Adicionar Lembrete de Medicamento
             </a>
@@ -44,7 +44,7 @@
                         <a href='/lembreteMedicamento/editar/@lembreteMedicamento.Id' class="btn btn-outline-dark" role="button">
                             Editar
                         </a>
-                        <button class="btn btn-outline-danger" role="button" @onclick="(() => DeletarLembreteMedicamento(lembreteMedicamento.Id))">
+                        <button class="btn btn-outline-danger" type="button" role="button" @onclick="(() => DeletarLembreteMedicamento(lembreteMedicamento.Id))">
                             Deletar
                         </button>
                     </td>
@@ -55,7 +55,6 @@
 </Loading>
 
 @code {
-
     [Parameter]
     public int CodigoRemedio { get; set; }
 

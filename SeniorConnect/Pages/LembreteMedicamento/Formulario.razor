@@ -1,5 +1,5 @@
 ﻿@inherits AuthorizedComponent
-@page "/lembretemedicamento/criar"
+@page "/lembretemedicamento/criar/{CodigoRemedio:int}"
 @page "/lembretemedicamento/editar/{Id:int}"
 
 <h1>@Titulo Lembrete do Medicamento</h1>
@@ -50,6 +50,9 @@
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    public int? CodigoRemedio { get; set; }
+
     protected bool processing;
     protected string Titulo = "Criar";
     protected LembreteMedicamentoModel lembreteMedicamento = new();
@@ -67,7 +70,9 @@
 
         if (firstRender)
         {
-            lembreteMedicamento.MedicamentoId = MedicamentoLogado.Id;
+            if (CodigoRemedio.HasValue)
+                lembreteMedicamento.MedicamentoId = CodigoRemedio.Value;
+
             lembreteMedicamento.Horario = DateTime.UtcNow.Date;
 
             if (Id != 0)
@@ -91,7 +96,7 @@
             var respostaEdit = await ApiCallHelper.Post<LembreteMedicamentoModel, LembreteMedicamentoModel>("/LembreteMedicamento/v1/Editar", lembreteMedicamento, JwtToken);
 
             if (respostaEdit.Sucesso)
-                NavigationManager.NavigateTo("/lembreteMedicamento");
+                NavigationManager.NavigateTo($"/medicamento/editar/{lembreteMedicamento.MedicamentoId}");
             else
                 await JsRuntime.InvokeVoidAsync("alert", respostaEdit.Mensagem);
         }
@@ -109,5 +114,5 @@
         }
     }
 
-    protected void Return() => NavigationManager.NavigateTo("/lembreteMedicamento");
+    protected void Return() => NavigationManager.NavigateTo($"/medicamento/editar/{lembreteMedicamento.MedicamentoId}");
 }
