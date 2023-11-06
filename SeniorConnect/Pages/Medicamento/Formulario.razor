@@ -1,0 +1,112 @@
+﻿@inherits AuthorizedComponent
+@page "/medicamento/criar"
+@page "/medicamento/editar/{Id:int}"
+
+<h1>@Titulo Medicamento</h1>
+
+<hr />
+<EditForm Model="@medicamento" OnValidSubmit="SalvarMedicamento">
+    <DataAnnotationsValidator />
+
+    @if (isEdit)
+    {
+        <div class="mb-3">
+            <div class="col-md-4">
+                <label for="Id" class="form-label">Id</label>
+            </div>
+            <div class="col-md-4">
+                <InputNumber class="form-control" @bind-Value="medicamento.Id" readonly="@isEdit" />
+            </div>
+        </div>
+    }
+
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Descrição</label>
+        </div>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="medicamento.Descricao" />
+            <ValidationMessage For="@(() => medicamento.Descricao)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Posição</label>
+        </div>
+        <div class="col-md-4">
+            <InputNumber class="form-control" @bind-Value=medicamento.PosicaoNaCaixaRemedio />
+            <ValidationMessage For="@(() => medicamento.PosicaoNaCaixaRemedio)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    protected bool processing;
+    protected string Titulo = "Criar";
+    protected MedicamentoModel medicamento = new();
+    protected bool isEdit = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (Id != 0)
+        {
+            Titulo = "Editar";
+            isEdit = true;
+        }
+
+        if (firstRender)
+        {
+            medicamento.AssinaturaId = UsuarioLogado.AssinaturaId;
+
+            if (Id != 0)
+            {
+                processing = true;
+                var respostaBusca = await ApiCallHelper.Get<MedicamentoModel>($"/Medicamento/v1/RecuperaMedicamento/{Id}", JwtToken);
+
+                if (respostaBusca.Sucesso)
+                    medicamento = respostaBusca.Dados;
+
+                processing = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    protected async Task SalvarMedicamento()
+    {
+        if (isEdit)
+        {
+            var respostaEdit = await ApiCallHelper.Post<MedicamentoModel, MedicamentoModel>("/Medicamento/v1/Editar", medicamento, JwtToken);
+
+            if (respostaEdit.Sucesso)
+                NavigationManager.NavigateTo("/Medicamento");
+            else
+                await JsRuntime.InvokeVoidAsync("alert", respostaEdit.Mensagem);
+        }
+        else
+        {
+            var respostaCreate = await ApiCallHelper.Post<MedicamentoModel, MedicamentoModel>("/Medicamento/v1/Criar", medicamento, JwtToken);
+
+            if (respostaCreate.Sucesso)
+            {
+                Id = respostaCreate.Dados.Id;
+                await OnAfterRenderAsync(true);
+            }
+            else
+                await JsRuntime.InvokeVoidAsync("alert", respostaCreate.Mensagem);
+        }
+    }
+
+    protected void Return() => NavigationManager.NavigateTo("/Medicamento");
+}

@@ -1,0 +1,113 @@
+﻿@inherits AuthorizedComponent
+@page "/lembreteMedicamento/criar"
+@page "/lembreteMedicamento/editar/{Id:int}"
+
+<h1>@Titulo Lembrete do Medicamento</h1>
+
+<hr />
+<EditForm Model="@lembreteMedicamento" OnValidSubmit="SalvarLembreteMedicamento">
+    <DataAnnotationsValidator />
+
+    @if (isEdit)
+    {
+        <div class="mb-3">
+            <div class="col-md-4">
+                <label for="Id" class="form-label">Id</label>
+            </div>
+            <div class="col-md-4">
+                <InputNumber class="form-control" @bind-Value="lembreteMedicamento.Id" readonly="@isEdit" />
+            </div>
+        </div>
+    }
+
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Descrição</label>
+        </div>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="lembreteMedicamento.Descricao" />
+            <ValidationMessage For="@(() => lembreteMedicamento.Descricao)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Horário</label>
+        </div>
+        <div class="col-md-4">
+            <InputDate Type="InputDateType.Time" class="form-control" @bind-Value="lembreteMedicamento.Horario" />
+            <ValidationMessage For="@(() => lembreteMedicamento.Horario)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    protected bool processing;
+    protected string Titulo = "Criar";
+    protected LembreteMedicamentoModel lembreteMedicamento = new();
+    protected bool isEdit = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (Id != 0)
+        {
+            Titulo = "Editar";
+            isEdit = true;
+        }
+
+        if (firstRender)
+        {
+            lembreteMedicamento.MedicamentoId = MedicamentoLogado.Id;
+            lembreteMedicamento.Horario = DateTime.UtcNow.Date;
+
+            if (Id != 0)
+            {
+                processing = true;
+                var respostaBusca = await ApiCallHelper.Get<LembreteMedicamentoModel>($"/LembreteMedicamento/v1/RecuperaLembreteMedicamento/{Id}", JwtToken);
+
+                if (respostaBusca.Sucesso)
+                    lembreteMedicamento = respostaBusca.Dados;
+
+                processing = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    protected async Task SalvarLembreteMedicamento()
+    {
+        if (isEdit)
+        {
+            var respostaEdit = await ApiCallHelper.Post<LembreteMedicamentoModel, LembreteMedicamentoModel>("/LembreteMedicamento/v1/Editar", lembreteMedicamento, JwtToken);
+
+            if (respostaEdit.Sucesso)
+                NavigationManager.NavigateTo("/lembreteMedicamento");
+            else
+                await JsRuntime.InvokeVoidAsync("alert", respostaEdit.Mensagem);
+        }
+        else
+        {
+            var respostaCreate = await ApiCallHelper.Post<LembreteMedicamentoModel, LembreteMedicamentoModel>("/LembreteMedicamento/v1/Criar", lembreteMedicamento, JwtToken);
+
+            if (respostaCreate.Sucesso)
+            {
+                Id = respostaCreate.Dados.Id;
+                await OnAfterRenderAsync(true);
+            }
+            else
+                await JsRuntime.InvokeVoidAsync("alert", respostaCreate.Mensagem);
+        }
+    }
+
+    protected void Return() => NavigationManager.NavigateTo("/lembreteMedicamento");
+}

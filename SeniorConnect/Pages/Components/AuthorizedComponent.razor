@@ -4,6 +4,7 @@
 @code {
     public UsuarioModel UsuarioLogado { get; private set; }
     public string JwtToken { get; private set; }
+    public MedicamentoModel MedicamentoLogado { get; private set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
