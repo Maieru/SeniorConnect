@@ -101,7 +101,7 @@ namespace SeniorConnect.Controllers
         }
 
         [HttpGet("RecuperaMedicamento/{medicamento}")]
-        public async Task<IActionResult> recuperaMedicamento(int medicamento)
+        public async Task<IActionResult> RecuperaMedicamento(int medicamento)
         {
             try
             {
