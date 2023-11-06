@@ -50,6 +50,7 @@ namespace SeniorConnect.Data
             if (usuario == null)
             {
                 await ProtectedSessionStorage.DeleteAsync("user");
+                await ProtectedSessionStorage.DeleteAsync("jwt-token");
                 NotifyAuthenticationStateChanged(Task.FromResult(AnonymousUser));
                 return;
             }

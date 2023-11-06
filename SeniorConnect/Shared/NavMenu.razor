@@ -1,4 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Senior Connect</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -29,6 +31,11 @@
                 <i class="fa-solid fa-pills fa-lg" style="margin-right: 16px"></i> Meus Medicamentos
             </NavLink>
         </div>
+        <div class="nav-item px-3">
+            <NavLink href="#" class="nav-link" @onclick=FazerLogout>
+                <i class="fa-solid fa-right-from-bracket fa-lg" style="margin-right: 16px"></i> Fazer Logout
+            </NavLink>
+        </div>
     </nav>
 </div>
 
@@ -36,6 +43,11 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private async Task FazerLogout()
+    {
+        await (AuthenticationStateProvider as UsuarioAuthenticationStateProvider).SetAuthenticationStateAsync(null);
+    }
 
     private void ToggleNavMenu()
     {
