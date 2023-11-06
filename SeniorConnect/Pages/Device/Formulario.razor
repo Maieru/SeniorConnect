@@ -3,6 +3,7 @@
 @page "/device/editar/{Id:int}"
 @using Negocio.Enum;
 @using System.ComponentModel.DataAnnotations;
+@using Negocio.Model.Device;
 
 <h1>@Titulo Dispositivo</h1>
 
@@ -40,7 +41,7 @@
         @if (!isEdit)
         {
             <div class="col-md-4">
-                <InputSelect class="form-control form-select" @bind-Value="dispositivo.DeviceType" disabled="@isEdit">
+                <InputSelect class="form-control form-select" @bind-Value="dispositivo.DeviceType" disabled="@isEdit" placeholder="Selecione...">
                     <option value="-1">Selecione...</option>
                     @foreach (EnumDeviceType tipo in Enum.GetValues(typeof(EnumDeviceType)))
                     {
@@ -76,11 +77,11 @@
 
         public int AssinaturaId { get; set; }
 
-        [Required]
-        [MaxLength(100, ErrorMessage = "A descrição deve conter até 100 caracteres")]
+        [Required(ErrorMessage = "A descrição é obrigatória")]
+        [MaxLength(100, ErrorMessage = "A descrição não deve ultrapassar 100 caracteres")]
         public string Descricao { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "É necessário selecionar o tipo do dispositivo")]
         public EnumDeviceType DeviceType { get; set; }
     }
 
