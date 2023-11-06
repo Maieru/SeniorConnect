@@ -55,6 +55,10 @@
 </Loading>
 
 @code {
+
+    [Parameter]
+    public int CodigoRemedio { get; set; }
+
     protected List<LembreteMedicamentoModel> lembreteMedicamento;
     protected List<LembreteMedicamentoModel> lembreteMedicamentoFiltrados = new();
 
@@ -71,7 +75,7 @@
 
     protected async Task CarregaLembreteMedicamentos()
     {
-        var requisicaoMedicamento = await ApiCallHelper.Get<List<LembreteMedicamentoModel>>($"LembreteMedicamento/v1/RecuperaMedicamento/{MedicamentoLogado.Id}", JwtToken);
+        var requisicaoMedicamento = await ApiCallHelper.Get<List<LembreteMedicamentoModel>>($"LembreteMedicamento/v1/RecuperaMedicamento/{CodigoRemedio}", JwtToken);
 
         if (requisicaoMedicamento.Sucesso)
         {
