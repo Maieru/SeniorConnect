@@ -28,20 +28,20 @@
             <label for="Name" class="form-label">Descrição</label>
         </div>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="dispositivo.Descricao" />
+            <InputText class="form-control" @bind-Value="dispositivo.Descricao" readonly="@processing" />
             <ValidationMessage For="@(() => dispositivo.Descricao)" />
         </div>
     </div>
 
     <div class="mb-3">
         <div class="col-md-4">
-            <label for="Name" class="form-label">Tipo Despositivo</label>
+            <label for="Name" class="form-label">Tipo de Dispositivo</label>
         </div>
 
         @if (!isEdit)
         {
             <div class="col-md-4">
-                <InputSelect class="form-control form-select" @bind-Value="dispositivo.DeviceType" disabled="@isEdit" placeholder="Selecione...">
+                <InputSelect class="form-control form-select" @bind-Value="dispositivo.DeviceType" disabled="@isEdit" readonly="@processing">
                     <option value="-1">Selecione...</option>
                     @foreach (EnumDeviceType tipo in Enum.GetValues(typeof(EnumDeviceType)))
                     {
@@ -62,10 +62,12 @@
         }
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
-    </div>
+    <Loading IsLoading="processing">
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
+        </div>
+    </Loading>
 </EditForm>
 
 @code {
@@ -135,6 +137,8 @@
     {
         IoTDeviceModel device = FabricaIoTDeviceModel();
 
+        processing = true;
+
         if (isEdit)
         {
             if (device.DeviceType == EnumDeviceType.Pulseira)
@@ -192,6 +196,8 @@
 
     protected async Task ProcessaRespostaCreate<T>(ApiResponseTO<T> resposta) where T : IoTDeviceModel
     {
+        processing = false;
+
         if (resposta.Sucesso)
         {
             Id = resposta.Dados.DeviceId;
@@ -203,6 +209,8 @@
 
     protected async Task ProcessaRespostaEdit<T>(ApiResponseTO<T> resposta) where T : IoTDeviceModel
     {
+        processing = false;
+
         if (resposta.Sucesso)
             NavigationManager.NavigateTo("/device");
         else
