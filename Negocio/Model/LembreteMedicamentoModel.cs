@@ -23,6 +23,8 @@ namespace Negocio.Model
         public DateTime Horario { get; set; }
 
         [Column("Descricao")]
+        [Required(ErrorMessage = "A descrição é obrigatória")]
+        [MaxLength(100, ErrorMessage = "A descrição não pode ultrapassar 100 caracteres")]
         public string Descricao { get; set; }
     }
 }
