@@ -1,11 +1,11 @@
 ﻿@inherits AuthorizedComponent
-@page "/lembrete/criar"
-@page "/lembrete/editar/{Id:int}"
+@page "/lembretemedicamento/criar/{CodigoRemedio:int}"
+@page "/lembretemedicamento/editar/{Id:int}"
 
-<h1>@Titulo Lembrete</h1>
+<h1>@Titulo Lembrete do Medicamento</h1>
 
 <hr />
-<EditForm Model="@lembrete" OnValidSubmit="SalvarLembrete">
+<EditForm Model="@lembreteMedicamento" OnValidSubmit="SalvarLembreteMedicamento">
     <DataAnnotationsValidator />
 
     @if (isEdit)
@@ -15,7 +15,7 @@
                 <label for="Id" class="form-label">Id</label>
             </div>
             <div class="col-md-4">
-                <InputNumber class="form-control" @bind-Value="lembrete.Id" readonly="@isEdit" />
+                <InputNumber class="form-control" @bind-Value="lembreteMedicamento.Id" readonly="@isEdit"/>
             </div>
         </div>
     }
@@ -25,8 +25,8 @@
             <label for="Name" class="form-label">Descrição</label>
         </div>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="lembrete.Descricao" readonly="@processing" />
-            <ValidationMessage For="@(() => lembrete.Descricao)" />
+            <InputText class="form-control" @bind-Value="lembreteMedicamento.Descricao" readonly="@processing" />
+            <ValidationMessage For="@(() => lembreteMedicamento.Descricao)" />
         </div>
     </div>
 
@@ -35,8 +35,8 @@
             <label for="Name" class="form-label">Horário</label>
         </div>
         <div class="col-md-4">
-            <InputDate Type="InputDateType.Time" class="form-control" @bind-Value="lembrete.Horario" readonly="@processing" />
-            <ValidationMessage For="@(() => lembrete.Horario)" />
+            <InputDate Type="InputDateType.Time" class="form-control" @bind-Value="lembreteMedicamento.Horario" readonly="@processing" />
+            <ValidationMessage For="@(() => lembreteMedicamento.Horario)" />
         </div>
     </div>
 
@@ -45,16 +45,19 @@
             <button type="submit" class="btn btn-primary">Salvar</button>
             <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
         </div>
-    </Loading>    
+    </Loading>
 </EditForm>
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    public int? CodigoRemedio { get; set; }
+
     protected bool processing;
     protected string Titulo = "Criar";
-    protected LembreteModel lembrete = new();
+    protected LembreteMedicamentoModel lembreteMedicamento = new();
     protected bool isEdit = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -69,16 +72,18 @@
 
         if (firstRender)
         {
-            lembrete.AssinaturaId = UsuarioLogado.AssinaturaId;
-            lembrete.Horario = DateTime.UtcNow.Date;
+            if (CodigoRemedio.HasValue)
+                lembreteMedicamento.MedicamentoId = CodigoRemedio.Value;
+
+            lembreteMedicamento.Horario = DateTime.UtcNow.Date;
 
             if (Id != 0)
             {
                 processing = true;
-                var respostaBusca = await ApiCallHelper.Get<LembreteModel>($"/Lembrete/v1/RecuperaLembrete/{Id}", JwtToken);
+                var respostaBusca = await ApiCallHelper.Get<LembreteMedicamentoModel>($"/LembreteMedicamento/v1/RecuperaLembreteMedicamento/{Id}", JwtToken);
 
                 if (respostaBusca.Sucesso)
-                    lembrete = respostaBusca.Dados;
+                    lembreteMedicamento = respostaBusca.Dados;
 
                 processing = false;
             }
@@ -86,23 +91,23 @@
         }
     }
 
-    protected async Task SalvarLembrete()
+    protected async Task SalvarLembreteMedicamento()
     {
         if (isEdit)
         {
             processing = true;
-            var respostaEdit = await ApiCallHelper.Post<LembreteModel, LembreteModel>("/Lembrete/v1/Editar", lembrete, JwtToken);
+            var respostaEdit = await ApiCallHelper.Post<LembreteMedicamentoModel, LembreteMedicamentoModel>("/LembreteMedicamento/v1/Editar", lembreteMedicamento, JwtToken);
             processing = false;
 
             if (respostaEdit.Sucesso)
-                NavigationManager.NavigateTo("/lembrete");
+                NavigationManager.NavigateTo($"/medicamento/editar/{lembreteMedicamento.MedicamentoId}");
             else
                 await JsRuntime.InvokeVoidAsync("alert", respostaEdit.Mensagem);
         }
         else
         {
             processing = true;
-            var respostaCreate = await ApiCallHelper.Post<LembreteModel, LembreteModel>("/Lembrete/v1/Criar", lembrete, JwtToken);
+            var respostaCreate = await ApiCallHelper.Post<LembreteMedicamentoModel, LembreteMedicamentoModel>("/LembreteMedicamento/v1/Criar", lembreteMedicamento, JwtToken);
             processing = false;
 
             if (respostaCreate.Sucesso)
@@ -115,5 +120,5 @@
         }
     }
 
-    protected void Return() => NavigationManager.NavigateTo("/lembrete");
+    protected void Return() => NavigationManager.NavigateTo($"/medicamento/editar/{lembreteMedicamento.MedicamentoId}");
 }

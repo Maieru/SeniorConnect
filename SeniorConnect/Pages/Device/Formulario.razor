@@ -3,6 +3,7 @@
 @page "/device/editar/{Id:int}"
 @using Negocio.Enum;
 @using System.ComponentModel.DataAnnotations;
+@using Negocio.Model.Device;
 
 <h1>@Titulo Dispositivo</h1>
 
@@ -27,20 +28,20 @@
             <label for="Name" class="form-label">Descrição</label>
         </div>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="dispositivo.Descricao" />
+            <InputText class="form-control" @bind-Value="dispositivo.Descricao" readonly="@processing" />
             <ValidationMessage For="@(() => dispositivo.Descricao)" />
         </div>
     </div>
 
     <div class="mb-3">
         <div class="col-md-4">
-            <label for="Name" class="form-label">Tipo Despositivo</label>
+            <label for="Name" class="form-label">Tipo de Dispositivo</label>
         </div>
 
         @if (!isEdit)
         {
             <div class="col-md-4">
-                <InputSelect class="form-control form-select" @bind-Value="dispositivo.DeviceType" disabled="@isEdit">
+                <InputSelect class="form-control form-select" @bind-Value="dispositivo.DeviceType" disabled="@isEdit" readonly="@processing">
                     <option value="-1">Selecione...</option>
                     @foreach (EnumDeviceType tipo in Enum.GetValues(typeof(EnumDeviceType)))
                     {
@@ -61,10 +62,12 @@
         }
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
-    </div>
+    <Loading IsLoading="processing">
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
+        </div>
+    </Loading>
 </EditForm>
 
 @code {
@@ -76,11 +79,11 @@
 
         public int AssinaturaId { get; set; }
 
-        [Required]
-        [MaxLength(100, ErrorMessage = "A descrição deve conter até 100 caracteres")]
+        [Required(ErrorMessage = "A descrição é obrigatória")]
+        [MaxLength(100, ErrorMessage = "A descrição não deve ultrapassar 100 caracteres")]
         public string Descricao { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "É necessário selecionar o tipo do dispositivo")]
         public EnumDeviceType DeviceType { get; set; }
     }
 
@@ -133,6 +136,8 @@
     protected async Task SalvarDispositivo()
     {
         IoTDeviceModel device = FabricaIoTDeviceModel();
+
+        processing = true;
 
         if (isEdit)
         {
@@ -191,6 +196,8 @@
 
     protected async Task ProcessaRespostaCreate<T>(ApiResponseTO<T> resposta) where T : IoTDeviceModel
     {
+        processing = false;
+
         if (resposta.Sucesso)
         {
             Id = resposta.Dados.DeviceId;
@@ -202,6 +209,8 @@
 
     protected async Task ProcessaRespostaEdit<T>(ApiResponseTO<T> resposta) where T : IoTDeviceModel
     {
+        processing = false;
+
         if (resposta.Sucesso)
             NavigationManager.NavigateTo("/device");
         else
