@@ -1,16 +1,19 @@
 ﻿/* -----------------------------Cor e a fonte base de todos os textos do site------------------------------*/
 body {
-    margin: 0;
     color: #333333;
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.logo {
-    position: relative;
-    top: 20px;
-    left: 50px;
-    max-width: 100px;
-    height: auto;
+#main p {
+    font-size: 16px;
+    color: #333;
+}
+
+#main h2 {
+    font-size: 24px;
+    color: #333;
 }
 
 /*---------------------transformar nosso menu em horizontal e ajustar espaçamentos básicos----------------*/
@@ -18,19 +21,27 @@ body {
     display: inline;
     margin-left: 20px;
 }
-
 /*-------------------elementos que precisam ser centralizados nomeio da página----------------------------*/
 .container {
     margin: 0 auto;
     width: 940px;
 }
-
-/* ----------------------------- posicionamento -------------------------------------------------------*/
+/* ----------------------------- header -------------------------------------------------------*/
 #header {
-    background-color: lightblue !important;
+    background-color: #4B0082;
     position: relative;
+    width: 100%;
 }
 
+    #header .menu-opcoes ul li a {
+        color: white;
+        text-decoration: none;
+    }
+
+        #header .menu-opcoes ul li a:hover {
+            color: #BA55D3;
+            text-decoration: underline;
+        }
 
 .menu-opcoes {
     position: absolute;
@@ -38,6 +49,18 @@ body {
     right: 0;
 }
 
+.logo {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    max-width: 100px;
+    height: auto;
+    border: 2px solid #4B0082;
+}
+
+.sobre-link {
+    margin-right: 15px !important; 
+}
 /*---------------------------------texto de entrada----------------------------------------------------*/
 
 .text-container {
@@ -62,12 +85,16 @@ span {
         transform: translateY(0);
     }
 }
-
 /*------------------------------------ diferenciais -------------------------------------------------------*/
 .features {
     display: flex;
     flex-wrap: wrap;
     background-color: lightblue;
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid #ddd;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .feature {
@@ -99,8 +126,6 @@ i {
     margin: 0 auto 10px;
 }
 
-
-
 #main ul {
     list-style-type: disc;
     font-size: 16px;
@@ -108,7 +133,6 @@ i {
     margin-left: 20px;
     align-content: center;
 }
-
 /*----------------------------------------depoimentos------------------------------------------------*/
 .certification {
     font-size: 24px;
@@ -123,6 +147,11 @@ i {
     flex-wrap: wrap;
     justify-content: space-between;
     background-color: #F3D2FA;
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid #ddd;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .testimonial {
@@ -153,31 +182,74 @@ i {
         font-style: italic;
         color: #555;
     }
-
 /* ------------------------------------- experimente já -----------------------------------*/
 .experience {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
-    / background-color: #f9f9f9;
+    background-color: #f9f9f9;
     padding: 20px;
+    transform: translateY(1em);
+    animation: appear 1s forwards;
 }
 
     .experience img {
         max-width: 250px;
         margin-left: 350px;
+        transform: translateY(1em);
+        animation: appear 1s forwards;
     }
 
     .experience p {
         font-size: 18px;
         color: #4B0082;
+        transform: translateY(1em);
+        animation: appear 1s forwards;
     }
+
+    .experience h2 {
+        font-size: 24px;
+        color: #4B0082;
+        transform: translateY(1em);
+        animation: appear 1s forwards;
+    }
+
 
 .itens {
     text-align: left;
 }
+/* ---------------------------------noticias---------------------------------------- */
+#main article {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
 
+    #main article h3 {
+        font-size: 20px;
+        color: #333;
+    }
 
+    #main article p {
+        font-size: 16px;
+        color: #666;
+    }
+
+    #main article a {
+        color: #0071c1;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        #main article a:hover {
+            text-decoration: underline;
+        }
+
+#noticias{
+    margin-left: 20px;
+}
 /*---------------------------------novas parcerias----------------------------------------*/
 #instituicoes-saude {
     background-color: lightblue;
@@ -185,6 +257,7 @@ i {
     padding: 20px;
     text-align: left;
     margin-bottom: 20px;
+    margin: 4px;
 }
 
     #instituicoes-saude h3 {
@@ -211,7 +284,6 @@ i {
             background-color: #BA55D3;
         }
 
-/* Estilo para o botão "Contate-nos" */
 #contactButton {
     background: linear-gradient(45deg, #800080, #8A2BE2);
     color: #fff !important;
@@ -221,8 +293,9 @@ i {
     padding: 10px 20px;
     cursor: pointer;
 }
+
     #contactButton:hover {
-        background: linear-gradient(45deg, #BA55D3, #800080); 
+        background: linear-gradient(45deg, #BA55D3, #800080);
     }
 
 .modal {
@@ -255,15 +328,14 @@ i {
     padding: 10px;
     cursor: pointer;
 }
-
 /* ---------------------------------rodapé---------------------------------------- */
 footer {
     background-color: #4B0082;
     color: white;
     text-align: center;
     padding: 20px 0;
+    width: 100%;
 }
-
 
 .social-icons a {
     margin: 0 10px;
@@ -279,54 +351,3 @@ footer {
     width: 30px;
     height: 30px;
 }
-
-
-#main p {
-    font-size: 16px;
-    color: #333;
-}
-
-.cta-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #9400D3;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-}
-
-    .cta-button:hover {
-        background-color: #BA55D3;
-    }
-
-#main h2 {
-    font-size: 24px;
-    color: #333;
-}
-
-#main article {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-    #main article h3 {
-        font-size: 20px;
-        color: #333;
-    }
-
-    #main article p {
-        font-size: 16px;
-        color: #666;
-    }
-
-    #main article a {
-        color: #0071c1;
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-        #main article a:hover {
-            text-decoration: underline;
-        }

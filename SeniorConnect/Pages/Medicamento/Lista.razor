@@ -1,18 +1,18 @@
 ﻿@inherits AuthorizedComponent
-@page "/lembrete"
+@page "/medicamento"
 
-<Loading IsLoading="lembretes is null" Align="center">
-    <h3>Meus Lembretes</h3>
+<Loading IsLoading="medicamentos is null"  Align="center">
+    <h3>Meus Remédios</h3>
 
     <div class="row" style="margin-top: 16px">
         <div class="col-md-6">
-            <a href='/lembrete/criar' class="btn btn-primary" role="button">
+            <a href='/medicamento/criar' class="btn btn-primary" role="button">
                 <i class="oi oi-plus" style="margin-right: 8px"></i>
-                Adicionar Lembrete
+                Adicionar Medicamento
             </a>
         </div>
         <div class="input-group col">
-            <input type="text" class="form-control" placeholder="Procurar Lembrete..." @bind="SearchString" @bind:event="oninput" @onkeyup="Filtra" />
+            <input type="text" class="form-control" placeholder="Procurar Medicamento..." @bind="SearchString" @bind:event="oninput" @onkeyup="Filtra" />
             @if (SearchString.Length > 0)
             {
                 <div class="input-group-append">
@@ -30,21 +30,21 @@
         <thead style="background-color: #4B0082; color: white">
             <tr>
                 <th class="col-md-6">Descrição</th>
-                <th class="col-md-3">Horário</th>
+                <th class="col-md-3">Posição</th>
                 <th class="col-md-3">Ações</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var lembrete in lembretesFiltrados)
+            @foreach (var medicamento in medicamentosFiltrados)
             {
                 <tr>
-                    <td>@lembrete.Descricao</td>
-                    <td>@lembrete.Horario.ToString("HH:mm")</td>
+                    <td>@medicamento.Descricao</td>
+                    <td>@medicamento.PosicaoNaCaixaRemedio</td>
                     <td>
-                        <a href='/lembrete/editar/@lembrete.Id' class="btn btn-outline-dark" role="button">
+                        <a href='/medicamento/editar/@medicamento.Id' class="btn btn-outline-dark" role="button">
                             Editar
                         </a>
-                        <button class="btn btn-outline-danger" role="button" @onclick="(() => DeletarLembrete(lembrete.Id))">
+                        <button class="btn btn-outline-danger" role="button" @onclick="(() => DeletarMedicamento(medicamento.Id))">
                             Deletar
                         </button>
                     </td>
@@ -55,8 +55,8 @@
 </Loading>
 
 @code {
-    protected List<LembreteModel> lembretes;
-    protected List<LembreteModel> lembretesFiltrados = new();
+    protected List<MedicamentoModel> medicamentos;
+    protected List<MedicamentoModel> medicamentosFiltrados = new();
 
     protected string SearchString { get; set; } = string.Empty;
 
@@ -66,17 +66,17 @@
         await base.OnAfterRenderAsync(firstRender);
 
         if (firstRender)
-            await CarregaLembretes();
+            await CarregaMedicamentos();
     }
 
-    protected async Task CarregaLembretes()
+    protected async Task CarregaMedicamentos()
     {
-        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<List<LembreteModel>>($"Lembrete/v1/RecuperaLembretesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
+        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<List<MedicamentoModel>>($"Medicamento/v1/RecuperaLembretesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
 
         if (requisicaoLembreteAssinatura.Sucesso)
         {
-            lembretes = requisicaoLembreteAssinatura.Dados;
-            lembretesFiltrados = lembretes;
+            medicamentos = requisicaoLembreteAssinatura.Dados;
+            medicamentosFiltrados = medicamentos;
             StateHasChanged();
         }
     }
@@ -84,9 +84,9 @@
     protected void Filtra()
     {
         if (!string.IsNullOrEmpty(SearchString))
-            lembretesFiltrados = lembretes.Where(x => x.Descricao.Contains(SearchString)).ToList();
+            medicamentosFiltrados = medicamentos.Where(x => x.Descricao.Contains(SearchString)).ToList();
         else
-            lembretesFiltrados = lembretes;
+            medicamentosFiltrados = medicamentos;
     }
 
     public void ResetaBusca()
@@ -95,10 +95,10 @@
         Filtra();
     }
 
-    protected async Task DeletarLembrete(int lembreteId)
+    protected async Task DeletarMedicamento(int medicamentoId)
     {
-        var requisicaoDelete = await ApiCallHelper.Delete($"Lembrete/v1/Deletar/{lembreteId}", JwtToken);
-        lembretes.RemoveAll(l => l.Id == lembreteId);
+        var requisicaoDelete = await ApiCallHelper.Delete($"Medicamento/v1/Deletar/{medicamentoId}", JwtToken);
+        medicamentos.RemoveAll(l => l.Id == medicamentoId);
         StateHasChanged();
     }
 }

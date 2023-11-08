@@ -10,13 +10,13 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <h1><img src="logo.png" alt="SeniorConnect - Ligando Corações e Saúde" class="logo"></h1>
     <header id="header">
+        <img src="logo.png" alt="SeniorConnect - Ligando Corações e Saúde" class="logo">
         <nav class="menu-opcoes">
             <ul>
-                <li><a href="/usuario/login/{returnUrl?}">Login</a></li>
+                <li><a href="/usuario/login">Login</a></li>
                 <li><a href="/usuario/criarUsuario">Cadastre-se</a></li>
-                <li><a href="/sobre">Sobre</a></li>
+                <li><a href="/sobre" class="sobre-link">Sobre</a></li>
             </ul>
         </nav>
     </header>
@@ -96,11 +96,11 @@
             </div>
         </section>
         <br />
-        <h2>Últimas Notícias</h2>
+        <h2 id="noticias">Últimas Notícias</h2>
         <article>
             <h3>Novas Funcionalidades Adicionadas ao Aplicativo</h3>
             <p>Estamos felizes em anunciar as últimas atualizações do nosso aplicativo de bem-estar, incluindo novos recursos para tornar a vida dos idosos ainda mais fácil.</p>
-            <a href="noticia1.html">Leia Mais</a>
+            <p>A versão mais recente contém correções de erros e melhorias no desempenho</p>
         </article>
 
         <section id="instituicoes-saude">
@@ -117,20 +117,9 @@
             <h3>Dados da Empresa</h3>
             <p>Telefone: (11) 4546-7890</p>
             <p>E-mail: faleconosco@seniorconnect.com</p>
-            <p>Endereço: Avenida Jabaquara, 123, Jabaquara - SP</p>
+            <p>Endereço: Avenida João Firmino, 243, Jabaquara - SP</p>
         </div>
     </div>
-    <script>
-        document.getElementById('contactButton').addEventListener('click', function () {
-            var modal = document.getElementById('contactModal');
-            modal.style.display = 'block';
-        });
-
-        document.getElementById('closeModal').addEventListener('click', function () {
-            var modal = document.getElementById('contactModal');
-            modal.style.display = 'none';
-        });
-    </script>
     <br />
     <footer>
         <div class="social-icons">

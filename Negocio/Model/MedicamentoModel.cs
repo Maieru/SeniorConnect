@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Negocio.Model
 {
-    [Table ("tbMedicamento")]
+    [Table("tbMedicamento")]
     public class MedicamentoModel
     {
         [Key]
@@ -16,13 +16,17 @@ namespace Negocio.Model
         public int Id { get; set; }
 
         [Column("AssinaturaId")]
-        [ForeignKey ("AssinaturaModel")]
+        [ForeignKey("AssinaturaModel")]
         public int AssinaturaId { get; set; }
 
-        [Column ("Descricao")]
+        [Column("Descricao")]
+        [Required(ErrorMessage = "A descrição é obrigatória")]
+        [MaxLength(100, ErrorMessage = "A descrição não pode ultrapassar 100 caracteres")]
         public string? Descricao { get; set; }
 
-        [Column ("Posicao")]
+        [Column("Posicao")]
+        [Required(ErrorMessage = "A posição é obrigatória")]
+        [Range(1, 7, ErrorMessage = "A posição deve ser um valor entre 1 e 7")]
         public int PosicaoNaCaixaRemedio { get; set; }
     }
 }

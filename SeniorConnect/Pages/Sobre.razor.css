@@ -1,16 +1,7 @@
 ﻿/* -----------------------------Cor e a fonte base de todos os textos do site------------------------------*/
 body {
-    margin: 0;
     color: #333333;
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-}
-
-.logo {
-    position: relative;
-    top: 20px;
-    left: 50px;
-    max-width: 100px;
-    height: auto;
 }
 
 /*---------------------transformar nosso menu em horizontal e ajustar espaçamentos básicos----------------*/
@@ -19,16 +10,55 @@ body {
     margin-left: 20px;
 }
 
+ #main p{
+    font-size: 16px;
+    color: #333;
+}
+
+#main h2 {
+    font-size: 24px;
+    color: #333;
+}
+}
 /*-------------------elementos que precisam ser centralizados nomeio da página----------------------------*/
 .container {
     margin: 0 auto;
     width: 940px;
 }
-
 /* ----------------------------- header -------------------------------------------------------*/
 #header {
-    background-color: lightblue !important;
+    background-color: #4B0082;
     position: relative;
+    width: 100%;
+}
+
+    #header .menu-opcoes ul li a {
+        color: white;
+        text-decoration: none;
+    }
+
+        #header .menu-opcoes ul li a:hover {
+            color: #BA55D3;
+            text-decoration: underline;
+        }
+
+.menu-opcoes {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.logo {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    max-width: 100px;
+    height: auto;
+    border: 2px solid #4B0082;
+}
+
+.sobre-link {
+    margin-right: 15px !important;
 }
 
 .menu-opcoes {
@@ -65,21 +95,16 @@ body {
     text-align: left;
 }
 /*---------------------------------imagem------------------------------------------*/
-/* CSS para a imagem */
 .image img {
-   
     height: auto;
-    float: left; 
-    margin-right: 20px; 
+    float: left;
+    margin-right: 20px;
 }
-
 
 .text {
-    width: 50%; /* Define a largura para ocupar a outra metade da página */
-    float: left; 
+    width: 50%;
+    float: left;
 }
-
-
 /* ---------------------------------rodapé---------------------------------------- */
 footer {
     background-color: #4B0082;
@@ -87,7 +112,6 @@ footer {
     text-align: center;
     padding: 20px 0;
 }
-
 
 .social-icons a {
     margin: 0 10px;
@@ -103,5 +127,3 @@ footer {
     width: 30px;
     height: 30px;
 }
-
-

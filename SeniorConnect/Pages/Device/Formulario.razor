@@ -1,0 +1,221 @@
+﻿@inherits AuthorizedComponent
+@page "/device/criar"
+@page "/device/editar/{Id:int}"
+@using Negocio.Enum;
+@using System.ComponentModel.DataAnnotations;
+@using Negocio.Model.Device;
+
+<h1>@Titulo Dispositivo</h1>
+
+<hr />
+<EditForm Model="@dispositivo" OnValidSubmit="SalvarDispositivo">
+    <DataAnnotationsValidator />
+
+    @if (isEdit)
+    {
+        <div class="mb-3">
+            <div class="col-md-4">
+                <label for="Id" class="form-label">Id</label>
+            </div>
+            <div class="col-md-4">
+                <InputNumber class="form-control" @bind-Value="dispositivo.DeviceId" readonly="@isEdit" />
+            </div>
+        </div>
+    }
+
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Descrição</label>
+        </div>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="dispositivo.Descricao" readonly="@processing" />
+            <ValidationMessage For="@(() => dispositivo.Descricao)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Tipo de Dispositivo</label>
+        </div>
+
+        @if (!isEdit)
+        {
+            <div class="col-md-4">
+                <InputSelect class="form-control form-select" @bind-Value="dispositivo.DeviceType" disabled="@isEdit" readonly="@processing">
+                    <option value="-1">Selecione...</option>
+                    @foreach (EnumDeviceType tipo in Enum.GetValues(typeof(EnumDeviceType)))
+                    {
+                        if (tipo != EnumDeviceType.Unknown)
+                        {
+                            <option value="@(Convert.ToInt32(tipo))" selected="@(tipo == dispositivo.DeviceType)">@(tipo.ToString())</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => dispositivo.DeviceType)" />
+            </div>
+        }
+        else
+        {
+            <div class="col-md-4">
+                <input class="form-control" Value="@dispositivo.DeviceType.ToString()" disabled="@isEdit" />
+            </div>
+        }
+    </div>
+
+    <Loading IsLoading="processing">
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
+        </div>
+    </Loading>
+</EditForm>
+
+@code {
+
+    protected class DeviceCreateModel
+    {
+        public int DeviceId { get; set; }
+        public string DeviceKey { get; set; }
+
+        public int AssinaturaId { get; set; }
+
+        [Required(ErrorMessage = "A descrição é obrigatória")]
+        [MaxLength(100, ErrorMessage = "A descrição não deve ultrapassar 100 caracteres")]
+        public string Descricao { get; set; }
+
+        [Required(ErrorMessage = "É necessário selecionar o tipo do dispositivo")]
+        public EnumDeviceType DeviceType { get; set; }
+    }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected bool processing;
+    protected string Titulo = "Criar";
+    protected DeviceCreateModel dispositivo = new DeviceCreateModel();
+    protected bool isEdit = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (Id != 0)
+        {
+            Titulo = "Editar";
+            isEdit = true;
+        }
+
+        if (firstRender)
+        {
+            dispositivo.AssinaturaId = UsuarioLogado.AssinaturaId;
+
+            if (Id != 0)
+            {
+                processing = true;
+                var respostaBusca = await ApiCallHelper.Get<IoTDeviceModel>($"/Device/v1/RecuperaDevice/{Id}", JwtToken);
+
+                if (respostaBusca.Sucesso)
+                {
+                    dispositivo = new DeviceCreateModel()
+                        {
+                            AssinaturaId = respostaBusca.Dados.AssinaturaId,
+                            Descricao = respostaBusca.Dados.Descricao,
+                            DeviceId = respostaBusca.Dados.DeviceId,
+                            DeviceType = respostaBusca.Dados.DeviceType,
+                            DeviceKey = respostaBusca.Dados.DeviceKey
+                        };
+                }
+
+                processing = false;
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    protected async Task SalvarDispositivo()
+    {
+        IoTDeviceModel device = FabricaIoTDeviceModel();
+
+        processing = true;
+
+        if (isEdit)
+        {
+            if (device.DeviceType == EnumDeviceType.Pulseira)
+            {
+                var respostaEdit = await ApiCallHelper.Post<PulseiraModel, IoTDeviceModel>("/Device/v1/EditarPulseira", device, JwtToken);
+                await ProcessaRespostaEdit<PulseiraModel>(respostaEdit);
+            }
+            else
+            {
+                var respostaEdit = await ApiCallHelper.Post<CaixaRemedioModel, IoTDeviceModel>("/Device/v1/EditarCaixaRemedio", device, JwtToken);
+                await ProcessaRespostaEdit<CaixaRemedioModel>(respostaEdit);
+            }
+        }
+        else
+        {
+            if (device.DeviceType == EnumDeviceType.Pulseira)
+            {
+                var respostaCreate = await ApiCallHelper.Post<PulseiraModel, IoTDeviceModel>("/Device/v1/CriarPulseira", device, JwtToken);
+                await ProcessaRespostaCreate<PulseiraModel>(respostaCreate);
+            }
+            else
+            {
+                var respostaCreate = await ApiCallHelper.Post<CaixaRemedioModel, IoTDeviceModel>("/Device/v1/CriarCaixaRemedio", device, JwtToken);
+                await ProcessaRespostaCreate<CaixaRemedioModel>(respostaCreate);
+            }
+        }
+    }
+
+    protected IoTDeviceModel FabricaIoTDeviceModel()
+    {
+        if (dispositivo.DeviceType == EnumDeviceType.Pulseira)
+        {
+            return new PulseiraModel()
+                {
+                    DeviceId = dispositivo.DeviceId,
+                    DeviceKey = isEdit ? dispositivo.DeviceKey : Guid.NewGuid().ToString(),
+                    AssinaturaId = dispositivo.AssinaturaId,
+                    Descricao = dispositivo.Descricao,
+                    DeviceType = EnumDeviceType.Pulseira
+                };
+        }
+        else
+        {
+            return new CaixaRemedioModel()
+                {
+                    DeviceId = dispositivo.DeviceId,
+                    DeviceKey = isEdit ? dispositivo.DeviceKey : Guid.NewGuid().ToString(),
+                    AssinaturaId = dispositivo.AssinaturaId,
+                    Descricao = dispositivo.Descricao,
+                    DeviceType = EnumDeviceType.CaixaRemedio,
+                    QuantidadeContainers = 7
+                };
+        }
+    }
+
+    protected async Task ProcessaRespostaCreate<T>(ApiResponseTO<T> resposta) where T : IoTDeviceModel
+    {
+        processing = false;
+
+        if (resposta.Sucesso)
+        {
+            Id = resposta.Dados.DeviceId;
+            await OnAfterRenderAsync(true);
+        }
+        else
+            await JsRuntime.InvokeVoidAsync("alert", resposta.Mensagem);
+    }
+
+    protected async Task ProcessaRespostaEdit<T>(ApiResponseTO<T> resposta) where T : IoTDeviceModel
+    {
+        processing = false;
+
+        if (resposta.Sucesso)
+            NavigationManager.NavigateTo("/device");
+        else
+            await JsRuntime.InvokeVoidAsync("alert", resposta.Mensagem);
+    }
+
+    protected void Return() => NavigationManager.NavigateTo("/device");
+}

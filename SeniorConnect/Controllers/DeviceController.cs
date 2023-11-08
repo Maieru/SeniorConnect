@@ -18,15 +18,12 @@ namespace SeniorConnect.Controllers
         {
         }
 
-        [HttpPost("Criar")]
-        public async Task<IActionResult> Criar([FromBody] IoTDeviceModel device)
+        [HttpPost("CriarPulseira")]
+        public async Task<IActionResult> CriarPulseira([FromBody] PulseiraModel device)
         {
             try
             {
-                var deviceRepository = new DeviceRepository(ApplicationContext);
-                var resultado = await deviceRepository.Insert(device);
-
-                return Ok(ApiResponseTO<IoTDeviceModel>.CreateSucesso(device));
+                return await CriarDevice(device);
             }
             catch (ArgumentException ex)
             {
@@ -39,15 +36,12 @@ namespace SeniorConnect.Controllers
             }
         }
 
-        [HttpPost("Editar")]
-        public async Task<IActionResult> Editar([FromBody] IoTDeviceModel device)
+        [HttpPost("CriarCaixaRemedio")]
+        public async Task<IActionResult> CriarCaixaRemedio([FromBody] CaixaRemedioModel device)
         {
             try
             {
-                var deviceRepository = new DeviceRepository(ApplicationContext);
-                var resultado = await deviceRepository.Update(device);
-
-                return Ok(ApiResponseTO<IoTDeviceModel>.CreateSucesso(device));
+                return await CriarDevice(device);
             }
             catch (ArgumentException ex)
             {
@@ -58,6 +52,58 @@ namespace SeniorConnect.Controllers
                 await LoggerHelper.GeraLogErro(ex);
                 return null;
             }
+        }
+
+        private async Task<IActionResult> CriarDevice(IoTDeviceModel device)
+        {
+            var deviceRepository = new DeviceRepository(ApplicationContext);
+            await deviceRepository.Insert(device);
+
+            return Ok(ApiResponseTO<IoTDeviceModel>.CreateSucesso(device));
+        }
+
+        [HttpPost("EditarPulseira")]
+        public async Task<IActionResult> EditarPulseira([FromBody] PulseiraModel device)
+        {
+            try
+            {
+                return await Editar(device);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ApiResponseTO<string>.CreateFalha(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                await LoggerHelper.GeraLogErro(ex);
+                return null;
+            }
+        }
+
+        [HttpPost("EditarCaixaRemedio")]
+        public async Task<IActionResult> EditarCaixaRemedio([FromBody] CaixaRemedioModel device)
+        {
+            try
+            {
+                return await Editar(device);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ApiResponseTO<string>.CreateFalha(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                await LoggerHelper.GeraLogErro(ex);
+                return null;
+            }
+        }
+
+        private async Task<IActionResult> Editar([FromBody] IoTDeviceModel device)
+        {
+            var deviceRepository = new DeviceRepository(ApplicationContext);
+            var resultado = await deviceRepository.Update(device);
+
+            return Ok(ApiResponseTO<IoTDeviceModel>.CreateSucesso(device));
         }
 
         [HttpGet("RecuperaDevice/{deviceId}")]
@@ -103,7 +149,7 @@ namespace SeniorConnect.Controllers
         }
 
         [HttpGet("RecuperaDevicesDaAssinatura/{assinatura}")]
-        public async Task<IActionResult> RecuperaLembretesDaAssinatura(int assinatura)
+        public async Task<IActionResult> RecuperaDevicesDaAssinatura(int assinatura)
         {
             try
             {

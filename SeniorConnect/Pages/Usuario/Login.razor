@@ -12,17 +12,18 @@
             <p class="left">
                 <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
             </p>
-            <h1 style="padding-top: 24px; text-align: center">Fazer Login</h1>
+            <h1 style="padding-top: 24px; text-align: center; color: #4B0082">Fazer Login</h1>
+
         </div>
 
         <EditForm OnValidSubmit="HandleSubmit" Model="usuarioTO">
             <DataAnnotationsValidator />
             <div class="input-group">
-                <div class="col-md-3">  
+                <div class="col-md-3">
                     <span class="input-group-addon" id="basic-addon1">Usuário</span>
                 </div>
                 <div class="col-md-9">
-                    <input type="text" class="form-control" placeholder="Username" @bind="usuarioTO.Usuario" aria-describedby="basic-addon1" disabled="@processing">
+                    <input type="text" class="form-control" placeholder="Usuário" @bind="usuarioTO.Usuario" aria-describedby="basic-addon1" disabled="@processing">
                     <ValidationMessage For="@(() => usuarioTO.Usuario)" />
                 </div>
             </div>
@@ -36,9 +37,10 @@
                 </div>
             </div>
 
-            <Loading IsLoading="@processing" Align="center"> 
+            <Loading IsLoading="@processing" Align="center">
                 <button class="btn btn-primary" type="submit">Login</button>
-                <span style="display: block; margin-top: 16px; text-align: center">Ainda não possui um usuário? <a href="usuario/criarUsuario">Criar usuário</a></span>
+                <span style="display: block; margin-top: 16px; text-align: center">Ainda não possui um usuário? <a href="usuario/criarUsuario" style="color: #8A2BE2; text-decoration: none;">Criar usuário</a></span>
+
             </Loading>
         </EditForm>
     </div>
