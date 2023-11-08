@@ -202,9 +202,9 @@
             this.ccbDescanco.Location = new System.Drawing.Point(6, 22);
             this.ccbDescanco.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ccbDescanco.Name = "ccbDescanco";
-            this.ccbDescanco.Size = new System.Drawing.Size(77, 19);
+            this.ccbDescanco.Size = new System.Drawing.Size(76, 19);
             this.ccbDescanco.TabIndex = 1;
-            this.ccbDescanco.Text = "Descanço";
+            this.ccbDescanco.Text = "Descanso";
             this.ccbDescanco.UseVisualStyleBackColor = true;
             // 
             // gp3
