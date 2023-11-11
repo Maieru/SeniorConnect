@@ -1,4 +1,5 @@
-﻿using Negocio.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Negocio.Model;
 using Negocio.Model.Device;
 using System;
 using System.Collections.Generic;
@@ -238,6 +239,119 @@ namespace Negocio.Test.Repository.DeviceRepository
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(devices[0]));
             Assert.True(_applicationContext.IoTDevices.Count() == 0);
+        }
+
+        [Fact]
+        public async Task Delete_ShouldDeleteWithAssociations()
+        {
+            // Arrange
+            var guids = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = guids[0], AssinaturaId = 1, Descricao = "Pulseira", DeviceType = Enum.EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = guids[1], AssinaturaId = 1, Descricao = "Caixa Remedio", DeviceType = Enum.EnumDeviceType.CaixaRemedio },
+            };
+
+            var lembrete = new LembreteModel { AssinaturaId = 1, Descricao = "Lembrete", Id = 1 };
+            var medicamento = new MedicamentoModel { AssinaturaId = 1, Descricao = "Medicamento", Id = 1, PosicaoNaCaixaRemedio = 2 };
+
+            var lembreteIoTDevice = new LembreteIoTDeviceModel { IoTDeviceId = 1, LembreteId = 1 };
+            var medicamentoIoTDevice = new MedicamentoIoTDeviceModel { IoTDeviceId = 2, MedicamentoId = 1 };
+
+            _applicationContext.IoTDevices.AddRange(devices);
+            _applicationContext.Lembretes.Add(lembrete);
+            _applicationContext.Medicamentos.Add(medicamento);
+            _applicationContext.LembreteIoTDevice.Add(lembreteIoTDevice);
+            _applicationContext.MedicamentoIoTDevice.Add(medicamentoIoTDevice);
+
+            await _applicationContext.SaveChangesAsync();
+
+            // Act
+            var resultDeletePulseira = await _repository.Delete(devices[0].DeviceId);
+            var resultDeleteCaixaRemedio = await _repository.Delete(devices[1].DeviceId);
+
+            // Assert
+            Assert.Equal(2, resultDeletePulseira);
+            Assert.Equal(2, resultDeleteCaixaRemedio);
+            Assert.Empty(_applicationContext.IoTDevices);
+            Assert.Empty(_applicationContext.LembreteIoTDevice);
+            Assert.Empty(_applicationContext.MedicamentoIoTDevice);
+            Assert.NotEmpty(_applicationContext.Lembretes);
+            Assert.NotEmpty(_applicationContext.Medicamentos);
+        }
+
+        [Fact]
+        public async Task Delete_WhenDeviceDoesNotExist_ShouldReturnZero()
+        {
+            // Arrange
+            var guids = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = guids[0], AssinaturaId = 1, Descricao = "Pulseira", DeviceType = Enum.EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = guids[1], AssinaturaId = 1, Descricao = "Caixa Remedio", DeviceType = Enum.EnumDeviceType.CaixaRemedio },
+            };
+
+            var lembrete = new LembreteModel { AssinaturaId = 1, Descricao = "Lembrete", Id = 1 };
+            var medicamento = new MedicamentoModel { AssinaturaId = 1, Descricao = "Medicamento", Id = 1, PosicaoNaCaixaRemedio = 2 };
+
+            var lembreteIoTDevice = new LembreteIoTDeviceModel { IoTDeviceId = 1, LembreteId = 1 };
+            var medicamentoIoTDevice = new MedicamentoIoTDeviceModel { IoTDeviceId = 2, MedicamentoId = 1 };
+
+            _applicationContext.IoTDevices.AddRange(devices);
+            _applicationContext.Lembretes.Add(lembrete);
+            _applicationContext.Medicamentos.Add(medicamento);
+            _applicationContext.LembreteIoTDevice.Add(lembreteIoTDevice);
+            _applicationContext.MedicamentoIoTDevice.Add(medicamentoIoTDevice);
+
+            await _applicationContext.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.Delete(10);
+
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public async Task Delete_ShouldDeleteWithAssociationForOnlyOneDevice()
+        {
+            // Arrange
+            var guids = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = guids[0], AssinaturaId = 1, Descricao = "Pulseira", DeviceType = Enum.EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = guids[1], AssinaturaId = 1, Descricao = "Caixa Remedio", DeviceType = Enum.EnumDeviceType.CaixaRemedio },
+                new PulseiraModel { DeviceId = 3, DeviceKey = guids[0], AssinaturaId = 1, Descricao = "Pulseira", DeviceType = Enum.EnumDeviceType.Pulseira },
+            };
+
+            var lembrete = new LembreteModel { AssinaturaId = 1, Descricao = "Lembrete", Id = 1 };
+            var medicamento = new MedicamentoModel { AssinaturaId = 1, Descricao = "Medicamento", Id = 1, PosicaoNaCaixaRemedio = 2 };
+
+            var lembreteIoTDevice1 = new LembreteIoTDeviceModel { IoTDeviceId = 1, LembreteId = 1 };
+            var lembreteIoTDevice2 = new LembreteIoTDeviceModel { IoTDeviceId = 3, LembreteId = 1 };
+            var medicamentoIoTDevice = new MedicamentoIoTDeviceModel { IoTDeviceId = 2, MedicamentoId = 1 };
+
+            _applicationContext.IoTDevices.AddRange(devices);
+            _applicationContext.Lembretes.Add(lembrete);
+            _applicationContext.Medicamentos.Add(medicamento);
+            _applicationContext.LembreteIoTDevice.Add(lembreteIoTDevice1);
+            _applicationContext.LembreteIoTDevice.Add(lembreteIoTDevice2);
+            _applicationContext.MedicamentoIoTDevice.Add(medicamentoIoTDevice);
+
+            await _applicationContext.SaveChangesAsync();
+
+            // Act
+            var resultDeletePulseira = await _repository.Delete(devices[0].DeviceId);
+            
+            // Assert
+            Assert.Equal(2, resultDeletePulseira);
+            Assert.NotEmpty(_applicationContext.IoTDevices);
+            Assert.Equal(2, _applicationContext.IoTDevices.Count());
+            Assert.NotEmpty(_applicationContext.LembreteIoTDevice);
+            Assert.Equal(1, _applicationContext.LembreteIoTDevice.Count());
+            Assert.Equal(lembreteIoTDevice2, _applicationContext.LembreteIoTDevice.FirstOrDefault());
+            Assert.NotEmpty(_applicationContext.MedicamentoIoTDevice);
+            Assert.NotEmpty(_applicationContext.Lembretes);
+            Assert.NotEmpty(_applicationContext.Medicamentos);
         }
     }
 }

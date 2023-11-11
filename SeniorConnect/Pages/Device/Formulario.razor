@@ -1,6 +1,7 @@
 ﻿@inherits AuthorizedComponent
 @page "/device/criar"
 @page "/device/editar/{Id:int}"
+@using Negocio.Attributes;
 @using Negocio.Enum;
 @using System.ComponentModel.DataAnnotations;
 @using Negocio.Model.Device;
@@ -38,28 +39,19 @@
             <label for="Name" class="form-label">Tipo de Dispositivo</label>
         </div>
 
-        @if (!isEdit)
-        {
-            <div class="col-md-4">
-                <InputSelect class="form-control form-select" @bind-Value="dispositivo.DeviceType" disabled="@isEdit" readonly="@processing">
-                    <option value="-1">Selecione...</option>
-                    @foreach (EnumDeviceType tipo in Enum.GetValues(typeof(EnumDeviceType)))
+        <div class="col-md-4">
+            <InputSelect class="form-control form-select" @bind-Value="DeviceTypeProxy" disabled="@isEdit" readonly="@processing">
+                <option value="-2">Selecione...</option>
+                @foreach (EnumDeviceType tipo in Enum.GetValues(typeof(EnumDeviceType)))
+                {
+                    if (tipo != EnumDeviceType.Unknown)
                     {
-                        if (tipo != EnumDeviceType.Unknown)
-                        {
-                            <option value="@(Convert.ToInt32(tipo))" selected="@(tipo == dispositivo.DeviceType)">@(tipo.ToString())</option>
-                        }
+                        <option value="@(Convert.ToInt32(tipo))" selected="@(tipo == dispositivo.DeviceType)">@(tipo.ToString())</option>
                     }
-                </InputSelect>
-                <ValidationMessage For="@(() => dispositivo.DeviceType)" />
-            </div>
-        }
-        else
-        {
-            <div class="col-md-4">
-                <input class="form-control" Value="@dispositivo.DeviceType.ToString()" disabled="@isEdit" />
-            </div>
-        }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => dispositivo.DeviceType)" />
+        </div>
     </div>
 
     <Loading IsLoading="processing">
@@ -84,6 +76,7 @@
         public string Descricao { get; set; }
 
         [Required(ErrorMessage = "É necessário selecionar o tipo do dispositivo")]
+        [DefinedInEnum(typeof(EnumDeviceType), ErrorMessage = "Selecione um tipo de dispositivo válido")]
         public EnumDeviceType DeviceType { get; set; }
     }
 
@@ -94,6 +87,17 @@
     protected string Titulo = "Criar";
     protected DeviceCreateModel dispositivo = new DeviceCreateModel();
     protected bool isEdit = false;
+
+    private int deviceTypeProxy;
+    protected int DeviceTypeProxy
+    {
+        get => deviceTypeProxy;
+        set
+        {
+            deviceTypeProxy = value;
+            dispositivo.DeviceType = (EnumDeviceType)value;
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -124,6 +128,8 @@
                             DeviceType = respostaBusca.Dados.DeviceType,
                             DeviceKey = respostaBusca.Dados.DeviceKey
                         };
+
+                    DeviceTypeProxy = (int)respostaBusca.Dados.DeviceType;
                 }
 
                 processing = false;
