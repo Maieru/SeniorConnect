@@ -24,7 +24,7 @@ namespace SeniorConnect.Controllers
             {
                 var lembretesRepository = new LembreteRepository(ApplicationContext);
                 var resultado = await lembretesRepository.Insert(lembrete);
-
+                
                 return Ok(ApiResponseTO<LembreteModel>.CreateSucesso(lembrete));
             }
             catch (ArgumentException ex)

@@ -25,13 +25,7 @@ namespace Negocio.Repository.Device
                 if (deviceModel == null)
                     return 0;
 
-                var associacoesComLembretes = await _applicationContext.LembreteIoTDevice.Where(l => l.IoTDeviceId == id).ToListAsync();
-                var associacoesComMedicamentos = await _applicationContext.MedicamentoIoTDevice.Where(l => l.IoTDeviceId == id).ToListAsync();
-
                 _applicationContext.IoTDevices.Remove(deviceModel);
-                associacoesComLembretes.ForEach(associacoesComLembrete => _applicationContext.LembreteIoTDevice.Remove(associacoesComLembrete));
-                associacoesComMedicamentos.ForEach(associacoesComMedicamentos => _applicationContext.MedicamentoIoTDevice.Remove(associacoesComMedicamentos));
-
                 var registrosAlterados = await _applicationContext.SaveChangesAsync();
                 transaction.Commit();
 

@@ -40,12 +40,27 @@
         </div>
     </div>
 
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Pulsieras Associados</label>
+        </div>
+        <div class="col-md-4">
+            <select multiple @bind="DispositivosSelecionados" class="form-control form-control">
+                @foreach (var device in DispositivosDisponiveis)
+                {
+                    <option value="@device.DeviceId" onclik>@device.Descricao</option>
+                }
+            </select>
+        </div>
+    </div>
+
+
     <Loading IsLoading="processing">
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Salvar</button>
             <button class="btn btn-light" type="button" @onclick="Return">Retornar</button>
         </div>
-    </Loading>    
+    </Loading>
 </EditForm>
 
 @code {
@@ -56,6 +71,10 @@
     protected string Titulo = "Criar";
     protected LembreteModel lembrete = new();
     protected bool isEdit = false;
+
+    protected int[] DispositivosSelecionados { get; set; } = new int[] { };
+
+    protected List<IoTDeviceModel> DispositivosDisponiveis { get; set; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -69,25 +88,34 @@
 
         if (firstRender)
         {
+            processing = true;
+            await CarregaDispositivos();
             lembrete.AssinaturaId = UsuarioLogado.AssinaturaId;
             lembrete.Horario = DateTime.UtcNow.Date;
 
             if (Id != 0)
             {
-                processing = true;
                 var respostaBusca = await ApiCallHelper.Get<LembreteModel>($"/Lembrete/v1/RecuperaLembrete/{Id}", JwtToken);
 
                 if (respostaBusca.Sucesso)
+                {
                     lembrete = respostaBusca.Dados;
-
-                processing = false;
+                    
+                    if (respostaBusca.Dados.DispositivosAssociados != null)
+                        DispositivosSelecionados = respostaBusca.Dados.DispositivosAssociados.ToArray();
+                }
+                
             }
+
+            processing = false;
             StateHasChanged();
         }
     }
 
     protected async Task SalvarLembrete()
     {
+        lembrete.DispositivosAssociados = DispositivosSelecionados.ToList();
+
         if (isEdit)
         {
             processing = true;
@@ -113,6 +141,14 @@
             else
                 await JsRuntime.InvokeVoidAsync("alert", respostaCreate.Mensagem);
         }
+    }
+
+    protected async Task CarregaDispositivos()
+    {
+        var requisicaoDeviceAssinatura = await ApiCallHelper.Get<List<IoTDeviceModel>>($"Device/v1/RecuperaDevicesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
+
+        if (requisicaoDeviceAssinatura.Sucesso)
+            DispositivosDisponiveis = requisicaoDeviceAssinatura.Dados.Where(d => d.DeviceType == EnumDeviceType.Pulseira).ToList();
     }
 
     protected void Return() => NavigationManager.NavigateTo("/lembrete");

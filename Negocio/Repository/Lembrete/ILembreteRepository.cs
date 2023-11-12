@@ -16,5 +16,6 @@ namespace Negocio.Repository.Lembrete
         Task<int> Insert(LembreteModel lembrete);
         Task<int> Update(LembreteModel lembrete);
         Task<int> Delete(int id);
+        Task<List<int>> GetDevicesAssociated(int lembreteId);
     }
 }
