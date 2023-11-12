@@ -40,6 +40,20 @@
         </div>
     </div>
 
+    <div class="mb-3">
+        <div class="col-md-4">
+            <label for="Name" class="form-label">Caixas Remedio Associados</label>
+        </div>
+        <div class="col-md-4">
+            <select multiple @bind="DispositivosSelecionados" class="form-control form-control">
+                @foreach (var device in DispositivosDisponiveis)
+                {
+                    <option value="@device.DeviceId" onclik>@device.Descricao</option>
+                }
+            </select>
+        </div>
+    </div>
+
     @if (isEdit)
     {
         <div class="accordion col-md-12" style="margin-bottom: 16px">
@@ -75,6 +89,10 @@
     protected MedicamentoModel medicamento = new();
     protected bool isEdit = false;
 
+    protected int[] DispositivosSelecionados { get; set; } = new int[] { };
+
+    protected List<IoTDeviceModel> DispositivosDisponiveis { get; set; } = new();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -87,24 +105,31 @@
 
         if (firstRender)
         {
+            processing = true;
+            await CarregaDispositivos();
             medicamento.AssinaturaId = UsuarioLogado.AssinaturaId;
 
             if (Id != 0)
             {
-                processing = true;
                 var respostaBusca = await ApiCallHelper.Get<MedicamentoModel>($"/Medicamento/v1/RecuperaMedicamento/{Id}", JwtToken);
 
                 if (respostaBusca.Sucesso)
+                {
                     medicamento = respostaBusca.Dados;
-
-                processing = false;
+                 
+                    if (respostaBusca.Dados.DispositivosAssociados != null)
+                        DispositivosSelecionados = respostaBusca.Dados.DispositivosAssociados.ToArray();
+                }
             }
+            processing = false;
             StateHasChanged();
         }
     }
 
     protected async Task SalvarMedicamento()
     {
+        medicamento.DispositivosAssociados = DispositivosSelecionados.ToList();
+
         if (isEdit)
         {
             processing = true;
@@ -130,6 +155,14 @@
             else
                 await JsRuntime.InvokeVoidAsync("alert", respostaCreate.Mensagem);
         }
+    }
+    
+    protected async Task CarregaDispositivos()
+    {
+        var requisicaoDeviceAssinatura = await ApiCallHelper.Get<List<IoTDeviceModel>>($"Device/v1/RecuperaDevicesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
+
+        if (requisicaoDeviceAssinatura.Sucesso)
+            DispositivosDisponiveis = requisicaoDeviceAssinatura.Dados.Where(d => d.DeviceType == EnumDeviceType.CaixaRemedio).ToList();
     }
 
     protected void Return() => NavigationManager.NavigateTo("/Medicamento");
