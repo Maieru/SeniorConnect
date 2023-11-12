@@ -226,7 +226,7 @@ namespace Negocio.Test.Repository.LembreteRepository
         }
 
         [Fact]
-        public async Task Insert_ShouldNotUpdateWithDeviceAssociation()
+        public async Task Update_ShouldNotUpdateWithDeviceAssociation()
         {
             // arrange
             var lembrete = new LembreteModel { Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 };
