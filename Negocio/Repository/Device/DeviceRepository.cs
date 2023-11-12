@@ -2,6 +2,7 @@
 using Negocio.Database;
 using Negocio.Model.Device;
 using Negocio.Repository.Assinatura;
+using Negocio.Repository.Usuario;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,7 @@ namespace Negocio.Repository.Device
             await _applicationContext.IoTDevices.AddAsync(device);
             return await _applicationContext.SaveChangesAsync();
         }
+
         public async Task<IoTDeviceModel?> GetById(int id) => await _applicationContext.IoTDevices.FirstOrDefaultAsync(a => a.DeviceId == id);
 
         public async Task<int> Update(IoTDeviceModel device)
@@ -62,6 +64,23 @@ namespace Negocio.Repository.Device
 
             _applicationContext.IoTDevices.Update(device);
             return await _applicationContext.SaveChangesAsync();
+        }
+
+        public async Task<int> GetUsuarioAssociatedWithDevice(int deviceId, string deviceKey)
+        {
+            var usuarioRepository = new UsuarioRepository(_applicationContext);
+
+            var device = await GetByIdentification(deviceId, deviceKey);
+
+            if (device == null)
+                throw new ArgumentException("Dispositivo não encontrado");
+
+            var usuario = await usuarioRepository.GetByAssinatura(device.AssinaturaId);
+
+            if (usuario == null)
+                throw new ArgumentException("Usuário não encontrado");
+
+            return usuario.Id;
         }
 
         private async Task<bool> VerificaSeAssinaturaExiste(int assinaturaId)

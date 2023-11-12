@@ -15,6 +15,6 @@ namespace Negocio.Repository.Usuario
         Task<int> Insert(UsuarioModel usuario);
         Task<int> Update(UsuarioModel usuario);
         Task<int> Delete(int id);
-
+        Task<UsuarioModel> GetByAssinatura(int assinatura);
     }
 }

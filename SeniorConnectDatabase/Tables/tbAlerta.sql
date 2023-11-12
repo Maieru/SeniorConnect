@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[tbAlerta]
+(
+	[Id]			INT			NOT NULL	PRIMARY KEY	IDENTITY (1, 1),
+	[Data]			DATETIME	NOT NULL	CONSTRAINT DEFAULT_tbAlerta_DataCriacao DEFAULT (GETDATE()),
+	[TipoAlerta]	INT			NOT NULL,
+	[UsuarioId]		INT			NOT NULL	FOREIGN KEY REFERENCES dbo.tbUsuario(Id) ON DELETE CASCADE
+)

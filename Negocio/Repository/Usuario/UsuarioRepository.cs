@@ -62,13 +62,7 @@ namespace Negocio.Repository.Usuario
             _applicationContext.Usuarios.Remove(usuario);
             return await _applicationContext.SaveChangesAsync();
         }
-
-        private async Task<bool> VerificaSeAssinaturaExiste(int assinaturaId)
-        {
-            var assinaturaRepository = new AssinaturaRepository(_applicationContext);
-            return await assinaturaRepository.GetById(assinaturaId) != null;
-        }
-
+        
         public async Task<UsuarioModel> GetByUserAndPassword(string usuario, string senhaPlain)
         {
             var usuarioModel = await _applicationContext.Usuarios.FirstOrDefaultAsync(u => u.Usuario == usuario);
@@ -80,6 +74,14 @@ namespace Negocio.Repository.Usuario
                 throw new ArgumentException("A senha informada não corresponde ao usuário");
 
             return usuarioModel;
+        }
+
+        public async Task<UsuarioModel> GetByAssinatura(int assinatura) => await _applicationContext.Usuarios.Where(u => u.AssinaturaId == assinatura).FirstOrDefaultAsync();
+
+        private async Task<bool> VerificaSeAssinaturaExiste(int assinaturaId)
+        {
+            var assinaturaRepository = new AssinaturaRepository(_applicationContext);
+            return await assinaturaRepository.GetById(assinaturaId) != null;
         }
     }
 }

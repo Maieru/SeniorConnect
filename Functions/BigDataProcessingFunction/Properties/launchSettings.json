@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "BigDataProcessingFunction": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7134",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local",
+        "MongoDbDatabase": "mongodb://localhost:27017",
+        "SqlServerDatabase": "Server=localhost\\SQLEXPRESS;Database=SeniorConnect;Integrated Security=True; TrustServerCertificate=True;"
+      }
+    }
+  }
+}

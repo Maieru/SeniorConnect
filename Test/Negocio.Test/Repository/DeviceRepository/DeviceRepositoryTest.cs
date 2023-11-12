@@ -240,5 +240,66 @@ namespace Negocio.Test.Repository.DeviceRepository
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(devices[0]));
             Assert.True(_applicationContext.IoTDevices.Count() == 0);
         }
+
+        [Fact]
+        public async Task GetUsuarioAssociatedWithDevice_ShouldReturn()
+        {
+            // arrange
+            var usuario = new UsuarioModel() { Id = 1, Email = "teste", AssinaturaId = 1, Senha = "123", Usuario = "teste" };
+            var guids = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = guids[0], AssinaturaId = 1, Descricao = "Pulseira", DeviceType = Enum.EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = guids[1], AssinaturaId = 1, Descricao = "Caixa Remedio", DeviceType = Enum.EnumDeviceType.CaixaRemedio },
+            };
+
+            _applicationContext.Usuarios.Add(usuario);
+            _applicationContext.IoTDevices.AddRange(devices);
+            await _applicationContext.SaveChangesAsync();
+
+            // act  
+            var idUsuario = await _repository.GetUsuarioAssociatedWithDevice(1, guids[0]);
+
+            // assert
+            Assert.Equal(usuario.Id, idUsuario);
+        }
+
+        [Fact]
+        public async Task GetUsuarioAssociatedWithDevice_ShouldNotReturn_DeviceDoesntExists()
+        {
+            // arrange
+            var usuario = new UsuarioModel() { Id = 1, Email = "teste", AssinaturaId = 1, Senha = "123", Usuario = "teste" };
+            var guids = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = guids[0], AssinaturaId = 1, Descricao = "Pulseira", DeviceType = Enum.EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = guids[1], AssinaturaId = 1, Descricao = "Caixa Remedio", DeviceType = Enum.EnumDeviceType.CaixaRemedio },
+            };
+
+            _applicationContext.Usuarios.Add(usuario);
+            _applicationContext.IoTDevices.AddRange(devices);
+            await _applicationContext.SaveChangesAsync();
+
+            // act  
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.GetUsuarioAssociatedWithDevice(3, guids[0]));
+        }
+
+        [Fact]
+        public async Task GetUsuarioAssociatedWithDevice_ShouldNotReturn_UserDoesntExists()
+        {
+            // arrange
+            var guids = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var devices = new List<IoTDeviceModel>
+            {
+                new PulseiraModel { DeviceId = 1, DeviceKey = guids[0], AssinaturaId = 1, Descricao = "Pulseira", DeviceType = Enum.EnumDeviceType.Pulseira },
+                new CaixaRemedioModel { DeviceId = 2, DeviceKey = guids[1], AssinaturaId = 1, Descricao = "Caixa Remedio", DeviceType = Enum.EnumDeviceType.CaixaRemedio },
+            };
+
+            _applicationContext.IoTDevices.AddRange(devices);
+            await _applicationContext.SaveChangesAsync();
+
+            // act  
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.GetUsuarioAssociatedWithDevice(1, guids[0]));
+        }
     }
 }
