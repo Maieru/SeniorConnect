@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Negocio", "Negocio\Negocio.csproj", "{6EAAE0FC-41DC-4897-AD48-3CFDFC3BC054}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigDataProcessingFunction", "Functions\BigDataProcessingFunction\BigDataProcessingFunction.csproj", "{80C2F760-7D56-4B84-9FF8-3F522932EF45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functions", "Functions\Functions\Functions.csproj", "{80C2F760-7D56-4B84-9FF8-3F522932EF45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
