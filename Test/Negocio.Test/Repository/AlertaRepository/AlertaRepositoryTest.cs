@@ -71,5 +71,45 @@ namespace Negocio.Test.Repository.AlertaRepository
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(alerta));
             Assert.True(_applicationContext.Assinaturas.Count() == 0);
         }
+
+        [Fact]
+        public async Task Delete_ShouldDelete()
+        {
+            // arrange
+            var alerta = new AlertaModel { Id = 1, Data = DateTime.UtcNow, IdUsuario = 1, TipoAlerta = EnumTipoAlerta.BotaoEmergencia };
+            _applicationContext.Alertas.Add(alerta);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.Delete(1);
+
+            Assert.True(result == 1);
+            Assert.Empty(_applicationContext.Alertas);
+        }
+
+        [Fact]
+        public async Task Delete_ShouldDeleteNothing()
+        {
+            // act
+            var result = await _repository.Delete(1);
+
+            Assert.True(result == 0);
+            Assert.Empty(_applicationContext.Alertas);
+        }
+
+        [Fact]
+        public async Task Delete_ShouldNotDelete()
+        {
+            // arrange
+            var alerta = new AlertaModel { Id = 1, Data = DateTime.UtcNow, IdUsuario = 1, TipoAlerta = EnumTipoAlerta.BotaoEmergencia };
+            _applicationContext.Alertas.Add(alerta);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.Delete(2);
+
+            Assert.True(result == 0);
+            Assert.NotEmpty(_applicationContext.Alertas);
+        }
     }
 }

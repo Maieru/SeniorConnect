@@ -13,7 +13,7 @@ using Negocio.Model.IotMessage;
 using Negocio.Repository.Alerta;
 using Negocio.Repository.Device;
 
-namespace BigDataProcessingFunction
+namespace Functions
 {
     public class BigDataProcessingFunction
     {
@@ -64,29 +64,12 @@ namespace BigDataProcessingFunction
                     finally
                     {
                         // Falta salvar a data em que a mensagem foi processada, para ela nn repetir denovo
-
-                        //var filtroId = Builders<StatusPulseiraModel>.Filter.Eq("_id", mensagem.Id);
-                        //var update = Builders<StatusPulseiraModel>.Update.Set("dataProcessamento", DateTime.Now);
-                        //await pulseiraMessageCollection.UpdateOneAsync(filtroId, update);
+                        var filtroId = Builders<StatusPulseiraModel>.Filter.Eq("_id", new ObjectId(mensagem.Id));
+                        var update = Builders<StatusPulseiraModel>.Update.Set("dataProcessamento", DateTime.Now);
+                        await pulseiraMessageCollection.UpdateOneAsync(filtroId, update);
                     }
                 }
             }
         }
-    }
-
-    public class MyInfo
-    {
-        public MyScheduleStatus ScheduleStatus { get; set; }
-
-        public bool IsPastDue { get; set; }
-    }
-
-    public class MyScheduleStatus
-    {
-        public DateTime Last { get; set; }
-
-        public DateTime Next { get; set; }
-
-        public DateTime LastUpdated { get; set; }
     }
 }

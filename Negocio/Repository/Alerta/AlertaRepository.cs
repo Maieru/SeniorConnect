@@ -28,6 +28,17 @@ namespace Negocio.Repository.Alerta
             return await _applicationContext.SaveChangesAsync();
         }
 
+        public async Task<int> Delete(int id)
+        {
+            var alerta = await _applicationContext.Alertas.FirstOrDefaultAsync(a => a.Id == id);
+
+            if (alerta == null)
+                return 0;
+
+            _applicationContext.Alertas.Remove(alerta);
+            return await _applicationContext.SaveChangesAsync();
+        }
+
         private async Task<bool> VerificaSeUsuarioExiste(int usuarioId)
         {
             var usuarioRepository = new UsuarioRepository(_applicationContext);

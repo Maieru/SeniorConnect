@@ -12,6 +12,8 @@ var vaultHelper = new SecretsHelper(ambiente);
 
 var sqlServerConnectionString = await vaultHelper.GetSqlServerConnectionString() ?? "";
 var mongoDbConnectionString = await vaultHelper.GetMongoDbConnectionString() ?? "";
+var keySendGrid = await vaultHelper.GetSendGridAPIKey() ?? "";
+var remetente = await vaultHelper.GetRemetenteEmail() ?? "";
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
@@ -20,6 +22,7 @@ var host = new HostBuilder()
         var contextOptions = new DbContextOptionsBuilder<ApplicationContext>().UseSqlServer(sqlServerConnectionString);
         services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(sqlServerConnectionString), ServiceLifetime.Scoped);
         services.AddSingleton(new IotDriver(mongoDbConnectionString));
+        services.AddSingleton(new EmailHelper(keySendGrid, remetente));
     }).Build();
 
 host.Run();

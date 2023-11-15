@@ -18,7 +18,7 @@ namespace Negocio.Model
         [Column]
         public EnumTipoAlerta TipoAlerta { get; set; }
 
-        [Column]
+        [Column("UsuarioId")]
         public int IdUsuario { get; set; }
 
         [Column]
