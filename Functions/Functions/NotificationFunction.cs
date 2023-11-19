@@ -25,7 +25,7 @@ namespace Functions
         }
 
         [Function("NotificationFunction")]
-        public async Task Run([TimerTrigger("*/10 * * * * *")] MyInfo myTimer)
+        public async Task Run([TimerTrigger("* */10 * * * *")] MyInfo myTimer)
         {
             var usuarioRepository = new UsuarioRepository(_applicationContext);
             var alertaRepository = new AlertaRepository(_applicationContext);
