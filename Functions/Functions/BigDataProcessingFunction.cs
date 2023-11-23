@@ -29,7 +29,7 @@ namespace Functions
         }
 
         [Function("BigDataProcessingFunction")]
-        public async Task Run([TimerTrigger("*/10 * * * * *")] MyInfo myTimer)
+        public async Task Run([TimerTrigger("0 */10 * * * *")] MyInfo myTimer)
         {
             _logger.LogInformation("Inicio da execução da função BigDataProcessingFunction.");
 
