@@ -4,9 +4,10 @@
 @using PSC.Blazor.Components.Chartjs.Util;
 @using SeniorConnect.Data;
 @using System.ComponentModel.DataAnnotations;
-@attribute [AllowAnonymous];
 @using PSC.Blazor.Components.Chartjs.Enums
 @using PSC.Blazor.Components.Chartjs.Models.Common
+@inherits AuthorizedComponent
+@attribute [AllowAnonymous];
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
@@ -48,64 +49,89 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Lembrete</th>
                     <th>Horário</th>
+                    <th>Descrição</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Beber água</td>
-                    <td>09:00</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Caminhar</td>
-                    <td>10:00</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Pagar conta de luz</td>
-                    <td>14:30</td>
-                </tr>
+                @if (lembretes is null)
+                {
+                    <tr>
+                        <td>
+                            Nenhum lembrete cadastrado
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var lembrete in lembretes)
+                    {
+                        <tr>
+                            <td>@lembrete.Id</td>
+                            <td>@lembrete.Horario</td>
+                            <td>@lembrete.Descricao</td>
+                        </tr>
+                    }
+                }
+
             </tbody>
         </table>
+    </div>
+
+    <div style="display: flex; justify-content: space-around; align-items: flex-start; margin-top: 20px;">
+        <div style="width: 50%;">
+            <Chart Config="pieChartConfig" @ref="pieChart"></Chart>
+        </div>
+        <div style="width: 50%; margin-left: 10px;">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Medicamento ID</th>
+                        <th>Horário</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (lembreteMedicamento is null)
+                    {
+                        <tr>
+                            <td>
+                                Nenhum lembrete cadastrado
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var lembreteMedicamento in lembreteMedicamento)
+                        {
+                            <tr>
+                                <td>@lembreteMedicamento.Id</td>
+                                <td>@lembreteMedicamento.MedicamentoId</td>
+                                <td>@lembreteMedicamento.Horario</td>
+                                <td>@lembreteMedicamento.Descricao</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<div style="display: flex; justify-content: space-around; align-items: flex-start; margin-top: 20px;">
-    <div style="width: 50%;">
-        <Chart Config="pieChartConfig" @ref="pieChart"></Chart>
-    </div>
-    <div style="width: 50%; margin-left: 10px;">
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Medicamento</th>
-                    <th>Horário</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Losartana</td>
-                    <td>08:00</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Aradois</td>
-                    <td>20:00</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 <br />
 
 <Chart Config="barChartConfig" @ref="barChart" style="width: 100%;"></Chart>
 
-    @code {
+@code {
 
     private LineChartConfig lineChartConfig;
     private PieChartConfig pieChartConfig;
@@ -136,25 +162,25 @@
                         }
                     },
                     Scales = new Dictionary<string, Axis>()
-    {
-    {
-    Scales.XAxisId, new Axis()
-    {
-    Stacked = true,
-    Ticks = new Ticks()
-    {
-    MaxRotation = 0,
-    MinRotation = 0
-    }
-    }
-    },
-    {
-    Scales.YAxisId, new Axis()
-    {
-    Stacked = true
-    }
-    }
-    }
+        {
+        {
+        Scales.XAxisId, new Axis()
+        {
+        Stacked = true,
+        Ticks = new Ticks()
+        {
+        MaxRotation = 0,
+        MinRotation = 0
+        }
+        }
+        },
+        {
+        Scales.YAxisId, new Axis()
+        {
+        Stacked = true
+        }
+        }
+        }
                 }
             };
         lineChartConfig.Data.Labels = new List<string>() { "Batimentos Cardíacos" };
@@ -177,13 +203,13 @@
                 {
                     Labels = new List<string> { "Roxo", "Lilás", "Verde água", "Verde" },
                     Datasets = new List<PieDataset>
-    {
-    new PieDataset
-    {
-    BackgroundColor = new List<string> { "rgba(128,0,128)", "rgba(218,112,214)", "rgba(32,178,170)", "rgba(152,251,152)" },
-    Data = new List<decimal?> { 6, 5, 3, 7 }
-    }
-    }
+        {
+        new PieDataset
+        {
+        BackgroundColor = new List<string> { "rgba(128,0,128)", "rgba(218,112,214)", "rgba(32,178,170)", "rgba(152,251,152)" },
+        Data = new List<decimal?> { 6, 5, 3, 7 }
+        }
+        }
                 }
             };
 
@@ -203,32 +229,78 @@
                         }
                     },
                     Scales = new Dictionary<string, Axis>()
-                        {
-                        {
-                            Scales.XAxisId, new Axis()
-                            {
-                                Stacked = true,
-                                Ticks = new Ticks()
-                                {
-                                    MaxRotation = 0,
-                                    MinRotation = 0
-                                }
-                            }
-                        },
-                        {
-                            Scales.YAxisId, new Axis()
-                            {
-                                Stacked = true,
-                                Title = new AxesTitle()
-                                {
-                                    Display = true,
-                                    Text = "Qtde Quedas"
-                                }
-                            }
-                        }
-                        }
+        {
+        {
+        Scales.XAxisId, new Axis()
+        {
+        Stacked = true,
+        Ticks = new Ticks()
+        {
+        MaxRotation = 0,
+        MinRotation = 0
+        }
+        }
+        },
+        {
+        Scales.YAxisId, new Axis()
+        {
+        Stacked = true,
+        Title = new AxesTitle()
+        {
+        Display = true,
+        Text = "Qtde Quedas"
+        }
+        }
+        }
+        }
                 }
             };
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Para o funcionamento adequado, essa chamada SEMPRE deve estar antes do resto do código nesse método
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            await CarregaLembreteMedicamentos();
+            await CarregaLembretes();
+        }
+
     }
+
+    [Parameter]
+    public int CodigoRemedio { get; set; }
+
+    protected List<LembreteMedicamentoModel?> lembreteMedicamento;
+    protected List<LembreteMedicamentoModel?> lembreteMedicamentoFiltrados = new();
+
+    protected async Task CarregaLembreteMedicamentos()
+    {
+        var requisicaoMedicamento = await ApiCallHelper.Get<List<LembreteMedicamentoModel>>($"LembreteMedicamento/v1/RecuperaMedicamento/{CodigoRemedio}", JwtToken);
+
+        if (requisicaoMedicamento.Sucesso)
+        {
+            lembreteMedicamento = requisicaoMedicamento.Dados;
+            lembreteMedicamentoFiltrados = lembreteMedicamento;
+            StateHasChanged();
+        }
+    }
+
+    protected List<LembreteModel> lembretes;
+    protected List<LembreteModel> lembretesFiltrados = new();
+
+    protected async Task CarregaLembretes()
+    {
+        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<List<LembreteModel>>($"Lembrete/v1/RecuperaLembretesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
+
+        if (requisicaoLembreteAssinatura.Sucesso)
+        {
+            lembretes = requisicaoLembreteAssinatura.Dados;
+            lembretesFiltrados = lembretes;
+            StateHasChanged();
+        }
+    }
+}
 
