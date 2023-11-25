@@ -7,7 +7,6 @@
 @using PSC.Blazor.Components.Chartjs.Enums
 @using PSC.Blazor.Components.Chartjs.Models.Common
 @inherits AuthorizedComponent
-@attribute [AllowAnonymous];
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
@@ -16,7 +15,7 @@
         <span style="font-size: 12px;">Qtde Acionamentos</span>
         <div class="info-block" style="--border-color: rgba(139,0,139); --bg-color: rgba(128,0,128,0.1); width: 140px;">
             <img src="botao_emergencia.png" alt="Emergência Icon" style="width: 24px; height: 24px;" />
-            <p>3</p>
+            <p>@contadorBtEmergencia</p>
         </div>
     </div>
     <div style="text-align: center;">
@@ -45,30 +44,27 @@
         </button>
     </div>
     <div style="width: 50%; margin-left: 10px;">
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Horário</th>
-                    <th>Descrição</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (lembretes is null)
-                {
+        @if (lembretes is null)
+        {
+            <tr>
+                <td>
+                    Nenhum lembrete cadastrado
+                </td>
+            </tr>
+        }
+        else
+        {
+            <table class="styled-table">
+                <thead>
                     <tr>
-                        <td>
-                            Nenhum lembrete cadastrado
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
+                        <th>ID</th>
+                        <th>Horário</th>
+                        <th>Descrição</th>
                     </tr>
-                }
-                else
-                {
-                    foreach (var lembrete in lembretes)
+                </thead>
+                <tbody>
+
+                    @foreach (var lembrete in lembretes)
                     {
                         <tr>
                             <td>@lembrete.Id</td>
@@ -76,10 +72,9 @@
                             <td>@lembrete.Descricao</td>
                         </tr>
                     }
-                }
-
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        }
     </div>
 
     <div style="display: flex; justify-content: space-around; align-items: flex-start; margin-top: 20px;">
@@ -87,30 +82,26 @@
             <Chart Config="pieChartConfig" @ref="pieChart"></Chart>
         </div>
         <div style="width: 50%; margin-left: 10px;">
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Medicamento ID</th>
-                        <th>Horário</th>
-                        <th>Descrição</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (lembreteMedicamento is null)
-                    {
+            @if (lembreteMedicamento is null)
+            {
+                <tr>
+                    <td>
+                        Nenhum lembrete cadastrado
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <table class="styled-table">
+                    <thead>
                         <tr>
-                            <td>
-                                Nenhum lembrete cadastrado
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
+                            <th>ID</th>
+                            <th>Medicamento ID</th>
+                            <th>Horário</th>
+                            <th>Descrição</th>
                         </tr>
-                    }
-                    else
-                    {
+                    </thead>
+                    <tbody>
                         @foreach (var lembreteMedicamento in lembreteMedicamento)
                         {
                             <tr>
@@ -120,9 +111,9 @@
                                 <td>@lembreteMedicamento.Descricao</td>
                             </tr>
                         }
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            }
         </div>
     </div>
 </div>
@@ -232,10 +223,10 @@
         {
         {
         Scales.XAxisId, new Axis()
-        {
-        Stacked = true,
-        Ticks = new Ticks()
-        {
+            {
+                Stacked = true,
+                Ticks = new Ticks()
+            {
         MaxRotation = 0,
         MinRotation = 0
         }
@@ -266,6 +257,7 @@
         {
             await CarregaLembreteMedicamentos();
             await CarregaLembretes();
+            await CarregaContadorBtEmergencia();
         }
 
     }
@@ -280,7 +272,7 @@
     {
         var requisicaoMedicamento = await ApiCallHelper.Get<List<LembreteMedicamentoModel>>($"LembreteMedicamento/v1/RecuperaMedicamento/{CodigoRemedio}", JwtToken);
 
-        if (requisicaoMedicamento.Sucesso)
+        if (requisicaoMedicamento != null && requisicaoMedicamento.Sucesso)
         {
             lembreteMedicamento = requisicaoMedicamento.Dados;
             lembreteMedicamentoFiltrados = lembreteMedicamento;
@@ -302,5 +294,19 @@
             StateHasChanged();
         }
     }
+
+    protected int contadorBtEmergencia;
+
+    protected async Task CarregaContadorBtEmergencia()
+    {
+        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<int>($"Dashboard/v1/ContagemBtEmergencia/{UsuarioLogado.AssinaturaId}", JwtToken);
+
+        if (requisicaoLembreteAssinatura.Sucesso)
+        {
+            contadorBtEmergencia = requisicaoLembreteAssinatura.Dados;
+            StateHasChanged();
+        }
+    }
+
 }
 
