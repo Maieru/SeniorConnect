@@ -15,7 +15,7 @@
         <span style="font-size: 12px;">Qtde Acionamentos</span>
         <div class="info-block" style="--border-color: rgba(139,0,139); --bg-color: rgba(128,0,128,0.1); width: 140px;">
             <img src="botao_emergencia.png" alt="Emergência Icon" style="width: 24px; height: 24px;" />
-            <p>@contadorBtEmergencia</p>
+            <p>3</p>
         </div>
     </div>
     <div style="text-align: center;">
@@ -36,23 +36,20 @@
 <br />
 <br />
 
-<div style="display: flex; justify-content: space-around; align-items: flex-start;">
-    <div style="width: 50%;">
+<div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 48%;">
         <Chart Config="lineChartConfig" @ref="lineChart" style="width: 100%;"></Chart>
         <button type="button" @onclick="addDado">
             Teste
         </button>
     </div>
-    <div style="width: 50%; margin-left: 10px;">
+    <div style="width: 48%; margin-top: 20px;">
         @if (lembretes is null)
         {
-            <tr>
-                <td>
-                    Nenhum lembrete cadastrado
-                </td>
-            </tr>
+            <p>Nenhum lembrete de medicamento cadastrado</p>
         }
         else
+
         {
             <table class="styled-table">
                 <thead>
@@ -77,26 +74,22 @@
         }
     </div>
 
-    <div style="display: flex; justify-content: space-around; align-items: flex-start; margin-top: 20px;">
-        <div style="width: 50%;">
-            <Chart Config="pieChartConfig" @ref="pieChart"></Chart>
+    <div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap;">
+        <div style="width: 48%;">
+            <Chart Config="pieChartConfig" @ref="pieChart" style="width: 100%;"></Chart>
         </div>
-        <div style="width: 50%; margin-left: 10px;">
+        <div style="width: 48%; margin-top: 20px;">
             @if (lembreteMedicamento is null)
             {
-                <tr>
-                    <td>
-                        Nenhum lembrete cadastrado
-                    </td>
-                </tr>
+                <p>Nenhum lembrete de medicamento cadastrado</p>
             }
             else
+
             {
                 <table class="styled-table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Medicamento ID</th>
                             <th>Horário</th>
                             <th>Descrição</th>
                         </tr>
@@ -106,7 +99,6 @@
                         {
                             <tr>
                                 <td>@lembreteMedicamento.Id</td>
-                                <td>@lembreteMedicamento.MedicamentoId</td>
                                 <td>@lembreteMedicamento.Horario</td>
                                 <td>@lembreteMedicamento.Descricao</td>
                             </tr>
@@ -134,6 +126,7 @@
     {
         var rd = new Random();
         lineChart.AddData(new List<string?>() { "Janeiro" }, 0, new List<decimal?>() { rd.Next(0, 200) });
+        barChart.AddData(new List<string?>() { "Janeiro" }, 0, new List<decimal?>() { rd.Next(0, 200) });
 
     }
 
@@ -153,24 +146,24 @@
                         }
                     },
                     Scales = new Dictionary<string, Axis>()
-        {
-        {
-        Scales.XAxisId, new Axis()
-        {
-        Stacked = true,
-        Ticks = new Ticks()
-        {
-        MaxRotation = 0,
-        MinRotation = 0
-        }
-        }
-        },
-        {
-        Scales.YAxisId, new Axis()
-        {
-        Stacked = true
-        }
-        }
+                    {
+                        {
+                            Scales.XAxisId, new Axis()
+                                {
+                                    Stacked = true,
+                                    Ticks = new Ticks()
+                                        {
+                                            MaxRotation = 0,
+                                            MinRotation = 0
+                                        }
+                                }
+                         },
+                    {
+                        Scales.YAxisId, new Axis()
+                            {
+                                Stacked = true
+                            }
+                    }
         }
                 }
             };
@@ -192,15 +185,15 @@
                 },
                 Data = new PieData
                 {
-                    Labels = new List<string> { "Roxo", "Lilás", "Verde água", "Verde" },
+                    Labels = new List<string> { "Sim", "Não" },
                     Datasets = new List<PieDataset>
         {
         new PieDataset
         {
-        BackgroundColor = new List<string> { "rgba(128,0,128)", "rgba(218,112,214)", "rgba(32,178,170)", "rgba(152,251,152)" },
-        Data = new List<decimal?> { 6, 5, 3, 7 }
+            BackgroundColor = new List<string> { "rgba(128,0,128)", "rgba(218,112,214)" },
+            Data = new List<decimal?> { 6, 5 }
         }
-        }
+            }
                 }
             };
 
@@ -219,6 +212,7 @@
                             Position = LegendPosition.Right
                         }
                     },
+
                     Scales = new Dictionary<string, Axis>()
         {
         {
@@ -226,22 +220,22 @@
             {
                 Stacked = true,
                 Ticks = new Ticks()
-            {
-        MaxRotation = 0,
-        MinRotation = 0
-        }
-        }
+                {
+                     MaxRotation = 0,
+                     MinRotation = 0
+                }
+            }
         },
         {
-        Scales.YAxisId, new Axis()
-        {
-        Stacked = true,
-        Title = new AxesTitle()
-        {
-        Display = true,
-        Text = "Qtde Quedas"
-        }
-        }
+             Scales.YAxisId, new Axis()
+                {
+                    Stacked = true,
+                    Title = new AxesTitle()
+                    {
+                        Display = true,
+                        Text = "Qtde Quedas"
+                    }
+         }
         }
         }
                 }
@@ -257,7 +251,7 @@
         {
             await CarregaLembreteMedicamentos();
             await CarregaLembretes();
-            await CarregaContadorBtEmergencia();
+            //  await CarregaContadorBtEmergencia();
         }
 
     }
