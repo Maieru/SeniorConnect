@@ -299,7 +299,7 @@
 
     protected async Task CarregaContadorBtEmergencia()
     {
-        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<int>($"Dashboard/v1/ContagemBtEmergencia/{UsuarioLogado.AssinaturaId}", JwtToken);
+        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<int>($"Dashboard/v1/ContagemBtEmergencia?assinatura={UsuarioLogado.AssinaturaId}", JwtToken);
 
         if (requisicaoLembreteAssinatura.Sucesso)
         {
