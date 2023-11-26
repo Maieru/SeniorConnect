@@ -15,10 +15,10 @@ namespace SeniorConnect.Controllers
     [ApiController]
     public class DashboardController : BaseController
     {
-       // private IotDriver _driver;
-        public DashboardController(ApplicationContext applicationContext) : base(applicationContext) //, IotDriver driver) : base(applicationContext)
+        private IotDriver _driver;
+        public DashboardController(ApplicationContext applicationContext, IotDriver driver) : base(applicationContext)
         {
-            //_driver = driver;
+            _driver = driver;
         }
 
         [HttpGet("ContagemBtEmergencia")]
@@ -31,20 +31,20 @@ namespace SeniorConnect.Controllers
 
                 var pulseira = dispositivo.Where(l => l.DeviceType == EnumDeviceType.Pulseira).FirstOrDefault();
 
-                //var pulseiraMessageCollection = _driver.GetIoTMessagePulseiraCollection();
+                var pulseiraMessageCollection = _driver.GetIoTMessagePulseiraCollection();
                 var filtroDispositivo = Builders<StatusPulseiraModel>.Filter.Eq(l => l.DeviceKey, pulseira.DeviceKey);
-                //var mensagensNaoProcessadas = await pulseiraMessageCollection.FindAsync<StatusPulseiraModel>(filtroDispositivo);
+                var mensagensNaoProcessadas = await pulseiraMessageCollection.FindAsync<StatusPulseiraModel>(filtroDispositivo);
 
                 int contador = 0;
 
-                //while (mensagensNaoProcessadas.MoveNext())
-                //{
-                //    foreach (var mensagem in mensagensNaoProcessadas.Current)
-                //    {
-                //        if (mensagem.BotaoEmergenciaPressionada)
-                //            contador++;
-                //    }
-                //}
+                while (mensagensNaoProcessadas.MoveNext())
+                {
+                    foreach (var mensagem in mensagensNaoProcessadas.Current)
+                    {
+                        if (mensagem.BotaoEmergenciaPressionada)
+                            contador++;
+                    }
+                }
 
                 return Ok(ApiResponseTO<int>.CreateSucesso(contador));
             }
