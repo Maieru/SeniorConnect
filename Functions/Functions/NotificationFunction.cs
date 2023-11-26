@@ -39,7 +39,7 @@ namespace Functions
 
                     try
                     {
-                        var usuario = await usuarioRepository.GetById(alerta.Id);
+                        var usuario = await usuarioRepository.GetById(alerta.IdUsuario);
                         await alertaRepository.Delete(alerta.Id);
                         await _emailHelper.EnviaEmail(alerta, usuario);
                         await transaction.CommitAsync();

@@ -51,7 +51,12 @@ namespace Functions
                             var usuario = await deviceRepository.GetUsuarioAssociatedWithDevice(mensagem.DeviceId, mensagem.DeviceKey);
                             await alertaRepository.Insert(new AlertaModel() { TipoAlerta = EnumTipoAlerta.Queda, Data = DateTime.Now, IdUsuario = usuario });
                         }
-                        // Fazer as outras trativas aqui (colocar em um método, pelo amor de deus)
+
+                        if (mensagem.BotaoEmergenciaPressionada)
+                        {
+                            var usuario = await deviceRepository.GetUsuarioAssociatedWithDevice(mensagem.DeviceId, mensagem.DeviceKey);
+                            await alertaRepository.Insert(new AlertaModel() { TipoAlerta = EnumTipoAlerta.BotaoEmergencia, Data = DateTime.Now, IdUsuario = usuario });
+                        }
                     }
                     catch (ArgumentException erro)
                     {
@@ -63,7 +68,7 @@ namespace Functions
                     }
                     finally
                     {
-                        // Falta salvar a data em que a mensagem foi processada, para ela nn repetir denovo
+                        // Falta salvar a data em que a mensagem foi processada, para ela não repetir denovo
                         var filtroId = Builders<StatusPulseiraModel>.Filter.Eq("_id", new ObjectId(mensagem.Id));
                         var update = Builders<StatusPulseiraModel>.Update.Set("dataProcessamento", DateTime.Now);
                         await pulseiraMessageCollection.UpdateOneAsync(filtroId, update);
