@@ -40,7 +40,7 @@
     <div style="width: 48%;">
         <Chart Config="lineChartConfig" @ref="lineChart" style="width: 100%;"></Chart>
         <button type="button" @onclick="addDado">
-            Teste
+            Batimentos Cardíacos
         </button>
     </div>
     <div style="width: 48%; margin-top: 20px;">
@@ -112,21 +112,19 @@
 
 <br />
 
-<Chart Config="barChartConfig" @ref="barChart" style="width: 100%;"></Chart>
-
 @code {
 
     private LineChartConfig lineChartConfig;
     private PieChartConfig pieChartConfig;
-    private BarChartConfig barChartConfig;
 
-    private Chart lineChart, pieChart, barChart;
+
+    private Chart lineChart, pieChart;
 
     protected void addDado()
     {
         var rd = new Random();
         lineChart.AddData(new List<string?>() { "Janeiro" }, 0, new List<decimal?>() { rd.Next(0, 200) });
-        barChart.AddData(new List<string?>() { "Janeiro" }, 0, new List<decimal?>() { rd.Next(0, 200) });
+
 
     }
 
@@ -197,49 +195,6 @@
                 }
             };
 
-        barChartConfig = new BarChartConfig()
-            {
-                Options = new Options()
-                {
-                    Responsive = true,
-                    MaintainAspectRatio = false,
-                    Plugins = new Plugins()
-                    {
-                        Legend = new Legend()
-                        {
-                            Align = Align.Center,
-                            Display = false,
-                            Position = LegendPosition.Right
-                        }
-                    },
-
-                    Scales = new Dictionary<string, Axis>()
-        {
-        {
-        Scales.XAxisId, new Axis()
-            {
-                Stacked = true,
-                Ticks = new Ticks()
-                {
-                     MaxRotation = 0,
-                     MinRotation = 0
-                }
-            }
-        },
-        {
-             Scales.YAxisId, new Axis()
-                {
-                    Stacked = true,
-                    Title = new AxesTitle()
-                    {
-                        Display = true,
-                        Text = "Qtde Quedas"
-                    }
-         }
-        }
-        }
-                }
-            };
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -256,15 +211,12 @@
 
     }
 
-    [Parameter]
-    public int CodigoRemedio { get; set; }
-
     protected List<LembreteMedicamentoModel?> lembreteMedicamento;
     protected List<LembreteMedicamentoModel?> lembreteMedicamentoFiltrados = new();
 
     protected async Task CarregaLembreteMedicamentos()
     {
-        var requisicaoMedicamento = await ApiCallHelper.Get<List<LembreteMedicamentoModel>>($"LembreteMedicamento/v1/RecuperaMedicamento/{CodigoRemedio}", JwtToken);
+        var requisicaoMedicamento = await ApiCallHelper.Get<List<LembreteMedicamentoModel>>($"LembreteMedicamento/v1/RecuperaMedicamento/{UsuarioLogado.AssinaturaId}", JwtToken);
 
         if (requisicaoMedicamento != null && requisicaoMedicamento.Sucesso)
         {
@@ -281,7 +233,7 @@
     {
         var requisicaoLembreteAssinatura = await ApiCallHelper.Get<List<LembreteModel>>($"Lembrete/v1/RecuperaLembretesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
 
-        if (requisicaoLembreteAssinatura.Sucesso)
+        if (requisicaoLembreteAssinatura != null && requisicaoLembreteAssinatura.Sucesso)
         {
             lembretes = requisicaoLembreteAssinatura.Dados;
             lembretesFiltrados = lembretes;
