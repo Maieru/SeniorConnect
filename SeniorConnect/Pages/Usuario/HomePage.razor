@@ -1,0 +1,258 @@
+﻿@page "/home"
+
+@using System.Security.Claims
+@using PSC.Blazor.Components.Chartjs.Util;
+@using SeniorConnect.Data;
+@using System.ComponentModel.DataAnnotations;
+@using PSC.Blazor.Components.Chartjs.Enums
+@using PSC.Blazor.Components.Chartjs.Models.Common
+@inherits AuthorizedComponent
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+<div style="display: flex; justify-content: space-around; align-items: flex-start;">
+    <div style="text-align: center;">
+        <span style="font-size: 12px;">Qtde Acionamentos</span>
+        <div class="info-block" style="--border-color: rgba(139,0,139); --bg-color: rgba(128,0,128,0.1); width: 140px;">
+            <img src="botao_emergencia.png" alt="Emergência Icon" style="width: 24px; height: 24px;" />
+            <p>3</p>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <span style="font-size: 12px;">Status Pulseira</span>
+        <div class="info-block" style="--border-color: rgba(139,0,139); --bg-color: rgba(100,149,237,0.1); width: 140px;">
+            <img src="pulseira.png" alt="Pulseira Icon" style="width: 24px; height: 24px;" />
+            <p>Ativa</p>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <span style="font-size: 12px;">Status Caixa de Medicamentos</span>
+        <div class="info-block" style="--border-color: rgba(139,0,139); --bg-color: rgba(255,99,71,0.1); width: 140px;">
+            <img src="caixinha.png" alt="Caixinha Icon" style="width: 40px; height: 24px;" />
+            <p>Ativa</p>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+
+<div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 48%;">
+        <Chart Config="lineChartConfig" @ref="lineChart" style="width: 100%;"></Chart>
+        <button type="button" @onclick="addDado">
+            Batimentos Cardíacos
+        </button>
+    </div>
+    <div style="width: 48%; margin-top: 20px;">
+        @if (lembretes is null)
+        {
+            <p>Nenhum lembrete de medicamento cadastrado</p>
+        }
+        else
+
+        {
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Horário</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var lembrete in lembretes)
+                    {
+                        <tr>
+                            <td>@lembrete.Id</td>
+                            <td>@lembrete.Horario</td>
+                            <td>@lembrete.Descricao</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: wrap;">
+        <div style="width: 48%;">
+            <Chart Config="pieChartConfig" @ref="pieChart" style="width: 100%;"></Chart>
+        </div>
+        <div style="width: 48%; margin-top: 20px;">
+            @if (lembreteMedicamento is null)
+            {
+                <p>Nenhum lembrete de medicamento cadastrado</p>
+            }
+            else
+
+            {
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Horário</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lembreteMedicamento in lembreteMedicamento)
+                        {
+                            <tr>
+                                <td>@lembreteMedicamento.Id</td>
+                                <td>@lembreteMedicamento.Horario</td>
+                                <td>@lembreteMedicamento.Descricao</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+<br />
+
+@code {
+
+    private LineChartConfig lineChartConfig;
+    private PieChartConfig pieChartConfig;
+
+
+    private Chart lineChart, pieChart;
+
+    protected void addDado()
+    {
+        var rd = new Random();
+        lineChart.AddData(new List<string?>() { "Janeiro" }, 0, new List<decimal?>() { rd.Next(0, 200) });
+
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        lineChartConfig = new LineChartConfig()
+            {
+                Options = new Options()
+                {
+                    Plugins = new Plugins()
+                    {
+                        Legend = new Legend()
+                        {
+                            Align = Align.Center,
+                            Display = false,
+                            Position = LegendPosition.Right
+                        }
+                    },
+                    Scales = new Dictionary<string, Axis>()
+                    {
+                        {
+                            Scales.XAxisId, new Axis()
+                                {
+                                    Stacked = true,
+                                    Ticks = new Ticks()
+                                        {
+                                            MaxRotation = 0,
+                                            MinRotation = 0
+                                        }
+                                }
+                         },
+                    {
+                        Scales.YAxisId, new Axis()
+                            {
+                                Stacked = true
+                            }
+                    }
+        }
+                }
+            };
+        lineChartConfig.Data.Labels = new List<string>() { "Batimentos Cardíacos" };
+        lineChartConfig.Data.Datasets.Add(new LineDataset()
+            {
+                Label = "janeiro",
+                Data = new List<decimal?>() { 1 },
+                BackgroundColor = "rgba(60,179,113)",
+                BorderColor = "rgba(102,205,170)",
+                BorderWidth = 1
+            });
+
+        pieChartConfig = new PieChartConfig
+            {
+                Options = new PieOptions
+                {
+                    Responsive = true
+                },
+                Data = new PieData
+                {
+                    Labels = new List<string> { "Sim", "Não" },
+                    Datasets = new List<PieDataset>
+        {
+        new PieDataset
+        {
+            BackgroundColor = new List<string> { "rgba(128,0,128)", "rgba(218,112,214)" },
+            Data = new List<decimal?> { 6, 5 }
+        }
+            }
+                }
+            };
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Para o funcionamento adequado, essa chamada SEMPRE deve estar antes do resto do código nesse método
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            await CarregaLembreteMedicamentos();
+            await CarregaLembretes();
+            //  await CarregaContadorBtEmergencia();
+        }
+
+    }
+
+    protected List<LembreteMedicamentoModel?> lembreteMedicamento;
+    protected List<LembreteMedicamentoModel?> lembreteMedicamentoFiltrados = new();
+
+    protected async Task CarregaLembreteMedicamentos()
+    {
+        var requisicaoMedicamento = await ApiCallHelper.Get<List<LembreteMedicamentoModel>>($"LembreteMedicamento/v1/RecuperaMedicamento/{UsuarioLogado.AssinaturaId}", JwtToken);
+
+        if (requisicaoMedicamento != null && requisicaoMedicamento.Sucesso)
+        {
+            lembreteMedicamento = requisicaoMedicamento.Dados;
+            lembreteMedicamentoFiltrados = lembreteMedicamento;
+            StateHasChanged();
+        }
+    }
+
+    protected List<LembreteModel> lembretes;
+    protected List<LembreteModel> lembretesFiltrados = new();
+
+    protected async Task CarregaLembretes()
+    {
+        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<List<LembreteModel>>($"Lembrete/v1/RecuperaLembretesDaAssinatura/{UsuarioLogado.AssinaturaId}", JwtToken);
+
+        if (requisicaoLembreteAssinatura != null && requisicaoLembreteAssinatura.Sucesso)
+        {
+            lembretes = requisicaoLembreteAssinatura.Dados;
+            lembretesFiltrados = lembretes;
+            StateHasChanged();
+        }
+    }
+
+    protected int contadorBtEmergencia;
+
+    protected async Task CarregaContadorBtEmergencia()
+    {
+        var requisicaoLembreteAssinatura = await ApiCallHelper.Get<int>($"Dashboard/v1/ContagemBtEmergencia?assinatura={UsuarioLogado.AssinaturaId}", JwtToken);
+
+        if (requisicaoLembreteAssinatura.Sucesso)
+        {
+            contadorBtEmergencia = requisicaoLembreteAssinatura.Dados;
+            StateHasChanged();
+        }
+    }
+
+}
+

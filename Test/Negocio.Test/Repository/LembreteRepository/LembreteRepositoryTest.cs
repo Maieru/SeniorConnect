@@ -83,6 +83,29 @@ namespace Negocio.Test.Repository.LembreteRepository
         }
 
         [Fact]
+        public async Task GetById_ShouldReturnAssociations()
+        {
+            // arrange
+            var lembrete = new LembreteModel { Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 };
+            var device = new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+            var deviceLembrete = new LembreteIoTDeviceModel { Id = 1, IoTDeviceId = 1, LembreteId = 1 };
+
+            _applicationContext.LembreteIoTDevice.Add(deviceLembrete);
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.IoTDevices.Add(device);
+            _applicationContext.Lembretes.Add(lembrete);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.GetById(1);
+
+            // assert
+            Assert.NotNull(result);
+            Assert.NotEmpty(result.DispositivosAssociados);
+        }
+
+        [Fact]
         public async Task Delete_ShouldDelete()
         {
             // arrange
@@ -181,6 +204,47 @@ namespace Negocio.Test.Repository.LembreteRepository
         }
 
         [Fact]
+        public async Task Update_ShouldUpdateWithDeviceAssociation()
+        {
+            // arrange
+            var lembrete = new LembreteModel { Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 };
+            var device = new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.Lembretes.Add(lembrete);
+            _applicationContext.IoTDevices.Add(device);
+            await _applicationContext.SaveChangesAsync();
+
+            lembrete.DispositivosAssociados = new List<int>() { 1 };
+
+            // act
+            await _repository.Update(lembrete);
+
+            Assert.True(_applicationContext.Lembretes.FirstOrDefault() == lembrete);
+            Assert.NotEmpty(_applicationContext.LembreteIoTDevice);
+        }
+
+        [Fact]
+        public async Task Update_ShouldNotUpdateWithDeviceAssociation()
+        {
+            // arrange
+            var lembrete = new LembreteModel { Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1 };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.Lembretes.Add(lembrete);
+            await _applicationContext.SaveChangesAsync();
+
+            lembrete.DispositivosAssociados = new List<int>() { 1 };
+
+            // act
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Update(lembrete));
+            Assert.Empty(_applicationContext.LembreteIoTDevice);
+        }
+
+        [Fact]
         public async Task Insert_ShouldInsert()
         {
             // arrange
@@ -207,6 +271,41 @@ namespace Negocio.Test.Repository.LembreteRepository
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(lembrete));
             Assert.True(_applicationContext.Lembretes.Count() == 0);
+        }
+
+        [Fact]
+        public async Task Insert_ShouldInsertWithDeviceAssociation()
+        {
+            // arrange
+            var device = new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira };
+            var lembrete = new LembreteModel { Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1, DispositivosAssociados = new List<int>() { 1 } };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.IoTDevices.Add(device);
+            await _applicationContext.SaveChangesAsync();
+
+            // arrange
+            await _repository.Insert(lembrete);
+
+            Assert.True(_applicationContext.Lembretes.FirstOrDefault() == lembrete);
+            Assert.NotEmpty(_applicationContext.LembreteIoTDevice);
+        }
+
+        [Fact]
+        public async Task Insert_ShouldNotInsertWithDeviceAssociation()
+        {
+            // arrange
+            var lembrete = new LembreteModel { Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1, DispositivosAssociados = new List<int>() { 1 } };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+
+            _applicationContext.Assinaturas.Add(assinatura);
+            await _applicationContext.SaveChangesAsync();
+
+            // arrange
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(lembrete));
+            Assert.Empty(_applicationContext.LembreteIoTDevice);
         }
 
         [Fact]
@@ -335,6 +434,47 @@ namespace Negocio.Test.Repository.LembreteRepository
             // assert
             Assert.NotNull(lembretesDevice);
             Assert.Empty(lembretesDevice);
+        }
+
+        [Fact]
+        public async Task GetDevicesAssociated_ShouldReturnListOfInt_WhenLembreteIdIsValid()
+        {
+            // Arrange
+            var lembreteId = 1;
+            var device = new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira };
+            var lembrete = new LembreteModel { Id = 1, Horario = DateTime.UtcNow, Descricao = "abc", AssinaturaId = 1, DispositivosAssociados = new List<int>() { 1 } };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+            var lembreteIoTDeviceList = new List<LembreteIoTDeviceModel>
+            {
+                new LembreteIoTDeviceModel { IoTDeviceId = 1, LembreteId = 1 },
+                new LembreteIoTDeviceModel { IoTDeviceId = 2, LembreteId = 1 },
+                new LembreteIoTDeviceModel { IoTDeviceId = 3, LembreteId = 1 }
+            };
+            var expected = lembreteIoTDeviceList.Select(l => l.IoTDeviceId).ToList();
+            _applicationContext.LembreteIoTDevice.AddRange(lembreteIoTDeviceList);
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.IoTDevices.Add(device);
+            await _applicationContext.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetDevicesAssociated(lembreteId);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public async Task GetDevicesAssociated_ShouldReturnEmptyList_WhenLembreteIdIsInvalid()
+        {
+            // Arrange
+            var lembreteId = 1;
+            var expected = new List<int>();
+
+            // Act
+            var result = await _repository.GetDevicesAssociated(lembreteId);
+
+            // Assert
+            Assert.Equal(expected, result);
         }
     }
 }

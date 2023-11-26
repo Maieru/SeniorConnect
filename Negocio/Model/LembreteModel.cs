@@ -27,5 +27,8 @@ namespace Negocio.Model
         [Required (ErrorMessage = "É necessário preencher a descrição")]
         [MaxLength(100, ErrorMessage = "A descrição não pode ter mais do que 100 caracteres")]
         public string Descricao { get; set; }
+
+        [NotMapped]
+        public List<int> DispositivosAssociados { get; set; }
     }
 }

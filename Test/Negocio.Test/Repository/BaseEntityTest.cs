@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Negocio.Database;
 using Negocio.Repository;
 using System;
@@ -16,7 +17,10 @@ namespace Negocio.Test.Repository
 
         public BaseEntityTest()
         {
-            var dbOptions = new DbContextOptionsBuilder<ApplicationContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
+            var dbOptions = new DbContextOptionsBuilder<ApplicationContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+
             _applicationContext = new ApplicationContext(dbOptions.Options);
             _repository = (T)Activator.CreateInstance(typeof(T), _applicationContext);
         }

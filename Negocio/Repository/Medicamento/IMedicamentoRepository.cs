@@ -17,5 +17,6 @@ namespace Negocio.Repository.Medicamento
         Task<int> Insert(MedicamentoModel medicamento);
         Task<int> Update(MedicamentoModel medicamento);
         Task<int> Delete(int id);
+        Task<List<int>> GetDevicesAssociated(int lembreteId);
     }
 }

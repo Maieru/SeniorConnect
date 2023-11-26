@@ -88,6 +88,29 @@ namespace Negocio.Test.Repository.MedicamentoRepository
         }
 
         [Fact]
+        public async Task GetById_ShouldReturnAssociations()
+        {
+            // arrange
+            var medicamento = new MedicamentoModel { Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1 };
+            var device = new CaixaRemedioModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Caixa Remedio", DeviceType = EnumDeviceType.CaixaRemedio };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+            var deviceMedicamento = new MedicamentoIoTDeviceModel { Id = 1, IoTDeviceId = 1, MedicamentoId = 1 };
+
+            _applicationContext.MedicamentoIoTDevice.Add(deviceMedicamento);
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.IoTDevices.Add(device);
+            _applicationContext.Medicamentos.Add(medicamento);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var result = await _repository.GetById(1);
+
+            // assert
+            Assert.NotNull(result);
+            Assert.NotEmpty(result.DispositivosAssociados);
+        }
+
+        [Fact]
         public async Task Delete_ShouldDelete()
         {
             // arrange
@@ -132,7 +155,7 @@ namespace Negocio.Test.Repository.MedicamentoRepository
         {
             // arrange
             var medicamento = new MedicamentoModel { Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1 };
-            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1};
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.Now, PlanoId = 1 };
 
             _applicationContext.Medicamentos.Add(medicamento);
             _applicationContext.Assinaturas.Add(assinatura);
@@ -158,7 +181,7 @@ namespace Negocio.Test.Repository.MedicamentoRepository
 
             await _applicationContext.SaveChangesAsync();
 
-            
+
             // act
             var medicamentoModificado = new MedicamentoModel { Id = 2, AssinaturaId = 1, Descricao = "2", PosicaoNaCaixaRemedio = 2 };
             var result = await _repository.Update(medicamentoModificado);
@@ -183,6 +206,46 @@ namespace Negocio.Test.Repository.MedicamentoRepository
 
             Assert.True(_applicationContext.Medicamentos.Count() == 1);
             Assert.True(_applicationContext.Medicamentos.FirstOrDefault()?.AssinaturaId == 1);
+        }
+
+        [Fact]
+        public async Task Update_ShouldUpdateWithDeviceAssociation()
+        {
+            // arrange
+            var medicamento = new MedicamentoModel { Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1 };
+            var device = new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.Medicamentos.Add(medicamento);
+            _applicationContext.IoTDevices.Add(device);
+            await _applicationContext.SaveChangesAsync();
+
+            medicamento.DispositivosAssociados = new List<int>() { 1 };
+
+            // act
+            await _repository.Update(medicamento);
+
+            Assert.True(_applicationContext.Medicamentos.FirstOrDefault() == medicamento);
+            Assert.NotEmpty(_applicationContext.MedicamentoIoTDevice);
+        }
+
+        [Fact]
+        public async Task Insert_ShouldNotUpdateWithDeviceAssociation()
+        {
+            // arrange
+            var medicamento = new MedicamentoModel { Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1 };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.Medicamentos.Add(medicamento);
+            await _applicationContext.SaveChangesAsync();
+
+            medicamento.DispositivosAssociados = new List<int>() { 1 };
+
+            // act
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Update(medicamento));
+            Assert.Empty(_applicationContext.LembreteIoTDevice);
         }
 
         [Fact]
@@ -212,6 +275,39 @@ namespace Negocio.Test.Repository.MedicamentoRepository
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(medicamento));
             Assert.True(_applicationContext.Medicamentos.Count() == 0);
+        }
+
+        [Fact]
+        public async Task Insert_ShouldInsertWithDeviceAssociation()
+        {
+            // arrange
+            var device = new PulseiraModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Pulseira", DeviceType = EnumDeviceType.Pulseira };
+            var medicamento = new MedicamentoModel { Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1, DispositivosAssociados = new List<int> { 1 } };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.IoTDevices.Add(device);
+            await _applicationContext.SaveChangesAsync();
+
+            // arrange
+            await _repository.Insert(medicamento);
+
+            Assert.True(_applicationContext.Medicamentos.FirstOrDefault() == medicamento);
+            Assert.NotEmpty(_applicationContext.MedicamentoIoTDevice);
+        }
+
+        [Fact]
+        public async Task Insert_ShouldNotInsertWithDeviceAssociation()
+        {
+            // arrange
+            var medicamento = new MedicamentoModel { Id = 1, AssinaturaId = 1, Descricao = "1", PosicaoNaCaixaRemedio = 1, DispositivosAssociados = new List<int> { 1 } };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+
+            _applicationContext.Assinaturas.Add(assinatura);
+            await _applicationContext.SaveChangesAsync();
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.Insert(medicamento));
+            Assert.Empty(_applicationContext.LembreteIoTDevice);
         }
 
         [Fact]
@@ -337,6 +433,47 @@ namespace Negocio.Test.Repository.MedicamentoRepository
             // assert
             Assert.NotNull(medicamentosDevice);
             Assert.Empty(medicamentosDevice);
+        }
+
+        [Fact]
+        public async Task GetDevicesAssociated_ShouldReturnListOfInt_WhenMedicamentoIdIsValid()
+        {
+            // Arrange
+            var medicamentoId = 1;
+            var device = new CaixaRemedioModel { DeviceId = 1, DeviceKey = Guid.NewGuid().ToString(), AssinaturaId = 1, Descricao = "Caixa Remedio", DeviceType = EnumDeviceType.CaixaRemedio };
+            var medicamento = new MedicamentoModel { Id = 1, PosicaoNaCaixaRemedio = 2, Descricao = "abc", AssinaturaId = 1, DispositivosAssociados = new List<int>() { 1 } };
+            var assinatura = new AssinaturaModel { Id = 1, DataCriacao = DateTime.UtcNow, PlanoId = 1 };
+            var medicamentoIotDevice = new List<MedicamentoIoTDeviceModel>
+            {
+                new MedicamentoIoTDeviceModel { IoTDeviceId = 1, MedicamentoId = 1},
+                new MedicamentoIoTDeviceModel { IoTDeviceId = 2, MedicamentoId = 1},
+                new MedicamentoIoTDeviceModel { IoTDeviceId = 3, MedicamentoId = 1}
+            };
+            var expected = medicamentoIotDevice.Select(l => l.IoTDeviceId).ToList();
+            _applicationContext.MedicamentoIoTDevice.AddRange(medicamentoIotDevice);
+            _applicationContext.Assinaturas.Add(assinatura);
+            _applicationContext.IoTDevices.Add(device);
+            await _applicationContext.SaveChangesAsync();
+
+            // Act
+            var result = await _repository.GetDevicesAssociated(medicamentoId);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public async Task GetDevicesAssociated_ShouldReturnEmptyList_WhenMedicamentoIdIsInvalid()
+        {
+            // Arrange
+            var medicamentoId = 1;
+            var expected = new List<int>();
+
+            // Act
+            var result = await _repository.GetDevicesAssociated(medicamentoId);
+
+            // Assert
+            Assert.Equal(expected, result);
         }
     }
 }

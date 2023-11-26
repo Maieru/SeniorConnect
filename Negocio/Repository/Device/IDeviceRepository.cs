@@ -14,5 +14,6 @@ namespace Negocio.Repository.Device
         Task<int> Insert(IoTDeviceModel device);
         Task<int> Update(IoTDeviceModel device);
         Task<int> Delete(int id);
+        Task<int> GetUsuarioAssociatedWithDevice(int deviceId, string deviceKey);
     }
 }

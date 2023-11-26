@@ -69,6 +69,7 @@
     <Build Include="Tables\tbLembreteMedicamento.sql" />
     <Build Include="Tables\tbLembreteIoTDevice.sql" />
     <Build Include="Tables\tbMedicamentoIoTDevice.sql" />
+    <Build Include="Tables\tbAlerta.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SeniorConnectDatabaseFaculdade.publish.xml" />

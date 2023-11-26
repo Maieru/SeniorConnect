@@ -269,5 +269,50 @@ namespace Negocio.Test.Repository.UsuarioRepository
             // act
             await Assert.ThrowsAsync<ArgumentException>(async () => await _repository.GetByUserAndPassword("Teste", await EncryptionHelper.Criptografa("123")));
         }
+
+        [Fact]
+        public async Task GetByAssinatura_ShouldReturn()
+        {
+            // arrange
+            var assinatura = 1;
+            var usuarios = new List<UsuarioModel>
+            {
+                new UsuarioModel{ Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com"},
+                new UsuarioModel{ Id = 2, Usuario = "2", Senha = "456", AssinaturaId = 2, Email = "teste@teste.com"},
+                new UsuarioModel{ Id = 3, Usuario = "3", Senha = "789", AssinaturaId = 3, Email = "teste@teste.com"}
+            };
+
+            _applicationContext.Usuarios.AddRange(usuarios);
+            await _applicationContext.SaveChangesAsync();
+            
+            // act
+            var usuarioDaAssinatura = await _repository.GetByAssinatura(assinatura);
+
+            // assert
+            Assert.NotNull(usuarioDaAssinatura);
+            Assert.Equal(usuarios[0], usuarioDaAssinatura);
+        }
+
+        [Fact]
+        public async Task GetByAssinatura_ShouldReturnNothing()
+        {
+            // arrange
+            var assinatura = 4;
+            var usuarios = new List<UsuarioModel>
+            {
+                new UsuarioModel{ Id = 1, Usuario = "1", Senha = "123", AssinaturaId = 1, Email = "teste@teste.com"},
+                new UsuarioModel{ Id = 2, Usuario = "2", Senha = "456", AssinaturaId = 2, Email = "teste@teste.com"},
+                new UsuarioModel{ Id = 3, Usuario = "3", Senha = "789", AssinaturaId = 3, Email = "teste@teste.com"}
+            };
+
+            _applicationContext.Usuarios.AddRange(usuarios);
+            await _applicationContext.SaveChangesAsync();
+
+            // act
+            var usuarioDaAssinatura = await _repository.GetByAssinatura(assinatura);
+
+            // assert
+            Assert.Null(usuarioDaAssinatura);
+        }
     }
 }

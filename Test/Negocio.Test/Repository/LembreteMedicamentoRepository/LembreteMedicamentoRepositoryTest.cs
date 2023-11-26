@@ -3,7 +3,7 @@ using Negocio.Model;
 using Negocio.Model.Device;
 using Xunit;
 
-namespace Negocio.Test.Repository.LembreteRepository
+namespace Negocio.Test.Repository.LembreteMedicamentoRepositoryTest
 {
     public class LembreteMedicamentoRepositoryTest : BaseEntityTest<Negocio.Repository.LembreteMedicamento.LembreteMedicamentoRepository>
     {

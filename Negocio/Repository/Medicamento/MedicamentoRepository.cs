@@ -28,7 +28,15 @@ namespace Negocio.Repository.Medicamento
 
         public async Task<IEnumerable<MedicamentoModel>> GetAll() => await _applicationContext.Medicamentos.ToListAsync();
 
-        public async Task<MedicamentoModel?> GetById(int id) => await _applicationContext.Medicamentos.FirstOrDefaultAsync(a => a.Id == id);
+        public async Task<MedicamentoModel?> GetById(int id)
+        {
+            var medicamento = await _applicationContext.Medicamentos.FirstOrDefaultAsync(a => a.Id == id);
+
+            if (medicamento != null)
+                medicamento.DispositivosAssociados = await GetDevicesAssociated(id);
+
+            return medicamento;
+        }
 
         public async Task<int> Delete(int id)
         {
@@ -43,24 +51,79 @@ namespace Negocio.Repository.Medicamento
 
         public async Task<int> Insert(MedicamentoModel medicamento)
         {
-            if (!await VerificaSeAssinaturaExiste(medicamento.AssinaturaId))
-                throw new ArgumentException("Assinatura não encontrada");
+            var transaction = _applicationContext.Database.BeginTransaction();
 
-            await _applicationContext.Medicamentos.AddAsync(medicamento);
-            return await _applicationContext.SaveChangesAsync();
+            try
+            {
+                if (!await VerificaSeAssinaturaExiste(medicamento.AssinaturaId))
+                    throw new ArgumentException("Assinatura não encontrada");
+
+                await _applicationContext.Medicamentos.AddAsync(medicamento);
+                var result = await _applicationContext.SaveChangesAsync();
+
+                if (medicamento.DispositivosAssociados != null)
+                {
+                    foreach (var device in medicamento.DispositivosAssociados)
+                    {
+                        if (!await _applicationContext.IoTDevices.AnyAsync(d => d.DeviceId == device))
+                            throw new ArgumentException($"Dispositivo {device} não existe");
+
+                        await _applicationContext.MedicamentoIoTDevice.AddAsync(new MedicamentoIoTDeviceModel { IoTDeviceId = device, MedicamentoId = medicamento.Id });
+                    }
+                }
+
+                result += await _applicationContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return result;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<int> Update(MedicamentoModel medicamento)
         {
-            if (!await _applicationContext.Medicamentos.AnyAsync(m => m.Id == medicamento.Id))
-                return 0;
+            var transaction = _applicationContext.Database.BeginTransaction();
 
-            if (!await VerificaSeAssinaturaExiste(medicamento.AssinaturaId))
-                throw new ArgumentException("Assinatura não encontrada");
+            try
+            {
+                if (!await _applicationContext.Medicamentos.AnyAsync(m => m.Id == medicamento.Id))
+                    return 0;
 
-            _applicationContext.Medicamentos.Update(medicamento);
-            return await _applicationContext.SaveChangesAsync();
+                if (!await VerificaSeAssinaturaExiste(medicamento.AssinaturaId))
+                    throw new ArgumentException("Assinatura não encontrada");
+
+                if (medicamento.DispositivosAssociados != null)
+                {
+                    var associacoes = await _applicationContext.MedicamentoIoTDevice.Where(l => l.MedicamentoId == medicamento.Id).ToListAsync();
+                    _applicationContext.MedicamentoIoTDevice.RemoveRange(associacoes);
+
+                    foreach (var device in medicamento.DispositivosAssociados)
+                    {
+                        if (!await _applicationContext.IoTDevices.AnyAsync(d => d.DeviceId == device))
+                            throw new ArgumentException($"Dispositivo {device} não existe");
+
+                        await _applicationContext.MedicamentoIoTDevice.AddAsync(new MedicamentoIoTDeviceModel { IoTDeviceId = device, MedicamentoId = medicamento.Id });
+                    }
+                }
+
+                _applicationContext.Medicamentos.Update(medicamento);
+                var result = await _applicationContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return result;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
+
+        public async Task<List<int>> GetDevicesAssociated(int medicamentoId) => await _applicationContext.MedicamentoIoTDevice.Where(l => l.MedicamentoId == medicamentoId).Select(l => l.IoTDeviceId).ToListAsync();
 
         private async Task<bool> VerificaSeAssinaturaExiste(int assinaturaId)
         {

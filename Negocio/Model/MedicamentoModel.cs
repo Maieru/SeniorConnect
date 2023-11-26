@@ -28,5 +28,8 @@ namespace Negocio.Model
         [Required(ErrorMessage = "A posição é obrigatória")]
         [Range(1, 7, ErrorMessage = "A posição deve ser um valor entre 1 e 7")]
         public int PosicaoNaCaixaRemedio { get; set; }
+
+        [NotMapped]
+        public List<int> DispositivosAssociados { get; set; }
     }
 }
