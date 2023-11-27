@@ -3,6 +3,7 @@ name: Build and Deploy App in Development
 env:
   AZURE_WEBAPP_PACKAGE_PATH: './Webapp'
   AZURE_IOT_GATEWAY_PACKAGE_PATH: './IoTGateway'
+  AZURE_FUNCTION_PATH: './Function'
   DOTNET_VERSION: '7.0.x'
 
 on:
